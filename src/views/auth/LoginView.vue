@@ -29,10 +29,10 @@ function onClick() {
       <v-main>
         <v-container>
           <v-row>
-            <v-col cols="12" md="6" class="mx-auto">
+            <v-col cols="12" md="6" class="mx-auto pt-16">
               <v-card
                 class="mx-auto"
-                prepend-icon="mdi-account-alert"
+                prepend-icon="mdi-login-variant"
                 subtitle="Login"
               >
                 <template v-slot:title>
@@ -51,6 +51,11 @@ function onClick() {
 
                     <v-btn class="mt-2" type="submit" block>Submit</v-btn>
                   </v-form>
+                  
+                  <v-divider class="my-5"></v-divider>
+                    <h5 class="text-center">
+                      Don't have an account? <router-link to="register" class="text-primary"> Click here to Register</router-link></h5>
+
                 </v-card-text>
               </v-card>
             </v-col>
