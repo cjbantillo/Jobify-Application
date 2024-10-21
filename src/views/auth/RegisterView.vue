@@ -6,14 +6,15 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   <AppLayout>
     <template #content>
       <v-row>
-        <v-col cols="12" md="6" class="mx-auto">
+        <v-col cols="12" md="6" class="mx-auto mt-5">
           <v-card
             class="mx-auto"
             prepend-icon="mdi-account-plus"
-            subtitle="Register"
+         
           >
             <template v-slot:title>
-              <span class="font-weight-black">Welcome to Jobify</span>
+              <h3 class="font-weight-black text-center">Welcome to Jobify</h3>
+              <p class="font-weight-bold text-center">Register</p>
             </template>
 
             <v-card-text class="bg-surface-light pt-4">
@@ -48,7 +49,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                 >
                 </v-text-field>
 
-                <v-btn class="mt-2" type="submit" block>Submit</v-btn>
+                <v-btn class="mt-2 bg-primary" type="submit" block prepend-icon="mdi-account-plus">Submit</v-btn>
               </v-form>
               <v-divider class="my-5"></v-divider>
               <h5 class="text-center">
