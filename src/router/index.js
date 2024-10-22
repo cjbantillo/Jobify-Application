@@ -15,8 +15,15 @@ const router = createRouter({
       name: 'register',
       component: RegisterView
     },
- 
-  ]
+  ],
+  // Move scrollBehavior outside of routes
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition; // Retain position when using browser's back/forward buttons
+    } else {
+      return { top: 0 }; // Scroll to the top on navigation or refresh
+    }
+  }
 })
 
 export default router

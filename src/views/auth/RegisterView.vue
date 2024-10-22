@@ -5,7 +5,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 <template>
   <AppLayout>
     <template #content>
-      <v-row>
+      <v-row class="mt-5 mb-5">
         <v-col cols="12" md="6" class="mx-auto mt-5">
           <v-card
             class="mx-auto"
