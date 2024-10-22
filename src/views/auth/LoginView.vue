@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/components/layout/AppLayout.vue'
-import Loginform from '@/components/auth/Loginform.vue';
+import Loginform from '@/components/auth/Loginform.vue'
 </script>
 
 <template>
@@ -16,7 +16,7 @@ import Loginform from '@/components/auth/Loginform.vue';
 
             <v-card-text class="bg-surface-light pt-4">
               <!-- Login Form AUTH -->
-              <LoginForm></LoginForm>
+              <Loginform></Loginform>
 
               <v-divider class="my-5"></v-divider>
               <h5 class="text-center">

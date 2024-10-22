@@ -19,7 +19,7 @@ import Registerform from '@/components/auth/Registerform.vue';
             </template>
 
             <v-card-text class="bg-surface-light pt-4">
-             <RegisterForm></RegisterForm>
+             <Registerform></Registerform>
 
               <v-divider class="my-5"></v-divider>
               <h5 class="text-center">

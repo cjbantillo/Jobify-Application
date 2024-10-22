@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
-const theme = ref('light')
+const theme = ref(localStorage.getItem('theme') ?? 'light')
 
 function onClick() {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
@@ -29,7 +29,8 @@ const links = [
           :prepend-icon="
             theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
           variant="elevated"
-          rounded="xl"
+          :color="theme === 'light' ? 'teal-darken-3' : 'teal-lighten-1' "
+          rounded="xl" slim
           @click="onClick"
         ></v-btn>
       </v-app-bar>
