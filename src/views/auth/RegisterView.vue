@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/components/layout/AppLayout.vue'
-import RegisterForm from '@/components/auth/RegisterForm.vue';
+import Registerform from '@/components/auth/Registerform.vue';
 </script>
 
 <template>
