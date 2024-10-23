@@ -1,11 +1,18 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const theme = ref(localStorage.getItem('theme') ?? 'light')
 
+// Function to toggle theme and save it in localStorage
 function onClick() {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
+  localStorage.setItem('theme', theme.value) // Save the theme preference
 }
+
+// Watch for theme changes and store it in localStorage (optional for extra safety)
+watch(theme, (newTheme) => {
+  localStorage.setItem('theme', newTheme)
+})
 
 const links = [
   'Home',
