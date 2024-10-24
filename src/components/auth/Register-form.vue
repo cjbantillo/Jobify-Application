@@ -1,105 +1,72 @@
+<script setup>
+import { ref } from 'vue'
+
+const visible = ref(false) //toggle variable
+const visibleConfirm = ref(false)
+const termsAccepted = ref(false) //checkbox toggle
+
+const toggleVisible = () => visible.value = !visible.value
+const toggleVisibleConfirm = () => visibleConfirm.value = !visibleConfirm.value
+const submitForm = () => {
+  if (termsAccepted.value) {
+    alert('Form submitted!');
+  } else {
+    alert('Please accept the terms and conditions.');
+  }
+}
+</script>
+
+
 <template>
-  <v-form fast-fail @submit.prevent>
+  <v-form @submit.prevent="submitForm">
+    <v-row>
+      <!-- fullname  -->
+      <v-col><v-text-field label="Firstname" variant="outlined"></v-text-field></v-col>
+      <v-col><v-text-field label="Lastname" variant="outlined"></v-text-field></v-col>
+    </v-row>
+<!-- email -->
+    <v-text-field
+      label="Email"
+      variant="outlined"
+      prepend-inner-icon="mdi-email"
+      v-model="email"
+    ></v-text-field>
+
     <v-row>
       <v-col>
-        <v-text-field label="Firstname" variant="outlined"></v-text-field>
+        <!-- enter password -->
+        <v-text-field
+          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+          :type="visible ? 'text' : 'password'"
+          placeholder="Enter your password"
+          prepend-inner-icon="mdi-lock-outline"
+          variant="outlined"
+          @click:append-inner="toggleVisible"
+        ></v-text-field>
       </v-col>
       <v-col>
-        <v-text-field label="Lastname" variant="outlined"></v-text-field>
+        <!-- confirming password  -->
+        <v-text-field
+          :append-inner-icon="visibleConfirm ? 'mdi-eye-off' : 'mdi-eye'"
+          :type="visibleConfirm ? 'text' : 'password'"
+          placeholder="Confirm password"
+          prepend-inner-icon="mdi-lock-outline"
+          variant="outlined"
+          @click:append-inner="toggleVisibleConfirm"
+        ></v-text-field>
       </v-col>
     </v-row>
-
-    <v-text-field label="Email" variant="outlined" v-model="email">
-      <template #prepend-inner>
-        <v-icon>mdi-email</v-icon>
-      </template>
-    </v-text-field>
-
-    <v-row>
-      <v-col>
-        <!-- Password Field with Eye Icon Inside -->
-        <v-text-field
-          v-model="password"
-          :type="showPassword ? 'text' : 'password'"
-          label="Password"
-          variant="outlined"
-        >
-          <template #prepend-inner>
-            <v-icon>mdi-lock</v-icon>
-          </template>
-
-          <template #append-inner>
-            <v-icon @click="togglePasswordVisibility" class="cursor-pointer">
-              {{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-            </v-icon>
-          </template>
-        </v-text-field>
-      </v-col>
-      <v-col>
-        <!-- Confirm Password Field with Eye Icon Inside -->
-        <v-text-field
-          v-model="confirmPassword"
-          :type="showConfirmPassword ? 'text' : 'password'"
-          label="Confirm Password"
-          variant="outlined"
-        >
-          <template #append-inner>
-            <v-icon
-              @click="toggleConfirmPasswordVisibility"
-              class="cursor-pointer"
-            >
-              {{ showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-            </v-icon>
-          </template>
-        </v-text-field>
-      </v-col>
-    </v-row>
-
-    <!-- terms and conditions -->
+<!-- checkbox with toggle -->
     <v-checkbox
       v-model="termsAccepted"
       :rules="[v => !!v || 'You must accept the terms and conditions']"
       label="I agree to the terms and conditions"
       color="primary"
     ></v-checkbox>
-    <!-- terms end -->
 
-    <!-- Submit Button -->
-    <v-btn
-      class="mt-2 bg-primary"
-      type="submit"
-      block
-      prepend-icon="mdi-account-plus"
-    >
+    <v-btn class="mt-2 bg-primary" type="submit" block prepend-icon="mdi-account-plus">
       Sign up
     </v-btn>
   </v-form>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      password: '',
-      confirmPassword: '',
-      showPassword: false,
-      showConfirmPassword: false,
-      termsAccepted: false, // Checkbox value
-    }
-  },
-  methods: {
-    togglePasswordVisibility() {
-      this.showPassword = !this.showPassword
-    },
-    toggleConfirmPasswordVisibility() {
-      this.showConfirmPassword = !this.showConfirmPassword
-    },
-  },
-  submitForm() {
-    if (this.termsAccepted) {
-      // Handle form submission logic
-      alert('Form submitted!')
-    }
-  },
-}
-</script>

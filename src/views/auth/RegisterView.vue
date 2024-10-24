@@ -6,7 +6,7 @@ import Registerform from '@/components/auth/Register-form.vue'
 <template>
   <AppLayout>
     <template #content>
-      <v-container fluid="">
+      <v-container fluid>
        
         <v-row class="mb-5">
           <v-col cols="12" md="6" class="mx-auto mt-5">

@@ -18,7 +18,7 @@ const router = createRouter({
       path: '/register',  
       name: 'register',
       component: RegisterView
-    },
+    }, 
   ],
   // Move scrollBehavior outside of routes
   scrollBehavior(to, from, savedPosition) {
