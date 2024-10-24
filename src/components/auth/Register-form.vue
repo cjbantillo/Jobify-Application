@@ -9,44 +9,61 @@
       </v-col>
     </v-row>
 
-    <v-text-field label="Email" variant="outlined"></v-text-field>
-
-    <!-- Password Field with Eye Icon Inside -->
-    <v-text-field
-      v-model="password"
-      :type="showPassword ? 'text' : 'password'"
-      label="Password"
-      variant="outlined"
-    >
-      <template #append-inner>
-        <v-icon @click="togglePasswordVisibility" class="cursor-pointer">
-          {{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-        </v-icon>
+    <v-text-field label="Email" variant="outlined" v-model="email">
+      <template #prepend-inner>
+        <v-icon>mdi-email</v-icon>
       </template>
     </v-text-field>
 
-    <!-- Confirm Password Field with Eye Icon Inside -->
-    <v-text-field
-      v-model="confirmPassword"
-      :type="showConfirmPassword ? 'text' : 'password'"
-      label="Confirm Password"
-      variant="outlined"
-    >
-      <template #append-inner>
-        <v-icon @click="toggleConfirmPasswordVisibility" class="cursor-pointer">
-          {{ showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-        </v-icon>
-      </template>
-    </v-text-field>
- <!-- terms and conditions -->
- <v-checkbox
+    <v-row>
+      <v-col>
+        <!-- Password Field with Eye Icon Inside -->
+        <v-text-field
+          v-model="password"
+          :type="showPassword ? 'text' : 'password'"
+          label="Password"
+          variant="outlined"
+        >
+          <template #prepend-inner>
+            <v-icon>mdi-lock</v-icon>
+          </template>
+
+          <template #append-inner>
+            <v-icon @click="togglePasswordVisibility" class="cursor-pointer">
+              {{ showPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+            </v-icon>
+          </template>
+        </v-text-field>
+      </v-col>
+      <v-col>
+        <!-- Confirm Password Field with Eye Icon Inside -->
+        <v-text-field
+          v-model="confirmPassword"
+          :type="showConfirmPassword ? 'text' : 'password'"
+          label="Confirm Password"
+          variant="outlined"
+        >
+          <template #append-inner>
+            <v-icon
+              @click="toggleConfirmPasswordVisibility"
+              class="cursor-pointer"
+            >
+              {{ showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye' }}
+            </v-icon>
+          </template>
+        </v-text-field>
+      </v-col>
+    </v-row>
+
+    <!-- terms and conditions -->
+    <v-checkbox
       v-model="termsAccepted"
       :rules="[v => !!v || 'You must accept the terms and conditions']"
       label="I agree to the terms and conditions"
       color="primary"
     ></v-checkbox>
     <!-- terms end -->
-     
+
     <!-- Submit Button -->
     <v-btn
       class="mt-2 bg-primary"
@@ -56,7 +73,6 @@
     >
       Sign up
     </v-btn>
-   
   </v-form>
 </template>
 
@@ -80,11 +96,10 @@ export default {
     },
   },
   submitForm() {
-      if (this.termsAccepted) {
-        // Handle form submission logic
-        alert('Form submitted!');
-      }
-    },
-  };
-
+    if (this.termsAccepted) {
+      // Handle form submission logic
+      alert('Form submitted!')
+    }
+  },
+}
 </script>
