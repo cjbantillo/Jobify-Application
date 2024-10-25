@@ -1,47 +1,69 @@
 <script setup>
+
+import { confirmedValidator, emailValidator, passwordValidator } from '@/utils/validator';
 import { ref } from 'vue'
 
 const visible = ref(false) //toggle variable
 const visibleConfirm = ref(false)
 const termsAccepted = ref(false) //checkbox toggle
+const refVForm = ref() //onFormSubmit
+const formDataDefault = { //name,email, pass, confirmPass
+  firstname: '',
+  lastname: '',
+  email: '',
+password: '',
+confirm_password: '',
+}
 
-const toggleVisible = () => visible.value = !visible.value
-const toggleVisibleConfirm = () => visibleConfirm.value = !visibleConfirm.value
-const submitForm = () => {
-  if (termsAccepted.value) {
-    alert('Form submitted!');
-  } else {
-    alert('Please accept the terms and conditions.');
-  }
+const formData = ref({
+  ...formDataDefault
+})
+
+const toggleVisible = () => visible.value = !visible.value //eye icon
+const toggleVisibleConfirm = () => visibleConfirm.value = !visibleConfirm.value //eye icon
+
+// submit and register
+const onSignup = () =>{
+  //alert(formData.value)
+  //.email or .password for testing
+}
+const onFormSubmit = () => {
+refVForm.value?.validate().then(({ valid }) => {
+if (valid)
+onSignup()
+})
 }
 </script>
 
 
 <template>
-  <v-form @submit.prevent="submitForm">
+  <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row>
       <!-- fullname  -->
-      <v-col><v-text-field label="Firstname" variant="outlined"></v-text-field></v-col>
-      <v-col><v-text-field label="Lastname" variant="outlined"></v-text-field></v-col>
+      <v-col><v-text-field v-model="formData.firstname" label="Firstname" variant="outlined" :rules="[requiredValidator]" ></v-text-field></v-col>
+      <v-col><v-text-field v-model="formData.lastname" label="Lastname" variant="outlined" :rules="[requiredValidator ]" ></v-text-field></v-col>
     </v-row>
 <!-- email -->
     <v-text-field
+     v-model="formData.email"
       label="Email"
       variant="outlined"
       prepend-inner-icon="mdi-email"
-      v-model="email"
+      :rules="[requiredValidator, emailValidator]"
     ></v-text-field>
 
     <v-row>
       <v-col>
         <!-- enter password -->
         <v-text-field
+        v-model="formData.password"
           :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visible ? 'text' : 'password'"
           placeholder="Enter your password"
           prepend-inner-icon="mdi-lock-outline"
           variant="outlined"
           @click:append-inner="toggleVisible"
+          :rules="[requiredValidator, passwordValidator]"
         ></v-text-field>
       </v-col>
       <v-col>
@@ -52,7 +74,9 @@ const submitForm = () => {
           placeholder="Confirm password"
           prepend-inner-icon="mdi-lock-outline"
           variant="outlined"
+          v-model="formData.confirm_password"
           @click:append-inner="toggleVisibleConfirm"
+          :rules="[requiredValidator, confirmedValidator(formData.password, formData,confirmedValidator)]"
         ></v-text-field>
       </v-col>
     </v-row>
