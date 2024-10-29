@@ -20,7 +20,7 @@ import Registerform from '@/components/auth/Register-form.vue'
               <h5 class="text-center my-4">
                 Already have an account?
                 <router-link to="login" class="text-primary">
-                  CLick here to Login</router-link
+                  Click here to Login</router-link
                 >
               </h5>
 
