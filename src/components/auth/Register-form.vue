@@ -40,8 +40,8 @@ onSignup()
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row>
       <!-- fullname  -->
-      <v-col><v-text-field v-model="formData.firstname" label="Firstname" variant="outlined" :rules="[requiredValidator]" ></v-text-field></v-col>
-      <v-col><v-text-field v-model="formData.lastname" label="Lastname" variant="outlined" :rules="[requiredValidator ]" ></v-text-field></v-col>
+      <v-col><v-text-field v-model="formData.firstname" label="Firstname" :rules="[requiredValidator]" bg-color="white"></v-text-field></v-col>
+      <v-col><v-text-field v-model="formData.lastname" label="Lastname" :rules="[requiredValidator ]" bg-color="white"></v-text-field></v-col>
     </v-row>
 <!-- email -->
     <v-text-field
