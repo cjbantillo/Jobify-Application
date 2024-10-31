@@ -60,7 +60,9 @@ onLogin()
                 <v-btn class="login-button w-100 rounded-pill" depressed type="submit">Login Now</v-btn>
               </v-col>
               <v-col>
+                <router-link to="/register">
                 <v-btn class="register-button w-100 rounded-pill" outlined>Register</v-btn>
+                </router-link>
               </v-col>
     </v-row>
   </v-form>
