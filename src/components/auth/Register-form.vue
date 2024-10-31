@@ -47,9 +47,9 @@ onSignup()
     <v-text-field
      v-model="formData.email"
       label="Email"
-      variant="outlined"
       prepend-inner-icon="mdi-email"
       :rules="[requiredValidator, emailValidator]"
+      bg-color="white"
     ></v-text-field>
 
     <v-row>
@@ -59,11 +59,11 @@ onSignup()
         v-model="formData.password"
           :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visible ? 'text' : 'password'"
-          placeholder="Enter your password"
+          label="Password"
           prepend-inner-icon="mdi-lock-outline"
-          variant="outlined"
           @click:append-inner="toggleVisible"
           :rules="[requiredValidator, passwordValidator]"
+          bg-color="white"
         ></v-text-field>
       </v-col>
       <v-col>
@@ -71,12 +71,12 @@ onSignup()
         <v-text-field
           :append-inner-icon="visibleConfirm ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visibleConfirm ? 'text' : 'password'"
-          placeholder="Confirm password"
+          label="Confirm Password"
           prepend-inner-icon="mdi-lock-outline"
-          variant="outlined"
           v-model="formData.confirm_password"
           @click:append-inner="toggleVisibleConfirm"
           :rules="[requiredValidator, confirmedValidator(formData.password, formData,confirmedValidator)]"
+          bg-color="white"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -88,9 +88,43 @@ onSignup()
       color="primary"
     ></v-checkbox>
 
-    <v-btn class="mt-2 bg-primary" type="submit" block prepend-icon="mdi-account-plus">
-      Sign up
-    </v-btn>
+    <v-row class="button-row mt-4">
+              <v-col>
+                  <v-btn class="register-button w-100 rounded-pill" depressed type="submit">Register</v-btn>
+              </v-col>
+              <v-col>
+                <router-link to="login">
+                  <v-btn class="login-button w-100 rounded-pill" outlined>Login Now</v-btn>
+                </router-link>
+              </v-col>
+    </v-row>
   </v-form>
 </template>
+<style>
+  .button-row .register-button {
+  background-color: #4CAF50; /* Primary green color */
+  color: #ffffff;
+  font-weight: 100;
+  font-size: 0.5rem;
+  box-shadow: 0px 4px 10px rgba(76, 175, 80, 0.2); /* Soft shadow */
+  transition: all 0.3s ease;
+}
 
+.button-row .register-button:hover {
+  background-color: #45A049; /* Darker green on hover */
+  box-shadow: 0px 6px 12px rgba(76, 175, 80, 0.3); /* More pronounced shadow on hover */
+}
+
+.button-row .login-button {
+  color: #4CAF50; /* Same primary green for the text */
+  border-color: #4CAF50;
+  font-weight: 100;
+  font-size: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.button-row .login-button:hover {
+  background-color: #E8F5E9; /* Light green background on hover */
+  color: #45A049; /* Slightly darker green for text on hover */
+}
+</style>

@@ -34,6 +34,7 @@ onLogin()
       prepend-inner-icon="mdi-email"
       :rules="[requiredValidator, emailValidator]"
       class="modern-input"
+      bg-color="white"
     ></v-text-field>
 
     <v-text-field
@@ -44,6 +45,7 @@ onLogin()
       prepend-inner-icon="mdi-lock-outline"
       :rules="[requiredValidator]"
       class="modern-input"
+      bg-color="white"
     ></v-text-field>
 
     <v-row class="mt-2">
@@ -60,7 +62,9 @@ onLogin()
                 <v-btn class="login-button w-100 rounded-pill" depressed type="submit">Login Now</v-btn>
               </v-col>
               <v-col>
-                <v-btn class="register-button w-100 rounded-pill" outlined>Register</v-btn>
+                <router-link to="register">
+                  <v-btn class="register-button w-100 rounded-pill" outlined>Register</v-btn>
+                </router-link>
               </v-col>
     </v-row>
   </v-form>
@@ -125,6 +129,7 @@ onLogin()
 }
 
 .button-row .register-button {
+  background-color: #ffffff;
   color: #4CAF50; /* Same primary green for the text */
   border-color: #4CAF50;
   font-weight: 100;
