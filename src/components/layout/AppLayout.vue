@@ -41,10 +41,10 @@ const links = [
           @click="onClick"
         ></v-btn>
       </v-app-bar>
-      
+
 
       <!-- Add 'pt-8' to v-main to give space for the fixed app bar -->
-       
+
       <v-main class="d-flex flex-column flex-grow-1 pt-8" >
         <v-container >
           <slot name="content"></slot>
