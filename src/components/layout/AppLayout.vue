@@ -36,7 +36,7 @@ const links = ['Home', 'About', 'Services']
         <v-spacer></v-spacer>
         <h4>Services</h4>
         <v-spacer></v-spacer>
-        <!-- logo for Jobify  assets folder-->
+        <!-- logo for Jobify -->
         <img src="" alt="" />
         <v-spacer></v-spacer>
 
@@ -63,7 +63,7 @@ const links = ['Home', 'About', 'Services']
       <v-footer
         :color="theme === 'light' ? 'teal-lighten-1' : 'teal-darken-3'"
         elevation="24"
-        app
+        
       >
         <v-row justify="center" no-gutters>
           <v-btn
