@@ -88,16 +88,18 @@ onSignup()
       color="primary"
     ></v-checkbox>
 
-    <v-row class="button-row mt-4">
+    <v-row class="button-row ">
               <v-col>
                   <v-btn class="register-button w-100 rounded-pill" depressed type="submit">Register</v-btn>
               </v-col>
-              <v-col>
-                <router-link to="login">
-                  <v-btn class="login-button w-100 rounded-pill" outlined>Login Now</v-btn>
-                </router-link>
-              </v-col>
+           
     </v-row>
+    <v-col>
+      <h5>already have an account?
+                <router-link to="login">
+                  click here
+                </router-link></h5>
+              </v-col>
   </v-form>
 </template>
 <style>

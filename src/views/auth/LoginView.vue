@@ -21,7 +21,7 @@ import Loginform from '@/components/auth/Login-form.vue'
             </p>
 
             <!-- Login Form AUTH -->
-            <Loginform />
+            <Loginform /> 
 
             <!-- Social Login -->
             <v-divider class="my-4">Or</v-divider>
