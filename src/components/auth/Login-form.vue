@@ -5,13 +5,14 @@ import { ref } from 'vue'
 const visible = ref(false)
 const refVForm = ref() // onFormSubmit
 
-const formDataDefault = { // email, pass
+const formDataDefault = {
+  // email, pass
   email: '',
   password: '',
 }
 
 const formData = ref({
-  ...formDataDefault
+  ...formDataDefault,
 })
 
 const onLogin = () => {
@@ -20,8 +21,7 @@ const onLogin = () => {
 }
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
-    if (valid)
-      onLogin()
+    if (valid) onLogin()
   })
 }
 </script>
@@ -34,6 +34,7 @@ const onFormSubmit = () => {
       prepend-inner-icon="mdi-email"
       :rules="[requiredValidator, emailValidator]"
       class="modern-input"
+      bg-color="white"
     ></v-text-field>
 
     <v-text-field
@@ -44,6 +45,7 @@ const onFormSubmit = () => {
       prepend-inner-icon="mdi-lock-outline"
       :rules="[requiredValidator]"
       class="modern-input"
+      bg-color="white"
     ></v-text-field>
 
     <v-row class="mt-2 align-center">
@@ -59,20 +61,27 @@ const onFormSubmit = () => {
         </v-row>
       </v-col>
       <v-col cols="6" class="text-right">
-        <router-link to="/forgot-password" class="link text-muted">Forgot Password?</router-link>
+        <router-link to="/forgot-password" class="link text-muted"
+          >Forgot Password?</router-link
+        >
       </v-col>
     </v-row>
 
     <v-row class="button-row mt-4">
       <v-col>
-        <v-btn class="login-button w-100 rounded-pill" depressed type="submit">Login Now</v-btn>
-      </v-col>
-      <v-col>
-        <router-link to="/register">
-          <v-btn class="register-button w-100 rounded-pill" outlined>Register</v-btn>
-        </router-link>
+        <v-btn class="login-button w-100 rounded-pill" depressed type="submit"
+          >Login Now</v-btn
+        >
       </v-col>
     </v-row>
+    <v-divider ></v-divider>
+    <v-col>
+      <h5>
+        don't have an account?<router-link to="register">
+          click here to register</router-link
+        >
+      </h5>
+    </v-col>
   </v-form>
 </template>
 
@@ -115,7 +124,7 @@ const onFormSubmit = () => {
   color: #2c3e50; /* Primary color when the input is active */
 }
 .button-row .login-button {
-  background-color: #4CAF50; /* Primary green color */
+  background-color: #4caf50; /* Primary green color */
   color: #ffffff;
   font-weight: 100;
   font-size: 0.5rem;
@@ -123,19 +132,20 @@ const onFormSubmit = () => {
   transition: all 0.3s ease;
 }
 .button-row .login-button:hover {
-  background-color: #45A049; /* Darker green on hover */
+  background-color: #45a049; /* Darker green on hover */
   box-shadow: 0px 6px 12px rgba(76, 175, 80, 0.3); /* More pronounced shadow on hover */
 }
 .button-row .register-button {
-  color: #4CAF50; /* Same primary green for the text */
-  border-color: #4CAF50;
+  background-color: #ffffff;
+  color: #4caf50; /* Same primary green for the text */
+  border-color: #4caf50;
   font-weight: 100;
   font-size: 0.5rem;
   transition: all 0.3s ease;
 }
 .button-row .register-button:hover {
-  background-color: #E8F5E9; /* Light green background on hover */
-  color: #45A049; /* Slightly darker green for text on hover */
+  background-color: #e8f5e9; /* Light green background on hover */
+  color: #45a049; /* Slightly darker green for text on hover */
 }
 .remember-me-text {
   font-size: 0.75rem; /* Match size with the link */
