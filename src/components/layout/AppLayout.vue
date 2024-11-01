@@ -27,6 +27,9 @@ const links = ['Home', 'About', 'Services']
         class="px-3 mb-4"
         :color="theme === 'light' ? 'teal-lighten-1' : 'teal-darken-3'"
       >
+        <!-- logo for Jobify -->
+        <img src="" alt="Logo🤌🤌🤌😡😡😡😡😡😭😭😭😭" />
+        <v-spacer></v-spacer>
         <v-spacer></v-spacer>
 
         <h4>Home</h4>
@@ -35,9 +38,6 @@ const links = ['Home', 'About', 'Services']
         <h4>About</h4>
         <v-spacer></v-spacer>
         <h4>Services</h4>
-        <v-spacer></v-spacer>
-        <!-- logo for Jobify -->
-        <img src="" alt="" />
         <v-spacer></v-spacer>
 
         <v-btn
@@ -63,7 +63,6 @@ const links = ['Home', 'About', 'Services']
       <v-footer
         :color="theme === 'light' ? 'teal-lighten-1' : 'teal-darken-3'"
         elevation="24"
-        
       >
         <v-row justify="center" no-gutters>
           <v-btn

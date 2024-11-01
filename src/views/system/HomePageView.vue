@@ -22,6 +22,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
             color: white;
           "
         >
+        <!-- butnganan BG awa sa taas -->
           <v-row class="text-center">
             <v-col>
               <v-card outlined color="teal lighten-5" class="pa-6">
