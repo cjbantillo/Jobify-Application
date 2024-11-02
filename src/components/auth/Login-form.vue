@@ -48,6 +48,14 @@ const onFormSubmit = () => {
       bg-color="white"
     ></v-text-field>
 
+    <!--selectors  -->
+
+    <v-select
+      label="Select"
+      :items="['Job finder', 'Talent Seeker']"
+      :rules="[requiredValidator]"
+    ></v-select>
+
     <v-row class="mt-2 align-center">
       <v-col cols="6">
         <v-row>
@@ -69,12 +77,14 @@ const onFormSubmit = () => {
 
     <v-row class="button-row mt-4">
       <v-col>
-        <v-btn class="login-button w-100 rounded-pill" depressed type="submit"
-          >Login Now</v-btn
-        >
+        <router-link to="HomePageView">
+          <v-btn class="login-button w-100 rounded-pill" depressed type="submit"
+            >Login Now</v-btn
+          >
+        </router-link>
       </v-col>
     </v-row>
-    <v-divider ></v-divider>
+    <v-divider></v-divider>
     <v-col>
       <h5>
         don't have an account?<router-link to="register">
