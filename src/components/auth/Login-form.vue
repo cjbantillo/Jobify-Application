@@ -24,6 +24,10 @@ const onFormSubmit = () => {
     if (valid) onLogin()
   })
 }
+const toggleVisible = () => {
+  visible.value = !visible.value
+}
+
 </script>
 
 <template>
@@ -43,18 +47,11 @@ const onFormSubmit = () => {
       :type="visible ? 'text' : 'password'"
       label="Password"
       prepend-inner-icon="mdi-lock-outline"
+      @click:append-inner="toggleVisible"
       :rules="[requiredValidator]"
       class="modern-input"
       bg-color="white"
     ></v-text-field>
-
-    <!--selectors  -->
-
-    <v-select
-      label="Select"
-      :items="['Job finder', 'Talent Seeker']"
-      :rules="[requiredValidator]"
-    ></v-select>
 
     <v-row class="mt-2 align-center">
       <v-col cols="6">
