@@ -5,6 +5,7 @@ import {
   passwordValidator,
 } from '@/utils/validator'
 import { ref } from 'vue'
+import { supabase, formActionDefault } from '@/utils/supabase.js'
 
 const visible = ref(false) //toggle variable
 const visibleConfirm = ref(false)
@@ -23,42 +24,93 @@ const formData = ref({
   ...formDataDefault,
 })
 
+// supabase form action
+const formAction = ref({
+  ...formActionDefault,
+})
+
+const onSubmit = async () => {
+  formAction.value = { ...formActionDefault }
+  formAction.value.formProcess = true
+
+  const { data, error } = await supabase.auth.signUp({
+    email: formData.value.email,
+    password: formData.value.password,
+    options: {
+      data: {
+        firstname: formData.value.firstname,
+        lastname: formData.value.lastname,
+      },
+    },
+  })
+
+  if (error) {
+    console.log(error)
+    formAction.value.formErrorMessage = error.message
+    formAction.value.formStatus = error.status
+  } else if (data) {
+    console.log(data) //user data
+    formAction.value.formSuccessMessage = 'Account created successfully'
+    //add more action if necessary
+  }
+  formAction.value.formProcess = false
+}
+
 const toggleVisible = () => (visible.value = !visible.value) //eye icon
 const toggleVisibleConfirm = () =>
   (visibleConfirm.value = !visibleConfirm.value) //eye icon
 
 // submit and register
-const onSignup = () => {
-  //alert(formData.value)
-  //.email or .password for testing
-}
+// Trigger Validators
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
-    if (valid) onSignup()
+    if (valid) onSubmit()
   })
 }
 </script>
 
 <template>
+  <v-alert
+    v-if="formAction.formSuccessMessage"
+    :text="formAction.formSuccessMessage"
+    title="Success!"
+    type="success"
+    variant="tonal"
+    density="compact"
+    border="start"
+    closable
+  ></v-alert>
+
+  <v-alert
+    v-if="formAction.formErrorMessage"
+    :text="formAction.formErrorMessage"
+    title="Error!"
+    type="error"
+    variant="tonal"
+    density="compact"
+    border="start"
+    closable
+  ></v-alert>
+
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row>
       <!-- fullname  -->
-      <v-col
-        ><v-text-field
+      <v-col>
+        <v-text-field
           v-model="formData.firstname"
           label="Firstname"
           :rules="[requiredValidator]"
           bg-color="white"
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-text-field
+        ></v-text-field>
+      </v-col>
+      <v-col>
+        <v-text-field
           v-model="formData.lastname"
           label="Lastname"
           :rules="[requiredValidator]"
           bg-color="white"
-        ></v-text-field
-      ></v-col>
+        ></v-text-field>
+      </v-col>
     </v-row>
     <!-- email -->
     <v-text-field
@@ -94,22 +146,13 @@ const onFormSubmit = () => {
           @click:append-inner="toggleVisibleConfirm"
           :rules="[
             requiredValidator,
-            confirmedValidator(formData.password, formData, confirmedValidator),
+            confirmedValidator(formData.password, formData.confirm_password),
           ]"
           bg-color="white"
         ></v-text-field>
       </v-col>
-      <!-- selectors  -->
     </v-row>
-    <v-row>
-      <v-col>
-        <v-select
-          label="Select"
-          :items="['Job finder', 'Talent Seeker']"
-          :rules="[requiredValidator]"
-        ></v-select>
-      </v-col>
-    </v-row>
+
     <!-- checkbox with toggle -->
     <v-checkbox
       v-model="termsAccepted"
@@ -120,15 +163,14 @@ const onFormSubmit = () => {
 
     <v-row class="button-row">
       <v-col>
-       <router-link to="login">
         <v-btn
           class="register-button w-100 rounded-pill"
           depressed
           type="submit"
+          :disabled="formAction.formProcess"
+          :loading="formAction.formProcess"
           >Register</v-btn
         >
-       </router-link>
-      
       </v-col>
     </v-row>
     <v-col>
