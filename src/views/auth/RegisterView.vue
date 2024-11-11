@@ -2,6 +2,7 @@
 <script setup>
 import AppLayout from '@/components/layout/RegisterLayout.vue'
 import Registerform from '@/components/auth/Register-form.vue'
+
 </script>
 
 <template>
@@ -14,10 +15,13 @@ import Registerform from '@/components/auth/Register-form.vue'
             <img src="@/assets/registration.gif" alt="Register Illustration" class="register-illustration" />
           </v-col>
 
+          
           <!-- Register Form Column -->
           <v-col cols="12" md="5" lg="4" class="register-form-container">
             <h2 class="register-heading">Create Your Account</h2>
             <p class="register-subheading">It only takes a minute!</p>
+
+
 
             <!-- Register Form Component -->
             <Registerform />
