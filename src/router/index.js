@@ -8,7 +8,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',  // Root path
-      redirect: '/login'  // Redirect to login when accessing the root
+      redirect: '/homepage'  // Redirect to login when accessing the root
     },
     {
       path: '/login',  
@@ -21,8 +21,8 @@ const router = createRouter({
       component: RegisterView
     }, 
     {
-      path: '/HomePageView',  
-      name: 'HomePage',
+      path: '/homepage',  
+      name: 'homepage',
       component: HomePageView
     }, 
   ],

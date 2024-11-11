@@ -1,20 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
 
-const theme = ref(localStorage.getItem('theme') ?? 'light')
-
-// Function to toggle theme and save it in localStorage
-function onClick() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
-  localStorage.setItem('theme', theme.value) // Save the theme preference
-}
-
-// Watch for theme changes and store it in localStorage (optional for extra safety)
-watch(theme, newTheme => {
-  localStorage.setItem('theme', newTheme)
-})
-
-const links = ['Home', 'About', 'Services']
 </script>
 
 <template>
@@ -27,29 +12,34 @@ const links = ['Home', 'About', 'Services']
         class="px-3 mb-4"
         :color="theme === 'light' ? 'teal-lighten-1' : 'teal-darken-3'"
       >
-        <!-- logo for Jobify -->
-        <img src="" alt="Logo🤌🤌🤌😡😡😡😡😡😭😭😭😭" />
-        <v-spacer></v-spacer>
+        <!-- Logo (Placeholder) -->
+        <v-img src="" alt="Logo" max-height="30" max-width="100" class="mr-4" />
+
+        <!-- Navigation Links -->
+        <v-btn variant="text" class="mr-2">Find Talent</v-btn>
+        <v-btn variant="text" class="mr-2">Find Work</v-btn>
+        <v-btn variant="text" class="mr-2">Why Upwork</v-btn>
+        <v-btn variant="text" class="mr-2">What's New</v-btn>
+        <v-btn variant="text" class="mr-2">Enterprise</v-btn>
+
+        <!-- Spacer to push the remaining items to the right -->
         <v-spacer></v-spacer>
 
-        <h4>Home</h4>
+        <!-- Search Bar -->
+        <v-text-field
+          hide-details
+          clearable
+          outlined
+          dense
+          placeholder="Search"
+          prepend-inner-icon="mdi-magnify"
+          class="mr-4"
+          :style="{ width: '200px' }"
+        ></v-text-field>
+        
+        <v-btn variant="elevated" color="primary" class="mr-2">Log In</v-btn>
+        <v-btn variant="elevated" color="green">Sign Up</v-btn>
 
-        <v-spacer></v-spacer>
-        <h4>About</h4>
-        <v-spacer></v-spacer>
-        <h4>Services</h4>
-        <v-spacer></v-spacer>
-
-        <v-btn
-          :prepend-icon="
-            theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'
-          "
-          variant="elevated"
-          :color="theme === 'light' ? 'teal-darken-3' : 'teal-lighten-1'"
-          rounded="xl"
-          slim
-          @click="onClick"
-        ></v-btn>
       </v-app-bar>
 
       <!-- Add 'pt-8' to v-main to give space for the fixed app bar -->
