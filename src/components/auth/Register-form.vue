@@ -6,6 +6,7 @@ import {
 } from '@/utils/validator'
 import { ref } from 'vue'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
+import AlertNotification from '@/components/common/AlertNotification.vue'
 
 const visible = ref(false) //toggle variable
 const visibleConfirm = ref(false)
@@ -30,8 +31,8 @@ const formAction = ref({
 })
 
 const onSubmit = async () => {
-  formAction.value = { ...formActionDefault }
-  formAction.value.formProcess = true
+  //reset form action utils
+  formAction.value = { ...formActionDefault, formProcess: true }
 
   const { data, error } = await supabase.auth.signUp({
     email: formData.value.email,
@@ -45,14 +46,18 @@ const onSubmit = async () => {
   })
 
   if (error) {
-    console.log(error)
+    // console.log(error)
     formAction.value.formErrorMessage = error.message
     formAction.value.formStatus = error.status
   } else if (data) {
     console.log(data) //user data
     formAction.value.formSuccessMessage = 'Account created successfully'
     //add more action if necessary
+    
   }
+  //reset form
+  refVForm.value?.reset()
+  //turn off form process
   formAction.value.formProcess = false
 }
 
@@ -70,28 +75,10 @@ const onFormSubmit = () => {
 </script>
 
 <template>
-  <v-alert
-    v-if="formAction.formSuccessMessage"
-    :text="formAction.formSuccessMessage"
-    title="Success!"
-    type="success"
-    variant="tonal"
-    density="compact"
-    border="start"
-    closable
-  ></v-alert>
-
-  <v-alert
-    v-if="formAction.formErrorMessage"
-    :text="formAction.formErrorMessage"
-    title="Error!"
-    type="error"
-    variant="tonal"
-    density="compact"
-    border="start"
-    closable
-  ></v-alert>
-
+  <AlertNotification
+    :form-success-message="formAction.formSuccessMessage"
+    :form-error-message="formAction.formErrorMessage"
+  ></AlertNotification>
   <v-form ref="refVForm" @submit.prevent="onFormSubmit">
     <v-row>
       <!-- fullname  -->
