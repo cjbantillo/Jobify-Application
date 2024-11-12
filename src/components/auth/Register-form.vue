@@ -7,6 +7,10 @@ import {
 import { ref } from 'vue'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import AlertNotification from '@/components/common/AlertNotification.vue'
+import { useRouter } from 'vue-router'
+
+// Utilize pre-defined vue functions
+const router = useRouter()
 
 const visible = ref(false) //toggle variable
 const visibleConfirm = ref(false)
@@ -53,7 +57,7 @@ const onSubmit = async () => {
     console.log(data) //user data
     formAction.value.formSuccessMessage = 'Account created successfully'
     //add more action if necessary
-    
+    router.replace('/login')
   }
   //reset form
   refVForm.value?.reset()
