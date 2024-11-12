@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import BottomNavigationLayout from './navigation/BottomNavigationLayout.vue'
+import Logo from '@/assets/jobify1_Logo.png'
 
 const loaded = ref(false)
 const loading = ref(false)
@@ -21,18 +22,28 @@ function onClick() {
       <!-- Add 'fixed' to v-app-bar so it doesn't cover the main content -->
       <v-app-bar
         fixed
-        class="px-3 mb-4"
+        class="px-5 mb-4"
         color="white"
         scroll-behavior="hide"
         scroll-threshold="100"
       >
         <!-- Logo (Placeholder) -->
-        <v-img src="" alt="Logo" max-height="30" max-width="100" class="mr-4" />
+        <v-img
+          :src="Logo"
+          alt="Logo"
+          max-height="30"
+          max-width="100"
+          class="mr-4"
+        />
 
         <!-- Navigation Links -->
-        <v-btn variant="text" class="mr-2">Find Talent</v-btn>
-        <v-btn variant="text" class="mr-2">Find Work</v-btn>
-        <v-btn variant="text" class="mr-2">Why Upwork</v-btn>
+        <v-btn variant="text" class="mr-2" :to="{ name: 'EmployerLogin' }"
+          >Find Talent</v-btn
+        >
+        <v-btn variant="text" class="mr-2" :to="{ name: 'StudentLogin' }"
+          >Find Work</v-btn
+        >
+        <v-btn variant="text" class="mr-2">Why Jobify</v-btn>
         <v-btn variant="text" class="mr-2">What's New</v-btn>
         <v-btn variant="text" class="mr-2">Enterprise</v-btn>
 
@@ -52,9 +63,6 @@ function onClick() {
           single-line
           @click:append-inner="onClick"
         ></v-text-field>
-
-        <v-btn variant="elevated" color="primary" class="mr-2">Log In</v-btn>
-        <v-btn variant="elevated" color="green-lighten-1">Sign Up</v-btn>
       </v-app-bar>
 
       <!-- Add 'pt-8' to v-main to give space for the fixed app bar -->

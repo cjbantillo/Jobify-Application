@@ -43,7 +43,7 @@ const onLogin = async () => {
     console.log(data) //user data
     formAction.value.formSuccessMessage = 'Logged in successfully'
     //add more action if necessary
-    router.replace('/login')
+    router.push('/dashboard-admin')
   }
 }
 const onFormSubmit = () => {
@@ -108,7 +108,7 @@ const toggleVisible = () => {
     <v-divider></v-divider>
     <v-col>
       <h5>
-        don't have an account?<router-link to="register">
+        don't have an account?<router-link to="employerregister">
           click here to register</router-link
         >
       </h5>

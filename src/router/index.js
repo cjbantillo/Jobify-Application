@@ -1,62 +1,74 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/views/auth/LoginView.vue'
-import RegisterView from '@/views/auth/RegisterView.vue'
-import HomePageView from '@/views/system/HomePageView.vue';
-import AdminDashboardView from '@/views/system/AdminDashboardView.vue';
-import JobsDashboardView from '@/views/system/JobsDashboardView.vue';
-import TalentDashboardView from '@/views/system/TalentDashboardView.vue';
+import EmployerLoginView from '@/views/auth/Employeer/LoginView.vue'
+import StudentLoginView from '@/views/auth/Student/LoginView.vue'
+import EmployerRegisterView from '@/views/auth/Employeer/RegisterView.vue'
+import StudentRegisterView from '@/views/auth/Student/RegisterView.vue'
+import HomePageView from '@/views/system/HomePageView.vue'
+import AdminDashboardView from '@/views/system/AdminDashboardView.vue'
+import JobsDashboardView from '@/views/system/JobsDashboardView.vue'
+import TalentDashboardView from '@/views/system/TalentDashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',  // Root path
-      redirect: '/homepage'  // Redirect to login when accessing the root
+      path: '/', // Root path
+      redirect: '/homepage', // Redirect to login when accessing the root
     },
     {
-      path: '/login',  
-      name: 'login',
-      component: LoginView
+      path: '/employerlogin',
+      name: 'EmployerLogin',
+      component: EmployerLoginView,
     },
     {
-      path: '/register',  
-      name: 'register',
-      component: RegisterView
-    }, 
+      path: '/studentlogin',
+      name: 'StudentLogin',
+      component: StudentLoginView,
+    },
     {
-      path: '/homepage',  
+      path: '/employerregister',
+      name: 'EmployerRegister',
+      component: EmployerRegisterView,
+    },
+    {
+      path: '/studentregister',
+      name: 'StudentRegister',
+      component: StudentRegisterView,
+    },
+    {
+      path: '/homepage',
       name: 'homepage',
-      component: HomePageView
-    }, 
-  
-  // admin vue 
+      component: HomePageView,
+    },
+
+    // admin vue
     {
-      path: '/dashboard-admin',  
+      path: '/dashboard-admin',
       name: 'dashboardadmin',
-      component: AdminDashboardView
-    }, 
+      component: AdminDashboardView,
+    },
 
     // Job seeker vue
     {
-      path: '/job-dashboard',  
+      path: '/job-dashboard',
       name: 'jobdashboard',
-      component: JobsDashboardView
-    }, 
+      component: JobsDashboardView,
+    },
     //talent vue
     {
-      path: '/talent-dashboard',  
+      path: '/talent-dashboard',
       name: 'talentdashboard',
-      component: TalentDashboardView
-    }, 
+      component: TalentDashboardView,
+    },
   ],
   // Move scrollBehavior outside of routes
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition; // Retain position when using browser's back/forward buttons
+      return savedPosition // Retain position when using browser's back/forward buttons
     } else {
-      return { top: 0 }; // Scroll to the top on navigation or refresh
+      return { top: 0 } // Scroll to the top on navigation or refresh
     }
-  }
+  },
 })
 
 export default router

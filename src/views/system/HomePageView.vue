@@ -11,63 +11,25 @@ import AppLayout from '@/components/layout/AppLayout.vue'
           class="hero-section"
           align="center"
           justify="center"
-          style="min-height: 60vh; background-image: url('/src/assets/bg2.jpg'); background-size: cover; background-position: center; background-attachment: fixed;"
+          style="
+            min-height: 60vh;
+            background-image: url('/src/assets/bg2.jpg');
+            background-size: cover;
+            background-position: center;
+          "
         >
           <v-col cols="12" md="8" class="text-center">
-            <h1 class="display-2 font-weight-bold text-white mb-4 animated-title">
+            <h1
+              class="display-2 font-weight-bold text-white mb-4 animated-title"
+            >
               Connecting Students with Local Opportunities
             </h1>
             <p class="subtitle-1 text-white mb-6 animated-text">
-              A platform where employers and students meet to unlock potential and create meaningful work experiences.
+              A platform where employers and students meet to unlock potential
+              and create meaningful work experiences.
             </p>
-            <v-btn
-              class="login-button rounded-pill animated-button"
-              size="large"
-              :to="{ name: 'login' }"
-            >
-              Get Started
-            </v-btn>
           </v-col>
         </v-row>
-
-        <!-- First Section: For Employers and Students -->
-        <v-container fluid class="py-6 first-section">
-          <v-row class="text-center">
-            <!-- Employer Section -->
-            <v-col cols="12" md="6" class="mb-4 animated-card">
-              <v-card outlined class="custom-card" color="primary-lighten-5">
-                <p class="custom-paragraph">
-                  Are you an employer looking to hire local students? Log in or sign up to post job listings and connect with eager talent.
-                </p>
-                <v-btn
-                  size="large"
-                  class="login-button w-100 rounded-pill"
-                  depressed
-                  :to="{ name: 'login' }"
-                >
-                  Search for Talent
-                </v-btn>
-              </v-card>
-            </v-col>
-
-            <!-- Student Section -->
-            <v-col cols="12" md="6" class="mb-4 animated-card">
-              <v-card outlined class="custom-card" color="secondary-lighten-5">
-                <p class="custom-paragraph">
-                  Are you a student seeking part-time work? Log in or sign up to explore job opportunities tailored for you.
-                </p>
-                <v-btn
-                  size="large"
-                  class="login-button w-100 rounded-pill"
-                  depressed
-                  :to="{ name: 'login' }"
-                >
-                  Search for Jobs
-                </v-btn>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
 
         <!-- Second Section: How Jobify Works -->
         <v-container fluid class="how-it-works-section py-6">
@@ -76,7 +38,9 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               <v-card outlined class="custom-card" color="primary-lighten-5">
                 <h3 class="font-weight-bold text-dark">For Employers</h3>
                 <p class="custom-paragraph">
-                  Create an account, post job listings, and connect with local talent. It’s that simple to find the right candidates for your opportunities.
+                  Create an account, post job listings, and connect with local
+                  talent. It’s that simple to find the right candidates for your
+                  opportunities.
                 </p>
               </v-card>
             </v-col>
@@ -84,7 +48,9 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               <v-card outlined class="custom-card" color="secondary-lighten-5">
                 <h3 class="font-weight-bold text-dark">For Job Seekers</h3>
                 <p class="custom-paragraph">
-                  Sign up, create a profile, and explore job openings tailored to your skills and preferences. Apply for jobs with just a few clicks!
+                  Sign up, create a profile, and explore job openings tailored
+                  to your skills and preferences. Apply for jobs with just a few
+                  clicks!
                 </p>
               </v-card>
             </v-col>
@@ -99,7 +65,8 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               <v-card outlined class="custom-card" color="teal-lighten-5">
                 <h3 class="font-weight-bold text-dark">Easy Registration</h3>
                 <p class="custom-paragraph">
-                  Sign up quickly as either an employer or a job seeker and get started in minutes.
+                  Sign up quickly as either an employer or a job seeker and get
+                  started in minutes.
                 </p>
               </v-card>
             </v-col>
@@ -108,7 +75,8 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               <v-card outlined class="custom-card" color="teal-lighten-4">
                 <h3 class="font-weight-bold text-dark">Job Matching</h3>
                 <p class="custom-paragraph">
-                  Our platform intelligently matches students with job opportunities that best suit their skills and interests.
+                  Our platform intelligently matches students with job
+                  opportunities that best suit their skills and interests.
                 </p>
               </v-card>
             </v-col>
@@ -117,7 +85,8 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               <v-card outlined class="custom-card" color="teal-lighten-3">
                 <h3 class="font-weight-bold text-dark">Secure Application</h3>
                 <p class="custom-paragraph">
-                  Students can easily apply for jobs, and employers can securely manage applications without any hassle.
+                  Students can easily apply for jobs, and employers can securely
+                  manage applications without any hassle.
                 </p>
               </v-card>
             </v-col>
@@ -130,7 +99,11 @@ import AppLayout from '@/components/layout/AppLayout.vue'
             <v-col cols="12">
               <h2 class="font-weight-bold text-dark">Why Choose Jobify?</h2>
               <p class="subtitle-1 custom-paragraph">
-                Jobify provides a simple, reliable, and secure platform for students and employers to connect and grow together. With our focus on local opportunities, we are committed to helping students find meaningful work experiences while assisting employers in finding the best talent.
+                Jobify provides a simple, reliable, and secure platform for
+                students and employers to connect and grow together. With our
+                focus on local opportunities, we are committed to helping
+                students find meaningful work experiences while assisting
+                employers in finding the best talent.
               </p>
             </v-col>
           </v-row>
@@ -194,7 +167,9 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 .custom-card {
   border-radius: 15px;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   min-height: 180px;
   display: flex;
   flex-direction: column;
@@ -244,7 +219,8 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 
 /* Hover animation for buttons */
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
