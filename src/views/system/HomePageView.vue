@@ -1,4 +1,4 @@
-<script setup name="HomePageView">
+<script setup name="homepage">
 import AppLayout from '@/components/layout/AppLayout.vue'
 </script>
 

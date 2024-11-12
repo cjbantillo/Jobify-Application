@@ -1,5 +1,17 @@
 <script setup>
+import { ref } from 'vue'
+import BottomNavigationLayout from './navigation/BottomNavigationLayout.vue'
 
+const loaded = ref(false)
+const loading = ref(false)
+
+function onClick() {
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+    loaded.value = true
+  }, 2000)
+}
 </script>
 
 <template>
@@ -10,7 +22,9 @@
       <v-app-bar
         fixed
         class="px-3 mb-4"
-        :color="theme === 'light' ? 'teal-lighten-1' : 'teal-darken-3'"
+        color="white"
+        scroll-behavior="hide"
+        scroll-threshold="100"
       >
         <!-- Logo (Placeholder) -->
         <v-img src="" alt="Logo" max-height="30" max-width="100" class="mr-4" />
@@ -27,19 +41,20 @@
 
         <!-- Search Bar -->
         <v-text-field
-          hide-details
           clearable
-          outlined
-          dense
-          placeholder="Search"
-          prepend-inner-icon="mdi-magnify"
           class="mr-4"
-          :style="{ width: '200px' }"
+          :loading="loading"
+          append-inner-icon="mdi-magnify"
+          density="compact"
+          label="Search"
+          variant="solo"
+          hide-details
+          single-line
+          @click:append-inner="onClick"
         ></v-text-field>
-        
-        <v-btn variant="elevated" color="primary" class="mr-2">Log In</v-btn>
-        <v-btn variant="elevated" color="green">Sign Up</v-btn>
 
+        <v-btn variant="elevated" color="primary" class="mr-2">Log In</v-btn>
+        <v-btn variant="elevated" color="green-lighten-1">Sign Up</v-btn>
       </v-app-bar>
 
       <!-- Add 'pt-8' to v-main to give space for the fixed app bar -->
@@ -49,27 +64,8 @@
           <slot name="content"></slot>
         </v-container>
       </v-main>
-
-      <v-footer
-        :color="theme === 'light' ? 'teal-lighten-1' : 'teal-darken-3'"
-        elevation="24"
-      >
-        <v-row justify="center" no-gutters>
-          <v-btn
-            v-for="link in links"
-            :key="link"
-            class="mx-2"
-            color="white"
-            rounded="xl"
-            variant="text"
-          >
-            {{ link }}
-          </v-btn>
-          <v-col class="text-center mt-4" cols="12">
-            {{ new Date().getFullYear() }} — <strong>Jobify</strong>
-          </v-col>
-        </v-row>
-      </v-footer>
+      <!-- footer -->
+      <BottomNavigationLayout />
     </v-app>
   </v-responsive>
 </template>
