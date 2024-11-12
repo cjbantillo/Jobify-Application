@@ -1,6 +1,16 @@
 <script setup>
 import { emailValidator, requiredValidator } from '@/utils/validator'
 import { ref } from 'vue'
+import { supabase, formActionDefault } from '@/utils/supabase.js'
+import { useRouter } from 'vue-router'
+
+// Utilize pre-defined vue functions
+const router = useRouter()
+
+// supabase form action
+const formAction = ref({
+  ...formActionDefault,
+})
 
 const visible = ref(false)
 const refVForm = ref() // onFormSubmit
@@ -15,9 +25,26 @@ const formData = ref({
   ...formDataDefault,
 })
 
-const onLogin = () => {
+const onLogin = async () => {
+  //reset form action utils
+  formAction.value = { ...formActionDefault, formProcess: true }
+
   //alert(formData.value)
   //.email or .password for testing
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: formData.value.email,
+    password: formData.value.password,
+  })
+  if (error) {
+    // console.log(error)
+    formAction.value.formErrorMessage = error.message
+    formAction.value.formStatus = error.status
+  } else if (data) {
+    console.log(data) //user data
+    formAction.value.formSuccessMessage = 'Logged in successfully'
+    //add more action if necessary
+    router.push('/dashboard-admin')
+  }
 }
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
@@ -27,7 +54,6 @@ const onFormSubmit = () => {
 const toggleVisible = () => {
   visible.value = !visible.value
 }
-
 </script>
 
 <template>
@@ -74,17 +100,15 @@ const toggleVisible = () => {
 
     <v-row class="button-row mt-4">
       <v-col>
-        <router-link to="HomePageView">
-          <v-btn class="login-button w-100 rounded-pill" depressed type="submit"
-            >Login Now</v-btn
-          >
-        </router-link>
+        <v-btn class="login-button w-100 rounded-pill" depressed type="submit"
+          >Login Now</v-btn
+        >
       </v-col>
     </v-row>
     <v-divider></v-divider>
     <v-col>
       <h5>
-        don't have an account?<router-link to="register">
+        don't have an account?<router-link to="employerregister">
           click here to register</router-link
         >
       </h5>

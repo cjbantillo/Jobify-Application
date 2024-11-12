@@ -1,20 +1,18 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
+import BottomNavigationLayout from './navigation/BottomNavigationLayout.vue'
+import Logo from '@/assets/jobify1_Logo.png'
 
-const theme = ref(localStorage.getItem('theme') ?? 'light')
+const loaded = ref(false)
+const loading = ref(false)
 
-// Function to toggle theme and save it in localStorage
 function onClick() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
-  localStorage.setItem('theme', theme.value) // Save the theme preference
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+    loaded.value = true
+  }, 2000)
 }
-
-// Watch for theme changes and store it in localStorage (optional for extra safety)
-watch(theme, newTheme => {
-  localStorage.setItem('theme', newTheme)
-})
-
-const links = ['Home', 'About', 'Services']
 </script>
 
 <template>
@@ -24,32 +22,47 @@ const links = ['Home', 'About', 'Services']
       <!-- Add 'fixed' to v-app-bar so it doesn't cover the main content -->
       <v-app-bar
         fixed
-        class="px-3 mb-4"
-        :color="theme === 'light' ? 'teal-lighten-1' : 'teal-darken-3'"
+        class="px-5 mb-4"
+        color="white"
+        scroll-behavior="hide"
+        scroll-threshold="100"
       >
-        <!-- logo for Jobify -->
-        <img src="" alt="Logo🤌🤌🤌😡😡😡😡😡😭😭😭😭" />
-        <v-spacer></v-spacer>
+        <!-- Logo (Placeholder) -->
+        <v-img
+          :src="Logo"
+          alt="Logo"
+          max-height="30"
+          max-width="100"
+          class="mr-4"
+        />
+
+        <!-- Navigation Links -->
+        <v-btn variant="text" class="mr-2" :to="{ name: 'EmployerLogin' }"
+          >Find Talent</v-btn
+        >
+        <v-btn variant="text" class="mr-2" :to="{ name: 'StudentLogin' }"
+          >Find Work</v-btn
+        >
+        <v-btn variant="text" class="mr-2">Why Jobify</v-btn>
+        <v-btn variant="text" class="mr-2">What's New</v-btn>
+        <v-btn variant="text" class="mr-2">Enterprise</v-btn>
+
+        <!-- Spacer to push the remaining items to the right -->
         <v-spacer></v-spacer>
 
-        <h4>Home</h4>
-
-        <v-spacer></v-spacer>
-        <h4>About</h4>
-        <v-spacer></v-spacer>
-        <h4>Services</h4>
-        <v-spacer></v-spacer>
-
-        <v-btn
-          :prepend-icon="
-            theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'
-          "
-          variant="elevated"
-          :color="theme === 'light' ? 'teal-darken-3' : 'teal-lighten-1'"
-          rounded="xl"
-          slim
-          @click="onClick"
-        ></v-btn>
+        <!-- Search Bar -->
+        <v-text-field
+          clearable
+          class="mr-4"
+          :loading="loading"
+          append-inner-icon="mdi-magnify"
+          density="compact"
+          label="Search"
+          variant="solo"
+          hide-details
+          single-line
+          @click:append-inner="onClick"
+        ></v-text-field>
       </v-app-bar>
 
       <!-- Add 'pt-8' to v-main to give space for the fixed app bar -->
@@ -59,27 +72,8 @@ const links = ['Home', 'About', 'Services']
           <slot name="content"></slot>
         </v-container>
       </v-main>
-
-      <v-footer
-        :color="theme === 'light' ? 'teal-lighten-1' : 'teal-darken-3'"
-        elevation="24"
-      >
-        <v-row justify="center" no-gutters>
-          <v-btn
-            v-for="link in links"
-            :key="link"
-            class="mx-2"
-            color="white"
-            rounded="xl"
-            variant="text"
-          >
-            {{ link }}
-          </v-btn>
-          <v-col class="text-center mt-4" cols="12">
-            {{ new Date().getFullYear() }} — <strong>Jobify</strong>
-          </v-col>
-        </v-row>
-      </v-footer>
+      <!-- footer -->
+      <BottomNavigationLayout />
     </v-app>
   </v-responsive>
 </template>
