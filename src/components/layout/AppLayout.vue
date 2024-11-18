@@ -37,15 +37,15 @@ function onClick() {
         />
 
         <!-- Navigation Links -->
-        <v-btn class="mr-2" :to="{ name: 'EmployerLogin' }"
+        <v-btn class="mr-2 nav-link" rounded :to="{ name: 'EmployerLogin' }"
           >Find Talent</v-btn
         >
-        <v-btn class="mr-2" :to="{ name: 'StudentLogin' }"
+        <v-btn class="mr-2 nav-link" rounded :to="{ name: 'StudentLogin' }"
           >Find Work</v-btn
         >
-        <v-btn class="mr-2">Why Jobify</v-btn>
-        <v-btn class="mr-2">What's New</v-btn>
-        <v-btn class="mr-2">Enterprise</v-btn>
+        <v-btn class="mr-2 nav-link" rounded>Why Jobify</v-btn>
+        <v-btn class="mr-2 nav-link" rounded>What's New</v-btn>
+        <v-btn class="mr-2 nav-link" rounded>Enterprise</v-btn>
 
         <!-- Spacer to push the remaining items to the right -->
         <v-spacer></v-spacer>
@@ -53,7 +53,7 @@ function onClick() {
         <!-- Search Bar -->
         <v-text-field
           clearable
-          class="mr-4"
+          class="mr-4 search-bar"
           :loading="loading"
           append-inner-icon="mdi-magnify"
           density="compact"
@@ -61,8 +61,10 @@ function onClick() {
           variant="solo"
           hide-details
           single-line
+          rounded
           @click:append-inner="onClick"
-        ></v-text-field>
+        />
+
       </v-app-bar>
 
       <!-- Add 'pt-8' to v-main to give space for the fixed app bar -->
@@ -77,3 +79,24 @@ function onClick() {
     </v-app>
   </v-responsive>
 </template>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+.search-bar{
+  font-family: "Varela Round", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+
+}
+.nav-link {
+  text-transform: none !important;
+  color: #213a58;
+  font-family: "Varela Round", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.nav-link:hover{
+  background-color: #4caf50;
+}
+</style>

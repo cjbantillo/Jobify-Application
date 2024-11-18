@@ -213,5 +213,5 @@ const onFormSubmit = () => {
   font-size: 0.75rem;
   font-weight: 400;
   color: #6c757d; /* Link color */
-}s
+}
 </style>
