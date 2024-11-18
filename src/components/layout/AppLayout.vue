@@ -31,8 +31,6 @@ function onClick() {
         <v-img
           :src="Logo"
           alt="Logo"
-          max-height="30"
-          max-width="100"
           class="mr-4"
         />
 
@@ -98,5 +96,8 @@ function onClick() {
 }
 .nav-link:hover{
   background-color: #4caf50;
+}
+v-img{
+  height:50px;
 }
 </style>
