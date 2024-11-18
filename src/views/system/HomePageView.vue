@@ -8,7 +8,8 @@ import AppLayout from '@/components/layout/AppLayout.vue'
       <v-container>
         <!-- Main Hero Section -->
         <v-row
-          min-height="80vh"
+        align="center"
+        class="hero-section"
         >
           <v-col cols="12" md="8" class="hero-text">
             <h1
@@ -21,6 +22,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               and create meaningful work experiences.
             </p>
           </v-col>
+
         </v-row>
 
         <!-- Second Section: How Jobify Works -->
@@ -113,8 +115,13 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   font-weight: 400;
   font-style: normal;
 }
-.hero-text{
+.hero-text h1,p{
   width: 50%;
+  justify-content: center;
+  align-items: center;
+}
+.hero-text h1{
+  font-size: 40px;
 }
 
 /* Custom paragraph color */
@@ -127,11 +134,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 /* Hero Section */
 .hero-section {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: background-color 0.5s ease;
-  padding-bottom: 50px;
+  min-height: 60vh;
 }
 
 /* Hero Section Hover Effect */
