@@ -17,13 +17,13 @@ import AppLayout from '@/components/layout/AppLayout.vue'
             border-radius: 10px;
           "
         >
-          <v-col cols="12" md="8" class="hero-text text-start">
+          <v-col cols="12" md="8" class="hero-text text-left justify-center align-center">
             <h1
-              class="display-2 mb-4 animated-title"
+              class="display-2 text-white mb-4 animated-title"
             >
               Connecting Students with Local Opportunities
             </h1>
-            <p class="subtitle-1 mb-6 animated-text">
+            <p class="subtitle-1 text-white mb-6 animated-text">
               A platform where employers and students meet to unlock potential
               and create meaningful work experiences.
             </p>
@@ -147,7 +147,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 
 .hero-text h1{
   font-size: 4rem;
-  width: 60%;
+  width: 80%;
 }
 .hero-text p{
   text-indent: 1.25rem;
