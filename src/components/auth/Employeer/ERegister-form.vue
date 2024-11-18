@@ -175,7 +175,7 @@ const onFormSubmit = () => {
     <v-col>
       <h5>
         already have an account?
-        <router-link to="employerlogin"> click here </router-link>
+        <router-link class="link" to="employerlogin"> click here </router-link>
       </h5>
     </v-col>
   </v-form>
@@ -193,6 +193,7 @@ const onFormSubmit = () => {
 .button-row .register-button:hover {
   background-color: #45a049; /* Darker green on hover */
   box-shadow: 0px 6px 12px rgba(76, 175, 80, 0.3); /* More pronounced shadow on hover */
+  color: #ffffff;
 }
 
 .button-row .login-button {
@@ -206,5 +207,11 @@ const onFormSubmit = () => {
 .button-row .login-button:hover {
   background-color: #e8f5e9; /* Light green background on hover */
   color: #45a049; /* Slightly darker green for text on hover */
+}
+.link {
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #6c757d; /* Link color */
 }
 </style>

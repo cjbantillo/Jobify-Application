@@ -37,15 +37,15 @@ function onClick() {
         />
 
         <!-- Navigation Links -->
-        <v-btn variant="text" class="mr-2" :to="{ name: 'EmployerLogin' }"
+        <v-btn class="mr-2" :to="{ name: 'EmployerLogin' }"
           >Find Talent</v-btn
         >
-        <v-btn variant="text" class="mr-2" :to="{ name: 'StudentLogin' }"
+        <v-btn class="mr-2" :to="{ name: 'StudentLogin' }"
           >Find Work</v-btn
         >
-        <v-btn variant="text" class="mr-2">Why Jobify</v-btn>
-        <v-btn variant="text" class="mr-2">What's New</v-btn>
-        <v-btn variant="text" class="mr-2">Enterprise</v-btn>
+        <v-btn class="mr-2">Why Jobify</v-btn>
+        <v-btn class="mr-2">What's New</v-btn>
+        <v-btn class="mr-2">Enterprise</v-btn>
 
         <!-- Spacer to push the remaining items to the right -->
         <v-spacer></v-spacer>

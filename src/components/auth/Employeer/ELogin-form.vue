@@ -108,7 +108,7 @@ const toggleVisible = () => {
     <v-divider></v-divider>
     <v-col>
       <h5>
-        don't have an account?<router-link to="employerregister">
+        don't have an account?<router-link class="link" to="employerregister">
           click here to register</router-link
         >
       </h5>
@@ -165,6 +165,7 @@ const toggleVisible = () => {
 .button-row .login-button:hover {
   background-color: #45a049; /* Darker green on hover */
   box-shadow: 0px 6px 12px rgba(76, 175, 80, 0.3); /* More pronounced shadow on hover */
+  color: #ffffff;
 }
 .button-row .register-button {
   background-color: #ffffff;
