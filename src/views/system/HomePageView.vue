@@ -9,16 +9,15 @@ import AppLayout from '@/components/layout/AppLayout.vue'
         <!-- Main Hero Section -->
         <v-row
           class="hero-section mt-5"
-          align="center"
-          justify="center"
           style="
             min-height: 100vh;
             background-image: url('/src/assets/bg2.jpg');
             background-size: cover;
             background-position: center;
+            border-radius: 10px;
           "
         >
-          <v-col cols="12" md="8" class="text-center">
+          <v-col cols="12" md="8" class="hero-text text-start">
             <h1
               class="display-2 font-weight-bold text-white mb-4 animated-title"
             >
@@ -42,6 +41,9 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                   talent. It’s that simple to find the right candidates for your
                   opportunities.
                 </p>
+                <v-btn class="btn w-25 rounded-pill center" depressed to="employerlogin">
+                  Get Started
+                </v-btn>
               </v-card>
             </v-col>
             <v-col cols="12" md="6" class="mb-4 animated-card">
@@ -52,6 +54,9 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                   to your skills and preferences. Apply for jobs with just a few
                   clicks!
                 </p>
+                <v-btn class="btn w-25 rounded-pill center" depressed to="employerlogin">
+                  Get Started
+                </v-btn>
               </v-card>
             </v-col>
           </v-row>
@@ -114,6 +119,13 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*, v-btn{
+  font-family: "Varela Round", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
 /* Custom paragraph color */
 .custom-paragraph {
   color: #616161; /* Dark gray text for better readability */
@@ -134,6 +146,15 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 /* Hero Section Hover Effect */
 .hero-section:hover {
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hero-text h1{
+  font-size: 4rem;
+  width: 60%;
+}
+.hero-text p{
+  text-indent: 1.25rem;
+  font-weight: 100;
 }
 
 /* First Section: For Employers and Students */
@@ -178,13 +199,25 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 }
 
 .custom-card h3 {
-  color: #00796b;
+  color: #4caf50;
 }
 
 .custom-card p {
   color: #616161;
+  text-indent: 10px;
+  text-align: left;
 }
-
+.custom-card .btn{
+  text-transform: none;
+  justify-self: center;
+  align-self: center;
+  background-color: #4caf50;
+  color: #fff;
+}
+.custom-card h3,p,.btn{
+  margin-top: 10px;
+  margin-bottom: 10px
+}
 .custom-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
@@ -203,19 +236,6 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   animation: bounce 1s ease-in-out infinite;
 }
 
-/* Button Styles */
-.login-button {
-  background-color: #00796b;
-  color: #fff;
-  font-size: 18px;
-  padding: 15px 35px;
-  transition: background-color 0.3s ease;
-  border-radius: 50px;
-}
-
-.login-button:hover {
-  background-color: #004d40;
-}
 
 /* Hover animation for buttons */
 @keyframes bounce {
