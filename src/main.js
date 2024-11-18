@@ -13,13 +13,16 @@ import * as directives from 'vuetify/directives'
 import App from './App.vue'
 import router from './router'
 
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+
 const app = createApp(App)
 
 const vuetify = createVuetify({
     icons: {
         defaultSet: 'mdi', // This is already the default value - only for display purposes
       },
-    
+
     components,
     directives
   })
