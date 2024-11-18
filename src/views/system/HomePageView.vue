@@ -232,45 +232,43 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 .login-button {
   background-color: #00796b;
   color: #fff;
-  font-size: 18px;
-  padding: 15px 35px;
-  transition: background-color 0.3s ease;
-  border-radius: 50px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .login-button:hover {
   background-color: #004d40;
 }
 
-/* Hover animation for buttons */
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Hover animation for animated text */
-@keyframes slideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Fade-in animation for title */
 @keyframes fadeIn {
   0% {
     opacity: 0;
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
   }
 }
 </style>

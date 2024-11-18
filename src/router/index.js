@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/auth/LoginView.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
 import HomePageView from '@/views/system/HomePageView.vue';
+import EmployerDashboard from '@/views/system/EmployerDashboard.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,11 @@ const router = createRouter({
       path: '/homepage',  
       name: 'homepage',
       component: HomePageView
+    },
+    {
+      path: '/employerdashboard',  
+      name: 'employerdashboard',
+      component: EmployerDashboard
     }, 
   ],
   // Move scrollBehavior outside of routes
