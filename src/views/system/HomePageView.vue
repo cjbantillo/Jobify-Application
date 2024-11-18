@@ -41,7 +41,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                   talent. It’s that simple to find the right candidates for your
                   opportunities.
                 </p>
-                <v-btn class="btn w-25 rounded-pill center" depressed to="employerlogin">
+                <v-btn class="btn w-25 rounded-pill center" depressed to="employerregister">
                   Get Started
                 </v-btn>
               </v-card>
@@ -54,7 +54,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                   to your skills and preferences. Apply for jobs with just a few
                   clicks!
                 </p>
-                <v-btn class="btn w-25 rounded-pill center" depressed to="employerlogin">
+                <v-btn class="btn w-25 rounded-pill center" depressed to="studentregister">
                   Get Started
                 </v-btn>
               </v-card>

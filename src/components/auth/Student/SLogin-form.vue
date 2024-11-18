@@ -57,6 +57,7 @@ const toggleVisible = () => {
 </script>
 
 <template>
+
   <v-form ref="refVForm" fast-fail @submit.prevent="onFormSubmit">
     <v-text-field
       v-model="formData.email"
