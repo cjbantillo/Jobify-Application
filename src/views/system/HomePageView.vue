@@ -8,27 +8,21 @@ import AppLayout from '@/components/layout/AppLayout.vue'
       <v-container>
         <!-- Main Hero Section -->
         <v-row
-          class="hero-section"
-          align="center"
-          justify="center"
-          style="
-            min-height: 60vh;
-            background-image: url('/src/assets/bg2.jpg');
-            background-size: cover;
-            background-position: center;
-          "
+        align="center"
+        class="hero-section"
         >
-          <v-col cols="12" md="8" class="text-center">
+          <v-col cols="12" md="8" class="hero-text">
             <h1
-              class="display-2 font-weight-bold text-white mb-4 animated-title"
+              class="display-2 mb-4 animated-title"
             >
               Connecting Students with Local Opportunities
             </h1>
-            <p class="subtitle-1 text-white mb-6 animated-text">
+            <p class="subtitle-1 mb-6 animated-text">
               A platform where employers and students meet to unlock potential
               and create meaningful work experiences.
             </p>
           </v-col>
+
         </v-row>
 
         <!-- Second Section: How Jobify Works -->
@@ -114,6 +108,22 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*{
+  font-family: "Varela Round", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.hero-text h1,p{
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+}
+.hero-text h1{
+  font-size: 40px;
+}
+
 /* Custom paragraph color */
 .custom-paragraph {
   color: #616161; /* Dark gray text for better readability */
@@ -124,11 +134,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 /* Hero Section */
 .hero-section {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transition: background-color 0.5s ease;
-  padding-bottom: 50px;
+  min-height: 60vh;
 }
 
 /* Hero Section Hover Effect */
@@ -207,46 +213,43 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 .login-button {
   background-color: #00796b;
   color: #fff;
-  font-size: 18px;
-  padding: 15px 35px;
-  transition: background-color 0.3s ease;
-  border-radius: 50px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .login-button:hover {
   background-color: #004d40;
 }
 
-/* Hover animation for buttons */
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Hover animation for animated text */
-@keyframes slideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Fade-in animation for title */
 @keyframes fadeIn {
   0% {
     opacity: 0;
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
   }
 }
 </style>

@@ -108,7 +108,7 @@ const toggleVisible = () => {
     <v-divider></v-divider>
     <v-col>
       <h5>
-        don't have an account?<router-link to="studentregister">
+        don't have an account?<router-link class="link" to="studentregister">
           click here to register</router-link
         >
       </h5>
@@ -177,6 +177,7 @@ const toggleVisible = () => {
 .button-row .register-button:hover {
   background-color: #e8f5e9; /* Light green background on hover */
   color: #45a049; /* Slightly darker green for text on hover */
+  color: #ffffff;
 }
 .remember-me-text {
   font-size: 0.75rem; /* Match size with the link */
