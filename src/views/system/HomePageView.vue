@@ -8,23 +8,15 @@ import AppLayout from '@/components/layout/AppLayout.vue'
       <v-container>
         <!-- Main Hero Section -->
         <v-row
-          class="hero-section mt-5"
-          align="center"
-          justify="center"
-          style="
-            min-height: 100vh;
-            background-image: url('/src/assets/bg2.jpg');
-            background-size: cover;
-            background-position: center;
-          "
+          min-height="80vh"
         >
-          <v-col cols="12" md="8" class="text-center">
+          <v-col cols="12" md="8" class="hero-text">
             <h1
-              class="display-2 font-weight-bold text-white mb-4 animated-title"
+              class="display-2 mb-4 animated-title"
             >
               Connecting Students with Local Opportunities
             </h1>
-            <p class="subtitle-1 text-white mb-6 animated-text">
+            <p class="subtitle-1 mb-6 animated-text">
               A platform where employers and students meet to unlock potential
               and create meaningful work experiences.
             </p>
@@ -114,6 +106,17 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*{
+  font-family: "Varela Round", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.hero-text{
+  width: 50%;
+}
+
 /* Custom paragraph color */
 .custom-paragraph {
   color: #616161; /* Dark gray text for better readability */

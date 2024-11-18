@@ -1,9 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/views/auth/LoginView.vue'
-import RegisterView from '@/views/auth/RegisterView.vue'
-import HomePageView from '@/views/system/HomePageView.vue';
-import EmployerDashboard from '@/views/system/EmployerDashboard.vue';
-
 import EmployerLoginView from '@/views/auth/Employeer/LoginView.vue'
 import StudentLoginView from '@/views/auth/Student/LoginView.vue'
 import EmployerRegisterView from '@/views/auth/Employeer/RegisterView.vue'
@@ -12,7 +7,6 @@ import HomePageView from '@/views/system/HomePageView.vue'
 import AdminDashboardView from '@/views/system/AdminDashboardView.vue'
 import JobsDashboardView from '@/views/system/JobsDashboardView.vue'
 import TalentDashboardView from '@/views/system/TalentDashboardView.vue'
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
