@@ -10,7 +10,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
         <v-row
           class="hero-section mt-5"
           style="
-            min-height: 100vh;
+            min-height: 80vh;
             background-image: url('/src/assets/bg2.jpg');
             background-size: cover;
             background-position: center;
