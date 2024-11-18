@@ -100,20 +100,44 @@ import AppLayout from '@/components/layout/AppLayout.vue'
         </v-container>
 
         <!-- Fourth Section: Why Choose Us -->
-        <v-container fluid class="why-choose-us-section py-6">
-          <v-row class="text-center">
-            <v-col cols="12">
-              <h2 class="font-weight-bold text-dark">Why Choose Jobify?</h2>
-              <p class="subtitle-1 custom-paragraph">
-                Jobify provides a simple, reliable, and secure platform for
-                students and employers to connect and grow together. With our
-                focus on local opportunities, we are committed to helping
-                students find meaningful work experiences while assisting
-                employers in finding the best talent.
-              </p>
-            </v-col>
-          </v-row>
-        </v-container>
+        <section class="why-jobify">
+    <div class="container">
+      <h2 class="section-title">Why Choose Jobify?</h2>
+      <p class="section-description">
+        At Jobify, we’re redefining how talent meets opportunity. Here’s why Jobify is the best choice for your career or hiring journey:
+      </p>
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-briefcase feature-icon"></i>
+          <h3 class="feature-title">Wide Range of Opportunities</h3>
+          <p class="feature-description">
+            Access thousands of job listings near the University.
+          </p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-users feature-icon"></i>
+          <h3 class="feature-title">Trusted by Employers</h3>
+          <p class="feature-description">
+            Connect with verified companies actively searching for top talent like you.
+          </p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-search feature-icon"></i>
+          <h3 class="feature-title">Smart Job Matching</h3>
+          <p class="feature-description">
+            Let our system find jobs tailored to your skills, experience, and preferences.
+          </p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-heart feature-icon"></i>
+          <h3 class="feature-title">Candidate-Centric Experience</h3>
+          <p class="feature-description">
+            Designed with job seekers in mind, we prioritize your success and satisfaction every step of the way.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
       </v-container>
     </template>
   </AppLayout>
@@ -176,9 +200,71 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 }
 
 /* Why Choose Us Section */
-.why-choose-us-section {
-  padding: 60px 0;
-  margin-top: 30px;
+.why-jobify {
+  padding: 50px 20px;
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  border-radius: 10px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #4caf50;
+  margin-bottom: 10px;
+}
+
+.section-description {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.feature {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1 1 250px;
+  max-width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+  font-size: 40px;
+  color: #4caf50;
+  margin-bottom: 15px;
+}
+
+.feature-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.feature-description {
+  font-size: 14px;
+  color: #666;
 }
 
 /* Standardized card size */
