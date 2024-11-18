@@ -7,6 +7,10 @@ import {
 import { ref } from 'vue'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import AlertNotification from '@/components/common/AlertNotification.vue'
+import { useRouter } from 'vue-router'
+
+// Utilize pre-defined vue functions
+const router = useRouter()
 
 const visible = ref(false) //toggle variable
 const visibleConfirm = ref(false)
@@ -41,6 +45,8 @@ const onSubmit = async () => {
       data: {
         firstname: formData.value.firstname,
         lastname: formData.value.lastname,
+        is_admin: false, // Just turn to true if super admin account
+        // role: 'Administrator' // If role based; just change the string based on role
       },
     },
   })
@@ -53,7 +59,13 @@ const onSubmit = async () => {
     console.log(data) //user data
     formAction.value.formSuccessMessage = 'Account created successfully'
     //add more action if necessary
-    
+    if (data.user) {
+      router.push('/job-dashboard') //redirect to dashboard
+    } else if (data.error) {
+      router.push('/talent-dashboard') //redirect to login
+    } else {
+      formAction.value.formErrorMessage = 'Error creating account'
+    }
   }
   //reset form
   refVForm.value?.reset()
@@ -163,7 +175,7 @@ const onFormSubmit = () => {
     <v-col>
       <h5>
         already have an account?
-        <router-link to="login"> click here </router-link>
+        <router-link to="employerlogin"> click here </router-link>
       </h5>
     </v-col>
   </v-form>
