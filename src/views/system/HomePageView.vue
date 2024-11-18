@@ -8,11 +8,11 @@ import AppLayout from '@/components/layout/AppLayout.vue'
       <v-container>
         <!-- Main Hero Section -->
         <v-row
-          class="hero-section"
+          class="hero-section mt-5"
           align="center"
           justify="center"
           style="
-            min-height: 60vh;
+            min-height: 100vh;
             background-image: url('/src/assets/bg2.jpg');
             background-size: cover;
             background-position: center;
