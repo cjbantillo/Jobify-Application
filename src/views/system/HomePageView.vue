@@ -160,14 +160,18 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 
 /* Hero Section */
 .hero-section {
-  display: flex;
-  min-height: 60vh;
+   display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: background-color 0.5s ease;
+  padding-bottom: 50px;
 }
 
-/* // Hero Section Hover Effect 
+/*  Hero Section Hover Effect  */
 .hero-section:hover {
   background-color: rgba(0, 0, 0, 0.5);
-} */
+}
 
 .hero-text h1{
   font-size: 4rem;
