@@ -164,10 +164,10 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   min-height: 60vh;
 }
 
-/* Hero Section Hover Effect */
+/* // Hero Section Hover Effect 
 .hero-section:hover {
   background-color: rgba(0, 0, 0, 0.5);
-}
+} */
 
 .hero-text h1{
   font-size: 4rem;
