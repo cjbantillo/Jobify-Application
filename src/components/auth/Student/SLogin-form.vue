@@ -57,6 +57,7 @@ const toggleVisible = () => {
 </script>
 
 <template>
+
   <v-form ref="refVForm" fast-fail @submit.prevent="onFormSubmit">
     <v-text-field
       v-model="formData.email"
@@ -100,9 +101,9 @@ const toggleVisible = () => {
 
     <v-row class="button-row mt-4">
       <v-col>
-        <v-btn class="login-button w-100 rounded-pill" depressed type="submit"
-          >Login Now</v-btn
-        >
+        <v-btn class="login-button w-100 rounded-pill" depressed type="submit">
+          Login Now
+        </v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
