@@ -1,4 +1,4 @@
-<script setup name="homepage">
+<script setup>
 import { computed } from 'vue'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import { useWindowSize } from '@vueuse/core'
@@ -199,32 +199,11 @@ v-btn {
   width: 80%;
 }
 
-@media (max-width: 768px) {
-  .hero-text h1 {
-    font-size: 2.5rem; /* Adjust font size for mobile */
-    width: 100%; /* Adjust width for mobile */
-  }
-}
+
 
 .hero-text p {
   text-indent: 1.25rem;
   font-weight: 100;
-}
-
-/* First Section: For Employers and Students */
-.first-section {
-  background-image: url('/src/assets/bg3.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  padding: 60px 0;
-}
-
-@media (max-width: 768px) {
-  .first-section {
-    background-attachment: scroll; /* Change background attachment for mobile */
-    padding: 30px 0; /* Adjust padding for mobile */
-  }
 }
 
 
@@ -360,10 +339,6 @@ p,
   animation: slideUp 1s ease-in-out;
 }
 
-.animated-button {
-  animation: bounce 1s ease-in-out infinite;
-}
-
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -384,19 +359,5 @@ p,
   }
 }
 
-@keyframes bounce {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-}
+
 </style>
