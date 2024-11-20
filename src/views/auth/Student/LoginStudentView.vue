@@ -1,6 +1,6 @@
 <script setup>
-import AppLayout from '@/components/layout/RegisterLayout.vue'
-import Registerform from '@/components/auth/Student/SRegister-form.vue'
+import AppLayout from '@/components/layout/LoginLayout.vue'
+import Loginform from '@/components/auth/Student/Student-Login-form.vue'
 </script>
 
 <template>
@@ -15,21 +15,21 @@ import Registerform from '@/components/auth/Student/SRegister-form.vue'
             class="d-none d-md-flex align-center justify-center"
           >
             <img
-              src="@/assets/registration.gif"
-              alt="Register Illustration"
-              class="register-illustration"
+              src="@/assets/illustration.gif"
+              alt="Login Illustration"
+              class="login-illustration"
             />
           </v-col>
 
-          <!-- Register Form Column -->
-          <v-col cols="12" md="5" lg="4" class="register-form-container">
-            <h2 class="register-heading">Create Your Account</h2>
-            <p class="register-subheading">It only takes a minute!</p>
+          <!-- Login Form Column -->
+          <v-col cols="12" md="5" lg="4" class="login-form-container">
+            <h2 class="login-heading">Login your account.</h2>
+            <p class="login-subheading">Access your account in seconds.</p>
 
-            <!-- Register Form Component -->
-            <Registerform />
+            <!-- Login Form AUTH -->
+            <Loginform />
 
-            <!-- Social Register -->
+            <!-- Social Login -->
             <v-divider class="my-4">Or</v-divider>
             <div class="social-icons d-flex justify-center">
               <v-icon color="blue" class="mx-2">mdi-facebook</v-icon>
@@ -44,29 +44,16 @@ import Registerform from '@/components/auth/Student/SRegister-form.vue'
 </template>
 
 <style scoped>
-.register-illustration {
+.login-illustration {
   width: 100%;
   max-width: 100%;
   height: auto;
 }
-.register-form-container {
+.login-form-container {
   padding: 40px;
   background-color: #ffffff;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-}
-.register-heading {
-  font-size: 2rem;
-  color: #2c3e50;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-bottom: 1.5rem;
-}
-.register-subheading {
-  font-size: 1rem;
-  color: #6c757d;
-  font-weight: 300;
-  margin-bottom: 2rem;
 }
 .v-btn {
   font-weight: bold;
@@ -79,5 +66,20 @@ import Registerform from '@/components/auth/Student/SRegister-form.vue'
 }
 .text-muted {
   color: #8a8a8a;
+}
+
+.login-heading {
+  font-size: 2rem; /* Large and bold for emphasis */
+  color: #2c3e50; /* Primary color */
+  font-weight: 700; /* Bold font */
+  letter-spacing: 0.5px; /* Slight letter spacing */
+  margin-bottom: 1.5rem; /* Space below the heading */
+}
+
+.login-subheading {
+  font-size: 1rem; /* Smaller font for subheading */
+  color: #6c757d; /* Soft gray for a modern look */
+  font-weight: 300; /* Light font weight */
+  margin-bottom: 2rem; /* Space below the subheading */
 }
 </style>
