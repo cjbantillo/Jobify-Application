@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import EmployerLoginView from '@/views/auth/Employeer/LoginView.vue'
-import StudentLoginView from '@/views/auth/Student/LoginView.vue'
-import EmployerRegisterView from '@/views/auth/Employeer/RegisterView.vue'
-import StudentRegisterView from '@/views/auth/Student/RegisterView.vue'
+import EmployerLoginView from '@/views/auth/Employeer/LoginEmployerView.vue'
+import StudentLoginView from '@/views/auth/Student/LoginStudentView.vue'
+import EmployerRegisterView from '@/views/auth/Employeer/RegisterEmployerView.vue'
+import StudentRegisterView from '@/views/auth/Student/RegisterStudentView.vue'
 import HomePageView from '@/views/system/HomePageView.vue'
 import AdminDashboardView from '@/views/system/AdminDashboardView.vue'
 import JobsDashboardView from '@/views/system/JobsDashboardView.vue'
@@ -17,22 +17,22 @@ const router = createRouter({
     },
     {
       path: '/employerlogin',
-      name: 'EmployerLogin',
+      name: 'Employer Login',
       component: EmployerLoginView,
     },
     {
       path: '/studentlogin',
-      name: 'StudentLogin',
+      name: 'Student Login',
       component: StudentLoginView,
     },
     {
       path: '/employerregister',
-      name: 'EmployerRegister',
+      name: 'Employer Register',
       component: EmployerRegisterView,
     },
     {
       path: '/studentregister',
-      name: 'StudentRegister',
+      name: 'Student Register',
       component: StudentRegisterView,
     },
     {
@@ -44,20 +44,20 @@ const router = createRouter({
     // admin vue
     {
       path: '/dashboard-admin',
-      name: 'dashboardadmin',
+      name: 'dashboard admin',
       component: AdminDashboardView,
     },
 
     // Job seeker vue
     {
       path: '/job-dashboard',
-      name: 'jobdashboard',
+      name: 'job dashboard',
       component: JobsDashboardView,
     },
     //talent vue
     {
       path: '/talent-dashboard',
-      name: 'talentdashboard',
+      name: 'talent dashboard',
       component: TalentDashboardView,
     },
   ],

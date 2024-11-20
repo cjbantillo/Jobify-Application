@@ -3,6 +3,7 @@ import { emailValidator, requiredValidator } from '@/utils/validator'
 import { ref } from 'vue'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { useRouter } from 'vue-router'
+import AlertNotification from '@/components/common/AlertNotification.vue'
 
 // Utilize pre-defined vue functions
 const router = useRouter()
@@ -57,7 +58,10 @@ const toggleVisible = () => {
 </script>
 
 <template>
-
+  <AlertNotification
+    :form-success-message="formAction.formSuccessMessage"
+    :form-error-message="formAction.formErrorMessage"
+  ></AlertNotification>
   <v-form ref="refVForm" fast-fail @submit.prevent="onFormSubmit">
     <v-text-field
       v-model="formData.email"
