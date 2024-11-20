@@ -28,11 +28,7 @@ function onClick() {
         scroll-threshold="100"
       >
         <!-- Logo (Placeholder) -->
-        <v-img
-          :src="Logo"
-          alt="Logo"
-          class="mr-4"
-        />
+        <v-img :src="Logo" alt="Logo" class="mr-4" />
 
         <!-- Navigation Links -->
         <v-btn class="mr-2 nav-link" rounded :to="{ name: 'EmployerLogin' }"
@@ -62,7 +58,6 @@ function onClick() {
           rounded
           @click:append-inner="onClick"
         />
-
       </v-app-bar>
 
       <!-- Add 'pt-8' to v-main to give space for the fixed app bar -->
@@ -81,23 +76,23 @@ function onClick() {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
-.search-bar{
-  font-family: "Varela Round", sans-serif;
+.search-bar {
+  font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;
-
 }
 .nav-link {
   text-transform: none !important;
   color: #213a58;
-  font-family: "Varela Round", sans-serif;
+  font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;
 }
-.nav-link:hover{
+.nav-link:hover {
   background-color: #4caf50;
+  color: #fff;
 }
-v-img{
-  height:50px;
+v-img {
+  height: 50px;
 }
 </style>
