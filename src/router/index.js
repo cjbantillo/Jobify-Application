@@ -17,12 +17,12 @@ const router = createRouter({
     },
     {
       path: '/employerlogin',
-      name: 'EmployerLogin',
+      name: 'Employer Login',
       component: EmployerLoginView,
     },
     {
       path: '/studentlogin',
-      name: 'StudentLogin',
+      name: 'Student Login',
       component: StudentLoginView,
     },
     {

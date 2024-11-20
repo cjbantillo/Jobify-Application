@@ -1,10 +1,19 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import BottomNavigationLayout from './navigation/BottomNavigationLayout.vue'
 import Logo from '@/assets/jobify1_Logo.png'
+import { useWindowSize } from '@vueuse/core'
+import '@mdi/font/css/materialdesignicons.css'
 
 const loaded = ref(false)
 const loading = ref(false)
+const drawer = ref(false) // Add a ref for the drawer
+
+// Use useWindowSize for reactive screen dimensions
+const { width } = useWindowSize()
+
+// Mobile variable: true if the width is less than or equal to 768px
+const mobile = computed(() => width.value <= 768)
 
 function onClick() {
   loading.value = true
@@ -14,12 +23,9 @@ function onClick() {
   }, 2000)
 }
 </script>
-
 <template>
-  <!-- toggle switch app bar login main -->
   <v-responsive class="border rounded">
     <v-app :theme="theme" class="d-flex flex-column fill-height">
-      <!-- Add 'fixed' to v-app-bar so it doesn't cover the main content -->
       <v-app-bar
         fixed
         class="px-5 mb-4"
@@ -27,21 +33,45 @@ function onClick() {
         scroll-behavior="hide"
         scroll-threshold="100"
       >
-        <!-- Logo (Placeholder) -->
-        <v-img :src="Logo" alt="Logo" class="mr-4" />
+        <!-- Logo (adjust size based on mobile variable) -->
+        <v-img
+          :src="Logo"
+          alt="Logo"
+          class="mr-4"
+          :height="mobile ? '40px' : '50px'"
+        />
 
         <!-- Navigation Links -->
-        <v-btn class="mr-2 nav-link" rounded :to="{ name: 'EmployerLogin' }"
-          >Find Talent</v-btn
-        >
-        <v-btn class="mr-2 nav-link" rounded :to="{ name: 'StudentLogin' }"
-          >Find Work</v-btn
-        >
-        <v-btn class="mr-2 nav-link" rounded>Why Jobify</v-btn>
-        <v-btn class="mr-2 nav-link" rounded>What's New</v-btn>
-        <v-btn class="mr-2 nav-link" rounded>Enterprise</v-btn>
+        <template v-if="!mobile">
+          <v-btn
+            v-for="link in [
+              'Find Talent',
+              'Find Work',
+              'Why Jobify',
+              'What\'s New',
+              'Enterprise',
+            ]"
+            :key="link"
+            class="mr-2 nav-link"
+            rounded
+            :to="
+              {
+                'Find Talent': 'employerlogin',
+                'Find Work': 'studentlogin',
+                'Why Jobify': '',
+                'What\'s New': '',
+                Enterprise: '',
+              }[link]
+            "
+          >
+            {{ link }}
+          </v-btn>
+        </template>
+        <!-- Hamburger Menu for Mobile -->
+        <template v-else>
+          <v-app-bar-nav-icon @click="drawer = !drawer" />
+        </template>
 
-        <!-- Spacer to push the remaining items to the right -->
         <v-spacer></v-spacer>
 
         <!-- Search Bar -->
@@ -60,14 +90,30 @@ function onClick() {
         />
       </v-app-bar>
 
-      <!-- Add 'pt-8' to v-main to give space for the fixed app bar -->
+      <!-- Navigation Drawer for Mobile -->
+      <v-navigation-drawer v-model="drawer" app temporary>
+        <v-list>
+          <v-list-item
+            v-for="link in [
+              { name: 'Find Talent', route: 'employerlogin' },
+              { name: 'Find Work', route: 'studentlogin' },
+              { name: 'Why Jobify', route: '' },
+              { name: 'What\'s New', route: '' },
+              { name: 'Enterprise', route: '' },
+            ]"
+            :key="link.name"
+            :to="link.route"
+          >
+            <v-list-item-title>{{ link.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
 
       <v-main class="d-flex flex-column flex-grow-1 pt-8">
         <v-container>
           <slot name="content"></slot>
         </v-container>
       </v-main>
-      <!-- footer -->
       <BottomNavigationLayout />
     </v-app>
   </v-responsive>

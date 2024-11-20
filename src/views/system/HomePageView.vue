@@ -1,7 +1,13 @@
 <script setup name="homepage">
+import { computed } from 'vue'
 import AppLayout from '@/components/layout/AppLayout.vue'
-</script>
+import { useWindowSize } from '@vueuse/core'
 
+const { width } = useWindowSize()
+
+// Mobile variable: true if the width is less than or equal to 768px
+const mobile = computed(() => width.value <= 768)
+</script>
 <template>
   <AppLayout>
     <template #content>
@@ -9,18 +15,20 @@ import AppLayout from '@/components/layout/AppLayout.vue'
         <!-- Main Hero Section -->
         <v-row
           class="hero-section mt-5"
-          style="
-            min-height: 80vh;
-            background-image: url('/src/assets/bg2.jpg');
-            background-size: cover;
-            background-position: center;
-            border-radius: 10px;
-          "
+          :style="{
+            minHeight: '80vh',
+            backgroundImage: 'url(/src/assets/bg2.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderRadius: '10px',
+          }"
         >
-          <v-col cols="12" md="8" class="hero-text text-left justify-center align-center">
-            <h1
-              class="display-2 text-white mb-4 animated-title"
-            >
+          <v-col
+            :cols="12"
+            :md="mobile ? 12 : 8"
+            class="hero-text text-left justify-center align-center"
+          >
+            <h1  class="display-2 text-white mb-4 animated-title">
               Connecting Students with Local Opportunities
             </h1>
             <p class="subtitle-1 text-white mb-6 animated-text">
@@ -28,13 +36,12 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               and create meaningful work experiences.
             </p>
           </v-col>
-
         </v-row>
 
         <!-- Second Section: How Jobify Works -->
         <v-container fluid class="how-it-works-section py-6">
           <v-row class="text-center">
-            <v-col cols="12" md="6" class="mb-4 animated-card">
+            <v-col :cols="12" :md="mobile ? 12 : 6" class="mb-4 animated-card">
               <v-card outlined class="custom-card" color="primary-lighten-5">
                 <h3 class="font-weight-bold text-dark">For Employers</h3>
                 <p class="custom-paragraph">
@@ -42,12 +49,16 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                   talent. It’s that simple to find the right candidates for your
                   opportunities.
                 </p>
-                <v-btn class="btn w-25 rounded-pill center" depressed to="employerregister">
+                <v-btn
+                  class="btn w-50 rounded-pill center"
+                  depressed
+                  to="employerregister"
+                >
                   Get Started
                 </v-btn>
               </v-card>
             </v-col>
-            <v-col cols="12" md="6" class="mb-4 animated-card">
+            <v-col :cols="12" :md="mobile ? 12 : 6" class="mb-4 animated-card">
               <v-card outlined class="custom-card" color="secondary-lighten-5">
                 <h3 class="font-weight-bold text-dark">For Job Seekers</h3>
                 <p class="custom-paragraph">
@@ -55,7 +66,12 @@ import AppLayout from '@/components/layout/AppLayout.vue'
                   to your skills and preferences. Apply for jobs with just a few
                   clicks!
                 </p>
-                <v-btn class="btn w-25 rounded-pill center" depressed to="studentregister">
+                <v-btn
+                  class="btn w-50 rounded-pill center"
+                  depressed
+                  to="studentregister"
+              
+                >
                   Get Started
                 </v-btn>
               </v-card>
@@ -67,7 +83,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
         <v-container fluid class="features-section py-6">
           <v-row class="text-center">
             <!-- Feature 1 -->
-            <v-col cols="12" md="4" class="mb-4 animated-card">
+            <v-col :cols="12" :md="mobile ? 12 : 4" class="mb-4 animated-card">
               <v-card outlined class="custom-card" color="teal-lighten-5">
                 <h3 class="font-weight-bold text-dark">Easy Registration</h3>
                 <p class="custom-paragraph">
@@ -77,7 +93,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               </v-card>
             </v-col>
             <!-- Feature 2 -->
-            <v-col cols="12" md="4" class="mb-4 animated-card">
+            <v-col :cols="12" :md="mobile ? 12 : 4" class="mb-4 animated-card">
               <v-card outlined class="custom-card" color="teal-lighten-4">
                 <h3 class="font-weight-bold text-dark">Job Matching</h3>
                 <p class="custom-paragraph">
@@ -87,7 +103,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
               </v-card>
             </v-col>
             <!-- Feature 3 -->
-            <v-col cols="12" md="4" class="mb-4 animated-card">
+            <v-col :cols="12" :md="mobile ? 12 : 4" class="mb-4 animated-card">
               <v-card outlined class="custom-card" color="teal-lighten-3">
                 <h3 class="font-weight-bold text-dark">Secure Application</h3>
                 <p class="custom-paragraph">
@@ -101,43 +117,47 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 
         <!-- Fourth Section: Why Choose Us -->
         <section class="why-jobify">
-    <div class="container">
-      <h2 class="section-title">Why Choose Jobify?</h2>
-      <p class="section-description">
-        At Jobify, we’re redefining how talent meets opportunity. Here’s why Jobify is the best choice for your career or hiring journey:
-      </p>
-      <div class="features">
-        <div class="feature">
-          <i class="fas fa-briefcase feature-icon"></i>
-          <h3 class="feature-title">Wide Range of Opportunities</h3>
-          <p class="feature-description">
-            Access thousands of job listings near the University.
-          </p>
-        </div>
-        <div class="feature">
-          <i class="fas fa-users feature-icon"></i>
-          <h3 class="feature-title">Trusted by Employers</h3>
-          <p class="feature-description">
-            Connect with verified companies actively searching for top talent like you.
-          </p>
-        </div>
-        <div class="feature">
-          <i class="fas fa-search feature-icon"></i>
-          <h3 class="feature-title">Smart Job Matching</h3>
-          <p class="feature-description">
-            Let our system find jobs tailored to your skills, experience, and preferences.
-          </p>
-        </div>
-        <div class="feature">
-          <i class="fas fa-heart feature-icon"></i>
-          <h3 class="feature-title">Candidate-Centric Experience</h3>
-          <p class="feature-description">
-            Designed with job seekers in mind, we prioritize your success and satisfaction every step of the way.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+          <div class="container">
+            <h2 class="section-title">Why Choose Jobify?</h2>
+            <p class="section-description">
+              At Jobify, we’re redefining how talent meets opportunity. Here’s
+              why Jobify is the best choice for your career or hiring journey:
+            </p>
+            <div class="features">
+              <div class="feature">
+                <i class="fas fa-briefcase feature-icon"></i>
+                <h3 class="feature-title">Wide Range of Opportunities</h3>
+                <p class="feature-description">
+                  Access thousands of job listings near the University.
+                </p>
+              </div>
+              <div class="feature">
+                <i class="fas fa-users feature-icon"></i>
+                <h3 class="feature-title">Trusted by Employers</h3>
+                <p class="feature-description">
+                  Connect with verified companies actively searching for top
+                  talent like you.
+                </p>
+              </div>
+              <div class="feature">
+                <i class="fas fa-search feature-icon"></i>
+                <h3 class="feature-title">Smart Job Matching</h3>
+                <p class="feature-description">
+                  Let our system find jobs tailored to your skills, experience,
+                  and preferences.
+                </p>
+              </div>
+              <div class="feature">
+                <i class="fas fa-heart feature-icon"></i>
+                <h3 class="feature-title">Candidate-Centric Experience</h3>
+                <p class="feature-description">
+                  Designed with job seekers in mind, we prioritize your success
+                  and satisfaction every step of the way.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </v-container>
     </template>
   </AppLayout>
@@ -146,8 +166,9 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
-*, v-btn{
-  font-family: "Varela Round", sans-serif;
+*,
+v-btn {
+  font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;
 }
@@ -160,7 +181,7 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 
 /* Hero Section */
 .hero-section {
-   display: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -173,11 +194,19 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.hero-text h1{
+.hero-text h1 {
   font-size: 4rem;
   width: 80%;
 }
-.hero-text p{
+
+@media (max-width: 768px) {
+  .hero-text h1 {
+    font-size: 2.5rem; /* Adjust font size for mobile */
+    width: 100%; /* Adjust width for mobile */
+  }
+}
+
+.hero-text p {
   text-indent: 1.25rem;
   font-weight: 100;
 }
@@ -190,6 +219,14 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   background-attachment: fixed;
   padding: 60px 0;
 }
+
+@media (max-width: 768px) {
+  .first-section {
+    background-attachment: scroll; /* Change background attachment for mobile */
+    padding: 30px 0; /* Adjust padding for mobile */
+  }
+}
+
 
 /* How Jobify Works Section */
 .how-it-works-section {
@@ -246,7 +283,9 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   flex: 1 1 250px;
   max-width: 300px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .feature:hover {
@@ -294,16 +333,18 @@ import AppLayout from '@/components/layout/AppLayout.vue'
   text-indent: 10px;
   text-align: left;
 }
-.custom-card .btn{
+.custom-card .btn {
   text-transform: none;
   justify-self: center;
   align-self: center;
   background-color: #4caf50;
   color: #fff;
 }
-.custom-card h3,p,.btn{
+.custom-card h3,
+p,
+.btn {
   margin-top: 10px;
-  margin-bottom: 10px
+  margin-bottom: 10px;
 }
 .custom-card:hover {
   transform: translateY(-5px);
@@ -322,7 +363,6 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 .animated-button {
   animation: bounce 1s ease-in-out infinite;
 }
-
 
 @keyframes fadeIn {
   0% {
@@ -345,7 +385,11 @@ import AppLayout from '@/components/layout/AppLayout.vue'
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
