@@ -32,7 +32,7 @@ const mobile = computed(() => width.value <= 768)
               Connecting Students with Local Opportunities
             </h1>
             <p class="subtitle-1 text-white mb-6 animated-text">
-              A platform where employers and students meet to unlock potential
+              A platform where employers and students meet to unlock <br> potential
               and create meaningful work experiences.
             </p>
           </v-col>
@@ -185,14 +185,14 @@ v-btn {
   align-items: center;
   justify-content: center;
   text-align: center;
-  transition: background-color 0.5s ease;
+/*   transition: background-color 0.5s ease; */
   padding-bottom: 50px;
 }
 
 /*  Hero Section Hover Effect  */
-.hero-section:hover {
+/* .hero-section:hover {
   background-color: rgba(0, 0, 0, 0.5);
-}
+} */
 
 .hero-text h1 {
   font-size: 4rem;

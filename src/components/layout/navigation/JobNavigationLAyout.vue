@@ -1,23 +1,31 @@
 <script setup>
 import BottomNavigationLayout from './BottomNavigationLayout.vue';
-import { ref } from 'vue'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-// Navigation Drawer
-const drawer = ref(true)
-const rail = ref(true)
+const drawer = ref(true);
+const rail = ref(true);
+const loaded = ref(false);
+const loading = ref(false);
 
-
-// search bar
-const loaded = ref(false)
-const loading = ref(false)
+// Use Vue Router for navigation
+const router = useRouter();
 
 function onClick() {
-  loading.value = true
+  loading.value = true;
   setTimeout(() => {
-    loading.value = false
-    loaded.value = true
-  }, 2000)
+    loading.value = false;
+    loaded.value = true;
+  }, 2000);
 }
+
+function handleLogout() {
+  // Perform logout logic here, like clearing tokens or session data
+
+  // Redirect to homepage
+  router.push('/homepage');
+}
+
 </script>
 
 <template>
@@ -32,7 +40,7 @@ function onClick() {
     >
       <!-- Logo placeholder -->
       <v-img src="" alt="Logo" max-height="30" max-width="100" class="mr-4" />
-      <h3>Job Finder DAshboard</h3>
+      <h3>Job Finder Dashboard</h3>
       <v-spacer></v-spacer>
 
       <!-- Search Bar -->
@@ -75,12 +83,15 @@ function onClick() {
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
-          <v-list-item prepend-icon="mdi-account" title="My Account" value="account"></v-list-item>
-          <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
+          <v-list-item prepend-icon="mdi-home-city" title="Dashboard" value="home"></v-list-item>
+          <v-list-item prepend-icon="mdi-account" title="Profile" value="account"></v-list-item>
+          <v-list-item prepend-icon="mdi-file-document-outline" title="Resume" value="applications"></v-list-item>
+          <v-list-item prepend-icon="mdi-cog-outline" title="Settings" value="settings"></v-list-item>
+
+          <!-- Use style attribute to add margin -->
+          <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout" :style="{ marginTop: 'auto' }" @click="handleLogout"></v-list-item>
         </v-list>
       </v-navigation-drawer>
-     
 
     <!-- Main Content Area -->
     <v-main class="pt-8">
@@ -93,3 +104,10 @@ function onClick() {
     <BottomNavigationLayout />
   </v-app>
 </template>
+
+<style scoped>
+.v-list-item:hover {
+  background-color:  #4caf50; 
+  color: white; 
+}
+</style>
