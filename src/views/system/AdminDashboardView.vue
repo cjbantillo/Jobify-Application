@@ -13,13 +13,7 @@ import UserAdminLAyout from '@/components/layout/navigation/UserAdminLAyout.vue'
           max-width="calc(100% - 32px)"
           rounded="lg"
         >
-          <v-sparkline
-            :labels="labels"
-            :model-value="value"
-            color="white"
-            line-width="2"
-            padding="16"
-          ></v-sparkline>
+          <v-sparkline color="white" line-width="2" padding="16"></v-sparkline>
         </v-sheet>
 
         <v-card-text class="pt-0">

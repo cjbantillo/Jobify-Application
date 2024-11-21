@@ -44,7 +44,7 @@ const onLogin = async () => {
     console.log(data) //user data
     formAction.value.formSuccessMessage = 'Logged in successfully'
     //add more action if necessary
-    router.push('/dashboard-admin')
+    router.push('/studentlogin')
   }
 }
 const onFormSubmit = () => {
@@ -97,16 +97,23 @@ const toggleVisible = () => {
         </v-row>
       </v-col>
       <v-col cols="6" class="text-right">
-        <router-link to="/forgot-password" class="link text-muted"
-          >Forgot Password?</router-link
-        >
+        <!-- later make page for forgot -->
+        <span class="link">Forgot Password?</span>
       </v-col>
     </v-row>
 
     <v-row class="button-row mt-4">
       <v-col>
-        <v-btn class="login-button w-100 rounded-pill" depressed type="submit">
-          Login Now
+        <v-btn
+          class="login-button w-100 rounded-pill"
+          depressed
+          type="submit"
+          prepend-icon="mdi-login"
+          :disabled="formAction.formProcess"
+          :loading="formAction.formProcess"
+          block
+        >
+          Login
         </v-btn>
       </v-col>
     </v-row>
