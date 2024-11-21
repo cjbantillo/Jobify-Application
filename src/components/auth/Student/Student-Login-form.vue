@@ -44,7 +44,7 @@ const onLogin = async () => {
     console.log(data) //user data
     formAction.value.formSuccessMessage = 'Logged in successfully'
     //add more action if necessary
-    router.push('/dashboard-admin')
+    router.push('/job-dashboard')
   }
 }
 const onFormSubmit = () => {
