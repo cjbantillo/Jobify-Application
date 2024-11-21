@@ -5,10 +5,24 @@ export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
 )
-// form action utils for form process 
+
+// 👉 Create a single supabase admin client for interacting auth users
+export const supabaseAdmin = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_SERVICE_ROLE,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+)
+
+// form action utils 
 export const formActionDefault = {
   formProcess: false,
   formStatus: 200,
   formErrorMessage: '',
   formSuccessMessage: '',
 };
+

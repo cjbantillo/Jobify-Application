@@ -1,31 +1,54 @@
 <script setup>
-import BottomNavigationLayout from './BottomNavigationLayout.vue';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import BottomNavigationLayout from './BottomNavigationLayout.vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { getAvatarText } from '@/utils/helpers'
+import { supabase, formActionDefault } from '@/utils/supabase'
+import { useAuthUserStore } from '@/stores/authUser.js'
 
-const drawer = ref(true);
-const rail = ref(true);
-const loaded = ref(false);
-const loading = ref(false);
+// Use Pinia Store
+const authStore = useAuthUserStore()
+
+const drawer = ref(true)
+const rail = ref(true)
+const loaded = ref(false)
+const loading = ref(false)
 
 // Use Vue Router for navigation
-const router = useRouter();
+const router = useRouter()
 
 function onClick() {
-  loading.value = true;
+  loading.value = true
   setTimeout(() => {
-    loading.value = false;
-    loaded.value = true;
-  }, 2000);
+    loading.value = false
+    loaded.value = true
+  }, 2000)
 }
+// Load Variables
+const formAction = ref({
+  ...formActionDefault,
+})
 
-function handleLogout() {
-  // Perform logout logic here, like clearing tokens or session data
+// Logout Functionality
+const onLogout = async () => {
+  /// Reset Form Action utils; Turn on processing at the same time
+  formAction.value = { ...formActionDefault, formProcess: true }
 
+  // Get supabase logout functionality
+  const { error } = await supabase.auth.signOut()
+  if (error) {
+    console.error('Error during logout:', error)
+    return
+  }
+
+  formAction.value.formProcess = false
+  // Reset State
+  setTimeout(() => {
+    authStore.$reset()
+  }, 2500)
   // Redirect to homepage
-  router.push('/homepage');
+  router.replace('/')
 }
-
 </script>
 
 <template>
@@ -61,37 +84,72 @@ function handleLogout() {
 
     <!-- Navigation Drawer (Rail Mode) -->
     <v-navigation-drawer
-        v-model="drawer"
-        :rail="rail"
-        permanent
-        @click="rail = false"
-      >
-        <v-list-item
-          prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-          title="John Leider"
-          nav
+      v-model="drawer"
+      :rail="rail"
+      permanent
+      @click="rail = false"
+    >
+      <v-list-item nav>
+        <v-btn icon v-bind="props">
+        <v-avatar
+          v-if="authStore.userData.image_url"
+          :image="authStore.userData.image_url"
+          color="orange-darken-3"
+          size="large"
         >
-          <template v-slot:append>
-            <v-btn
-              icon="mdi-chevron-left"
-              variant="text"
-              @click.stop="rail = !rail"
-            ></v-btn>
-          </template>
-        </v-list-item>
+        </v-avatar>
 
-        <v-divider></v-divider>
+        <v-avatar v-else color="orange-darken-3" size="large">
+          <span class="text-h5">
+            {{ getAvatarText(authStore.userData.firstname + ' ' + authStore.userData.lastname) }}
+          </span>
+        </v-avatar>
+      </v-btn>
+        <template v-slot:append>
+          <v-btn
+            icon="mdi-chevron-left"
+            variant="text"
+            @click.stop="rail = !rail"
+          ></v-btn>
+        </template>
+      </v-list-item>
 
-        <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-home-city" title="Dashboard" value="home"></v-list-item>
-          <v-list-item prepend-icon="mdi-account" title="Profile" value="account"></v-list-item>
-          <v-list-item prepend-icon="mdi-file-document-outline" title="Resume" value="applications"></v-list-item>
-          <v-list-item prepend-icon="mdi-cog-outline" title="Settings" value="settings"></v-list-item>
+      <v-divider></v-divider>
 
-          <!-- Use style attribute to add margin -->
-          <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout" :style="{ marginTop: 'auto' }" @click="handleLogout"></v-list-item>
-        </v-list>
-      </v-navigation-drawer>
+      <v-list density="compact" nav>
+        <v-list-item
+          prepend-icon="mdi-home-city"
+          title="Dashboard"
+          value="home"
+        ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-account"
+          title="Profile"
+          value="account"
+        ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-file-document-outline"
+          title="Resume"
+          value="applications"
+        ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-cog-outline"
+          title="Settings"
+          value="settings"
+        ></v-list-item>
+
+        <!-- Use style attribute to add margin -->
+        <v-list-item
+          prepend-icon="mdi-logout"
+          variant="plain"
+          title="Logout"
+          @click="onLogout"
+          :style="{ marginTop: 'auto' }"
+          :loading="formAction.formProcess"
+          :disabled="formAction.formProcess"
+        ></v-list-item>
+      </v-list>
+    </v-navigation-drawer>
 
     <!-- Main Content Area -->
     <v-main class="pt-8">
@@ -107,7 +165,7 @@ function handleLogout() {
 
 <style scoped>
 .v-list-item:hover {
-  background-color:  #4caf50; 
-  color: white; 
+  background-color: #4caf50;
+  color: white;
 }
 </style>
