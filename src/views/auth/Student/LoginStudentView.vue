@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/components/layout/LoginLayout.vue'
-import Loginform from '@/components/auth/Student/Student-Login-form.vue'
+import Loginform from '@/components/auth/Student-Login-form.vue'
 </script>
 
 <template>
