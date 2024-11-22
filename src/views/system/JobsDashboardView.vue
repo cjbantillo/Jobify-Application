@@ -10,7 +10,7 @@ const isStudent = authStore.userRole === 'Student'
 <template>
   <JobNavigationLayout>
     <template #content>
-      <v-app :theme="theme" class="d-flex fill-height">
+      <v-app class="d-flex fill-height">
         <!-- Main Content Area -->
         <v-main class="pt-8">
           <v-container>

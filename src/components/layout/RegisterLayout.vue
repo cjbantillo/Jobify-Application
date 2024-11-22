@@ -21,12 +21,17 @@ export default {
 
       <v-main class="d-flex flex-column flex-grow-1 pt-8" >
         <v-container >
+
+          <!-- back button -->
           <v-btn
             class="back-btn"
             @click="goBack"
           >
           <v-icon left>mdi-arrow-left</v-icon>
           </v-btn>
+
+
+          <!-- comtent slot  -->
           <slot name="content"></slot>
         </v-container>
       </v-main>
