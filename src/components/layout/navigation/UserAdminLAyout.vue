@@ -21,7 +21,7 @@ function onClick() {
 </script>
 
 <template>
-  <v-app :theme="theme" class="d-flex fill-height">
+  <v-app  class="d-flex fill-height">
     <!-- Fixed App Bar -->
     <v-app-bar
       fixed

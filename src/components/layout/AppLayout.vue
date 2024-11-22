@@ -25,7 +25,7 @@ function onClick() {
 </script>
 <template>
   <v-responsive class="border rounded">
-    <v-app :theme="theme" class="d-flex flex-column fill-height">
+    <v-app class="d-flex flex-column fill-height">
       <v-app-bar
         fixed
         class="px-5 mb-4"
@@ -56,8 +56,8 @@ function onClick() {
             rounded
             :to="
               {
-                'Find Talent': 'employerlogin',
-                'Find Work': 'studentlogin',
+                'Find Talent': 'login',
+                'Find Work': 'login',
                 'Why Jobify': '',
                 'What\'s New': '',
                 Enterprise: '',
@@ -95,8 +95,8 @@ function onClick() {
         <v-list>
           <v-list-item
             v-for="link in [
-              { name: 'Find Talent', route: 'employerlogin' },
-              { name: 'Find Work', route: 'studentlogin' },
+              { name: 'Find Talent', route: 'login' },
+              { name: 'Find Work', route: 'login' },
               { name: 'Why Jobify', route: '' },
               { name: 'What\'s New', route: '' },
               { name: 'Enterprise', route: '' },

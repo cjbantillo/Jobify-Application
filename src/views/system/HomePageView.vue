@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import { useWindowSize } from '@vueuse/core'
+import hero from '@/assets/bg2.jpg'
 
 const { width } = useWindowSize()
 
@@ -17,7 +18,7 @@ const mobile = computed(() => width.value <= 768)
           class="hero-section mt-5"
           :style="{
             minHeight: '80vh',
-            backgroundImage: 'url(/src/assets/bg2.jpg)',
+            backgroundImage: `url(${hero})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             borderRadius: '10px',
@@ -28,12 +29,12 @@ const mobile = computed(() => width.value <= 768)
             :md="mobile ? 12 : 8"
             class="hero-text text-left justify-center align-center"
           >
-            <h1  class="display-2 text-white mb-4 animated-title">
+            <h1 class="display-2 text-white mb-4 animated-title">
               Connecting Students with Local Opportunities
             </h1>
             <p class="subtitle-1 text-white mb-6 animated-text">
-              A platform where employers and students meet to unlock <br> potential
-              and create meaningful work experiences.
+              A platform where employers and students meet to unlock <br />
+              potential and create meaningful work experiences.
             </p>
           </v-col>
         </v-row>
@@ -52,7 +53,7 @@ const mobile = computed(() => width.value <= 768)
                 <v-btn
                   class="btn w-50 rounded-pill center"
                   depressed
-                  to="employerregister"
+                  to="register"
                 >
                   Get Started
                 </v-btn>
@@ -69,8 +70,7 @@ const mobile = computed(() => width.value <= 768)
                 <v-btn
                   class="btn w-50 rounded-pill center"
                   depressed
-                  to="studentregister"
-              
+                  to="register"
                 >
                   Get Started
                 </v-btn>
@@ -185,7 +185,7 @@ v-btn {
   align-items: center;
   justify-content: center;
   text-align: center;
-/*   transition: background-color 0.5s ease; */
+  /*   transition: background-color 0.5s ease; */
   padding-bottom: 50px;
 }
 
@@ -199,13 +199,10 @@ v-btn {
   width: 80%;
 }
 
-
-
 .hero-text p {
   text-indent: 1.25rem;
   font-weight: 100;
 }
-
 
 /* How Jobify Works Section */
 .how-it-works-section {
@@ -358,6 +355,4 @@ p,
     opacity: 1;
   }
 }
-
-
 </style>

@@ -1,64 +1,61 @@
 <script setup>
-import { emailValidator, requiredValidator } from '@/utils/validator'
 import { ref } from 'vue'
-import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { useRouter } from 'vue-router'
+import { emailValidator, requiredValidator } from '@/utils/validator'
+import { supabase, formActionDefault } from '@/utils/supabase.js'
 import AlertNotification from '@/components/common/AlertNotification.vue'
 
-// Utilize pre-defined vue functions
+// Utilities
 const router = useRouter()
 
-// supabase form action
-const formAction = ref({
-  ...formActionDefault,
-})
-
-const visible = ref(false)
-const refVForm = ref() // onFormSubmit
-
+// Form data and state
 const formDataDefault = {
-  // email, pass
   email: '',
   password: '',
 }
+const formData = ref({ ...formDataDefault })
+const formAction = ref({ ...formActionDefault })
 
-const formData = ref({
-  ...formDataDefault,
-})
+const refVForm = ref(null)
+const visible = ref(false)
 
-const onLogin = async () => {
-  //reset form action utils
+// Toggle password visibility
+const toggleVisible = () => {
+  visible.value = !visible.value
+}
+
+// Form submission
+const onSubmit = async () => {
   formAction.value = { ...formActionDefault, formProcess: true }
 
-  //alert(formData.value)
-  //.email or .password for testing
   const { data, error } = await supabase.auth.signInWithPassword({
     email: formData.value.email,
     password: formData.value.password,
   })
+
   if (error) {
-    // console.log(error)
     formAction.value.formErrorMessage = error.message
     formAction.value.formStatus = error.status
   } else if (data) {
-    console.log(data) //user data
+    console.log(data) // user data
     formAction.value.formSuccessMessage = 'Logged in successfully'
-    //add more action if necessary
-    router.push('/talent-dashboard')
+    router.replace('/dashboard')
   }
+
+  refVForm.value?.reset()
+  formAction.value.formProcess = false
 }
+
+// Validate and submit the form
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
-    if (valid) onLogin()
+    if (valid) onSubmit()
   })
-}
-const toggleVisible = () => {
-  visible.value = !visible.value
 }
 </script>
 
 <template>
-    <AlertNotification
+  <AlertNotification
     :form-success-message="formAction.formSuccessMessage"
     :form-error-message="formAction.formErrorMessage"
   ></AlertNotification>
@@ -71,7 +68,7 @@ const toggleVisible = () => {
       class="modern-input"
       bg-color="white"
     ></v-text-field>
-
+    <!-- password  -->
     <v-text-field
       v-model="formData.password"
       :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -83,37 +80,44 @@ const toggleVisible = () => {
       class="modern-input"
       bg-color="white"
     ></v-text-field>
-
+    <!-- checkbox  -->
     <v-row class="mt-2 align-center">
       <v-col cols="6">
         <v-row>
           <v-col cols="auto">
             <v-checkbox class="small-checkbox" hide-details>
               <template #label>
-                <span class="remember-me-text">Remember Me</span>
+                <span class="remember-me-text" :rules="[requiredValidator]">
+                  Remember Me
+                </span>
               </template>
             </v-checkbox>
           </v-col>
         </v-row>
       </v-col>
       <v-col cols="6" class="text-right">
-        <router-link to="/forgot-password" class="link text-muted"
-          >Forgot Password?</router-link
-        >
+        <span>Forgot Password?</span>
       </v-col>
     </v-row>
 
     <v-row class="button-row mt-4">
       <v-col>
-        <v-btn class="login-button w-100 rounded-pill" depressed type="submit"
-          >Login Now</v-btn
+        <v-btn
+          class="login-button w-100 rounded-pill"
+          depressed
+          type="submit"
+          :disabled="formAction.formProcess"
+          :loading="formAction.formProcess"
+          block
         >
+          Login Now
+        </v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
     <v-col>
       <h5>
-        don't have an account?<router-link class="link" to="employerregister">
+        don't have an account?<router-link class="link" to="register">
           click here to register</router-link
         >
       </h5>
@@ -170,7 +174,6 @@ const toggleVisible = () => {
 .button-row .login-button:hover {
   background-color: #45a049; /* Darker green on hover */
   box-shadow: 0px 6px 12px rgba(76, 175, 80, 0.3); /* More pronounced shadow on hover */
-  color: #ffffff;
 }
 .button-row .register-button {
   background-color: #ffffff;
@@ -183,6 +186,7 @@ const toggleVisible = () => {
 .button-row .register-button:hover {
   background-color: #e8f5e9; /* Light green background on hover */
   color: #45a049; /* Slightly darker green for text on hover */
+  color: #ffffff;
 }
 .remember-me-text {
   font-size: 0.75rem; /* Match size with the link */
