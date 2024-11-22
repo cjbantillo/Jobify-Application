@@ -175,7 +175,7 @@ const onFormSubmit = () => {
     <v-col>
       <h5>
         already have an account?
-        <router-link class="link" to="studentlogin"> click here </router-link>
+        <router-link class="link" to="login"> click here </router-link>
       </h5>
     </v-col>
   </v-form>
