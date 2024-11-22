@@ -1,18 +1,5 @@
 <script setup>
 import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue';
-import { ref } from 'vue'
-
-// search bar
-const loaded = ref(false)
-const loading = ref(false)
-
-function onClick() {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    loaded.value = true
-  }, 2000)
-}
 </script>
 
 <template>

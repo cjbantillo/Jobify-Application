@@ -90,15 +90,15 @@ const toggleVisible = () => {
           <v-col cols="auto">
             <v-checkbox class="small-checkbox" hide-details>
               <template #label>
-                <span class="remember-me-text">Remember Me</span>
+                <span class="remember-me-text" :rules="[requiredValidator]">Remember Me</span>
               </template>
             </v-checkbox>
           </v-col>
         </v-row>
       </v-col>
       <v-col cols="6" class="text-right">
-        <router-link to="/forgot-password" class="link text-muted"
-          >Forgot Password?</router-link
+        <span
+          >Forgot Password?</span
         >
       </v-col>
     </v-row>

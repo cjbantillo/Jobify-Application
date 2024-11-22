@@ -25,7 +25,7 @@ function onClick() {
 </script>
 <template>
   <v-responsive class="border rounded">
-    <v-app :theme="theme" class="d-flex flex-column fill-height">
+    <v-app class="d-flex flex-column fill-height">
       <v-app-bar
         fixed
         class="px-5 mb-4"
