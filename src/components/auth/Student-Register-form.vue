@@ -18,8 +18,8 @@ const termsAccepted = ref(false) //checkbox toggle
 const refVForm = ref() //onFormSubmit
 const formDataDefault = {
   //name,email, pass, confirmPass
-  firstname: '',
-  lastname: '',
+  first_name: '',
+  last_name: '',
   email: '',
   password: '',
   confirm_password: '',
@@ -43,8 +43,8 @@ const onSubmit = async () => {
     password: formData.value.password,
     options: {
       data: {
-        firstname: formData.value.firstname,
-        lastname: formData.value.lastname,
+        first_name: formData.value.first_name,
+        last_name: formData.value.last_name,
         is_admin: false, // Just turn to true if super admin account
         // role: 'Administrator' // If role based; just change the string based on role
       },
@@ -82,6 +82,8 @@ const onFormSubmit = () => {
     if (valid) onSubmit()
   })
 }
+
+console.log(formDataDefault)
 </script>
 
 <template>
@@ -94,7 +96,7 @@ const onFormSubmit = () => {
       <!-- fullname  -->
       <v-col>
         <v-text-field
-          v-model="formData.firstname"
+          v-model="formData.first_name"
           label="Firstname"
           :rules="[requiredValidator]"
           bg-color="white"
@@ -102,7 +104,7 @@ const onFormSubmit = () => {
       </v-col>
       <v-col>
         <v-text-field
-          v-model="formData.lastname"
+          v-model="formData.last_name"
           label="Lastname"
           :rules="[requiredValidator]"
           bg-color="white"

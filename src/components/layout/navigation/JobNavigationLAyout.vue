@@ -52,6 +52,7 @@ const Logout = async () => {
   router.replace('/');
 };
 
+
 // Fetch user data on component mount
 const fetchUserData = async () => {
   try {
@@ -63,7 +64,7 @@ const fetchUserData = async () => {
 
     const { data, error } = await supabase
       .from('users') // Adjust table name to match your Supabase schema
-      .select('name, avatar_url') // Fetch only required fields
+      .select('first_name, last_name') // Fetch only required fields
       .eq('id', currentUser.user.id) // Use the logged-in user's ID
       .single();
 
@@ -74,9 +75,10 @@ const fetchUserData = async () => {
 
     // Update `user` with the fetched data
     user.value = {
-      name: data.name,
+      name: data.first_name + ' ' + data.last_name,  // Concatenate first and last name
       avatar_url: data.avatar_url || 'https://via.placeholder.com/150', // Fallback avatar
     };
+
   } catch (err) {
     console.error('Unexpected error fetching user data:', err);
   }
