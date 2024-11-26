@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { useAuthUserStore } from '@/stores/authUser'
 import { useWindowSize } from '@vueuse/core'
+import { getAvatarText } from '@/utils/helpers'
 
 // Use useWindowSize for reactive screen dimensions
 const { width } = useWindowSize()
@@ -97,10 +98,35 @@ const Logout = async () => {
       @click="rail = false"
     >
       <v-list-item
-        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-        title="John Leider"
+        :subtitle="authStore.userData.email"
+        :title="
+          authStore.userData.firstname + ' ' + authStore.userData.lastname
+        "
         nav
       >
+        <!-- Prepend Avatar -->
+        <template v-slot:prepend>
+          <v-avatar
+            v-if="authStore.userData.image_url"
+            :image="authStore.userData.image_url"
+            color="orange-darken-3"
+            size="large"
+          ></v-avatar>
+
+          <v-avatar v-else color="orange-darken-3" size="large">
+            <span class="text-h5">
+              {{
+                getAvatarText(
+                  authStore.userData.firstname +
+                    ' ' +
+                    authStore.userData.lastname,
+                )
+              }}
+            </span>
+          </v-avatar>
+        </template>
+
+        <!-- Append Slot for the Button -->
         <template v-slot:append>
           <v-btn
             icon="mdi-chevron-left"
