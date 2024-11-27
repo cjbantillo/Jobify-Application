@@ -39,7 +39,7 @@ const onSubmit = async () => {
   } else if (data) {
     console.log(data) // user data
     formAction.value.formSuccessMessage = 'Logged in successfully'
-    router.replace('/dashboard')
+    router.replace('/jobdashboard')
   }
 
   refVForm.value?.reset()

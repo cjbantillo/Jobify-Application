@@ -60,7 +60,7 @@ const onSubmit = async () => {
     formAction.value.formSuccessMessage = 'Account created successfully'
     //add more action if necessary
     if (data.user) {
-      router.push('/dashboard') //redirect to dashboard
+      router.push('/jobdashboard') //redirect to dashboard
     } else {
       formAction.value.formErrorMessage = 'Error creating account'
     }

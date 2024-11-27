@@ -1,7 +1,8 @@
 import HomePageView from '@/views/system/HomePageView.vue'
 import LoginView from '@/views/auth/Student/LoginStudentView.vue'
 import RegisterView from '@/views/auth/Student/RegisterStudentView.vue'
-import DashboardView from '@/views/system/JobsDashboardView.vue'
+import JobDashboardView from '@/views/system/JobsDashboardView.vue'
+import EmployerDashboardView from '@/views/system/EmployerDashboardView.vue'
 
 
 // 👉 Routes
@@ -27,9 +28,15 @@ export const routes = [
 
   // System Pages
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: DashboardView,
+    path: '/jobdashboard',
+    name: 'jobdashboard',
+    component: JobDashboardView,
+    meta: { requiresAuth: true, isDefault: true }, // Requires authentication to access
+  },
+  {
+    path: '/employerdashboard',
+    name: 'employerdashboard',
+    component: EmployerDashboardView,
     meta: { requiresAuth: true, isDefault: true }, // Requires authentication to access
   },
 ]
