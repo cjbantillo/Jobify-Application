@@ -45,7 +45,7 @@ const onSubmit = async () => {
       data: {
         first_name: formData.value.first_name,
         last_name: formData.value.last_name,
-        is_admin: false, // Just turn to true if super admin account
+        is_student: true, // Just turn to true if student account
         // role: 'Administrator' // If role based; just change the string based on role
       },
     },
@@ -134,6 +134,9 @@ console.log(formDataDefault)
           bg-color="white"
         ></v-text-field>
       </v-col>
+    </v-row>
+
+    <v-row>
       <v-col>
         <!-- confirming password  -->
         <v-text-field
@@ -172,6 +175,9 @@ console.log(formDataDefault)
         >
       </v-col>
     </v-row>
+
+
+
     <v-col>
       <h5>
         already have an account?

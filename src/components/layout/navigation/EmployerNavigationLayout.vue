@@ -118,18 +118,16 @@ onMounted(() => {
           @click:append-inner="onClick"
         />
 
-        <v-row class="button-row align-end justify-end">
-      <v-col>
-        <v-btn
-          class="w-50 rounded-pill"
-          depressed
-          to="employerdashboard"
-          :disabled="formAction.formProcess"
-          :loading="formAction.formProcess"
-          >Start Hiring</v-btn
-        >
-      </v-col>
-    </v-row>
+        <v-row class="button-row">
+          <v-col>
+            <v-btn
+              class="w-50 rounded-pill"
+              depressed
+              to="postajob"
+              >Post a Job</v-btn
+            >
+          </v-col>
+        </v-row>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -202,7 +200,7 @@ onMounted(() => {
   font-weight: 100;
   font-size: 0.5rem;
   transition: all 0.3s ease;
-
+  float: right;
 }
 .search-bar {
   font-family: 'Varela Round', sans-serif;

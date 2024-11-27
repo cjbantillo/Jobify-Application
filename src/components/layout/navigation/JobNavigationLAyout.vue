@@ -19,6 +19,89 @@ const rail = ref(true);
 const loaded = ref(false);
 const loading = ref(false);
 const user = ref(null);
+const showEmployerDialog = ref(false);
+
+// Form data for employer details
+const employerForm = ref({
+  company_name: '',
+  company_social: '',
+  company_description: '',
+  company_category: '',
+});
+
+const categories = [
+  "Retail and Wholesale",
+  "Supermarkets and Grocery Stores",
+  "Convenience Stores",
+  "Pharmacies",
+  "Hardware and Construction Supplies",
+  "Clothing and Apparel",
+  "Electronics and Gadgets",
+  "Auto Parts and Accessories",
+  "Wholesale and Trading Businesses",
+  "Food and Beverage",
+  "Restaurants",
+  "Cafés and Coffee Shops",
+  "Fast Food Chains",
+  "Food Stalls and Kiosks",
+  "Catering Services",
+  "Bakeries and Pastry Shops",
+  "Bars and Pubs",
+  "Health and Wellness",
+  "Clinics and Medical Services",
+  "Fitness Centers and Gyms",
+  "Spas and Wellness Centers",
+  "Optical Shops",
+  "Dental Clinics",
+  "Professional Services",
+  "Accounting and Bookkeeping",
+  "Legal Services",
+  "Marketing and Advertising",
+  "IT and Web Development",
+  "Real Estate Agencies",
+  "Human Resource and Recruitment",
+  "Travel and Tour Agencies",
+  "Home and Construction",
+  "Interior Design Services",
+  "Construction Firms",
+  "Appliance Repair Services",
+  "Furniture Stores",
+  "Landscaping Services",
+  "Education and Training",
+  "Tutorial Centers",
+  "Daycares and Preschools",
+  "Vocational and Technical Schools",
+  "Language Learning Centers",
+  "Review Centers",
+  "Transportation and Logistics",
+  "Public Transportation Operators",
+  "Taxi and Ride-hailing Services",
+  "Delivery and Courier Services",
+  "Freight and Logistics Companies",
+  "Vehicle Rentals",
+  "Entertainment and Leisure",
+  "Event Planning Services",
+  "Party Supplies Rentals",
+  "Photography and Videography",
+  "Resorts and Hotels",
+  "Game Zones and Arcades",
+  "Agriculture and Farming",
+  "Poultry and Livestock",
+  "Agricultural Supply Stores",
+  "Rice Milling and Grains Trading",
+  "Fresh Produce Markets",
+  "Technology and Communications",
+  "Internet Service Providers",
+  "Gadget Repair Shops",
+  "Computer Shops",
+  "Printing and Photocopying Services",
+  "Financial Services",
+  "Banks and Lending Institutions",
+  "Pawnshops",
+  "Money Remittance Services",
+  "Insurance Agencies",
+  "Investment and Trading Services",
+];
 
 // Vue Router for navigation
 const router = useRouter();
@@ -85,6 +168,81 @@ const fetchUserData = async () => {
   console.log(user.value)
 };
 
+const switchToEmployer = async () => {
+  loading.value = true;
+
+  try {
+    // Get the current logged-in user
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    if (userError || !currentUser || !currentUser.user) {
+      console.error('Error fetching user:', userError);
+      return;
+    }
+
+    // Update the user's metadata to set `is_student` to false and `is_employer` to true
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: {
+        is_student: false,
+        is_employer: true,
+      },
+    });
+
+    if (updateError) {
+      console.error('Error updating user metadata:', updateError);
+      return;
+    }
+
+    // Insert the user into the `employer_table`
+    showEmployerDialog.value = true;
+  } catch (err) {
+    console.error('Unexpected error:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const submitEmployerDetails = async () => {
+  try {
+    // Get the current logged-in user
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    if (userError || !currentUser || !currentUser.user) {
+      console.error('Error fetching user:', userError);
+      return;
+    }
+
+    // Prepare the employer details to be inserted
+    const employerDetails = {
+      user_id: currentUser.user.id, // Map the foreign key
+      company_name: employerForm.value.company_name,
+      company_social: employerForm.value.company_social,
+      company_category: employerForm.value.company_category,
+      created_at: new Date().toISOString(), // Timestamp
+    };
+
+    // Insert the employer details into the 'employer_profiles' table
+    const { data, error } = await supabase
+      .from('employer_profiles') // Your table name
+      .insert([employerDetails]);
+
+    if (error) {
+      console.error('Error inserting employer details:', error);
+      return;
+    }
+
+    console.log('Employer details submitted successfully:', data);
+
+    // Close the dialog after successful submission
+    showEmployerDialog.value = false;
+
+    // Redirect to the employer dashboard
+    router.push('/employerdashboard');
+  } catch (err) {
+    console.error('Unexpected error:', err);
+  }
+};
+
+
+
 
 // Lifecycle hook
 onMounted(() => {
@@ -119,17 +277,16 @@ onMounted(() => {
         />
 
         <v-row class="button-row align-end justify-end">
-      <v-col>
-        <v-btn
-          class="w-50 rounded-pill"
-          depressed
-          to="employerdashboard"
-          :disabled="formAction.formProcess"
-          :loading="formAction.formProcess"
-          >Start Hiring</v-btn
-        >
-      </v-col>
-    </v-row>
+          <v-col>
+            <v-btn
+              class="w-50 rounded-pill btn"
+              depressed
+              @click="switchToEmployer"
+            >
+              Start Hiring
+            </v-btn>
+          </v-col>
+        </v-row>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -183,6 +340,54 @@ onMounted(() => {
       </v-list>
     </v-navigation-drawer>
 
+    <v-dialog v-model="showEmployerDialog" max-width="600px">
+    <v-card class="p-5" :style="{ backgroundColor: '#f7f9f7' }">
+      <v-card-title class="text-h6 text-center" :style="{ color: '#4caf50' }">
+        Employer Details
+      </v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="employerForm.company_name"
+          label="Company Name"
+          required
+          outlined
+          dense
+        />
+        <v-text-field
+          v-model="employerForm.company_social"
+          label="Company Socials"
+          outlined
+          dense
+        />
+        <v-select
+          v-model="employerForm.company_category"
+          :items="categories"
+          label="Company Category"
+          required
+          item-value="name"
+          item-text="name"
+          outlined
+          dense
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          text
+          @click="showEmployerDialog = false"
+          :style="{ color: '#4caf50' }"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          color="success"
+          @click="submitEmployerDetails"
+        >
+          Submit
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
     <v-main :class="{ 'pt-2': mobile, 'pt-8': !mobile }">
       <v-container :fluid="mobile">
         <slot name="content"></slot>
@@ -196,13 +401,23 @@ onMounted(() => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
+*{
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
 .button-row {
   color: #fff; /* Same primary green for the text */
-  border-color: #276329;
   font-weight: 100;
   font-size: 0.5rem;
   transition: all 0.3s ease;
+  float: right;
 
+}
+.button-row .btn{
+  text-transform: none;
+  float: right;
+  background-color: rgb(22, 71, 35);
 }
 .search-bar {
   font-family: 'Varela Round', sans-serif;
@@ -211,9 +426,37 @@ onMounted(() => {
 }
 .v-list-item:hover {
   background-color: #4caf50;
-  color: white;
+  color: #fff;
 }
 .appbar {
   background: #4caf50;
+}
+.v-btn {
+  font-weight: 500;
+}
+
+.v-select, .v-text-field {
+  margin-bottom: 20px; /* Margin between fields */
+}
+
+.v-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px; /* Padding around the card */
+}
+
+.v-dialog .v-card-title {
+  font-weight: 600;
+  padding-bottom: 20px; /* Padding below the title */
+}
+
+.v-card-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.v-btn.primary {
+  background-color: #4caf50 !important;
 }
 </style>
