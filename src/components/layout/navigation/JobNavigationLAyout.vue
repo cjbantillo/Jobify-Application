@@ -300,7 +300,7 @@ onMounted(() => {
       <v-list-item
         :subtitle="authStore.userData.email"
         :title="
-          authStore.userData.firstname + ' ' + authStore.userData.lastname
+          authStore.userData.first_name + ' ' + authStore.userData.last_name
         "
         nav
       >
