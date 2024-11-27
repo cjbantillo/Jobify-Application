@@ -7,6 +7,7 @@ import LoginView from '@/views/auth/Student/LoginStudentView.vue';
 import RegisterView from '@/views/auth/Student/RegisterStudentView.vue';
 import JobDashboardView from '@/views/system/JobsDashboardView.vue';
 import EmployerDashboardView from '@/views/system/EmployerDashboardView.vue';
+import SettingsDashboard from '@/views/system/SettingsDashboard.vue';
 
 export const routes = [
   // Auth Pages
@@ -39,6 +40,13 @@ export const routes = [
     path: '/employerdashboard',
     name: 'employerdashboard',
     component: EmployerDashboardView,
+    meta: { requiresAuth: true, isDefault: true },
+  },
+
+  {
+    path: '/settings',
+    name: 'settings',
+    component: SettingsDashboard,
     meta: { requiresAuth: true, isDefault: true },
   },
 ];
