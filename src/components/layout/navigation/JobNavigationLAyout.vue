@@ -1,106 +1,332 @@
 <script setup>
 import BottomNavigationLayout from './BottomNavigationLayout.vue'
-import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { useAuthUserStore } from '@/stores/authUser'
 import { useWindowSize } from '@vueuse/core'
+import { getAvatarText } from '@/utils/helpers';
+import { ref, computed, onMounted } from 'vue';
 
-// Use useWindowSize for reactive screen dimensions
-const { width } = useWindowSize()
+// Reactive screen dimensions
+const { width } = useWindowSize();
+const mobile = computed(() => width.value <= 768);
 
-// Mobile variable: true if the width is less than or equal to 768px
-const mobile = computed(() => width.value <= 768)
+// Pinia store for auth user
+const authStore = useAuthUserStore();
 
-// Use Pinia Store
-const authStore = useAuthUserStore()
+// Reactive variables
+const drawer = ref(true);
+const rail = ref(true);
+const loaded = ref(false);
+const loading = ref(false);
+const user = ref(null);
+const showEmployerDialog = ref(false);
 
-const drawer = ref(true)
-const rail = ref(true)
-const loaded = ref(false)
-const loading = ref(false)
+// Form data for employer details
+const employerForm = ref({
+  company_name: '',
+  company_social: '',
+  company_description: '',
+  company_category: '',
+});
 
-// Use Vue Router for navigation
-const router = useRouter()
+const categories = [
+  "Retail and Wholesale",
+  "Supermarkets and Grocery Stores",
+  "Convenience Stores",
+  "Pharmacies",
+  "Hardware and Construction Supplies",
+  "Clothing and Apparel",
+  "Electronics and Gadgets",
+  "Auto Parts and Accessories",
+  "Wholesale and Trading Businesses",
+  "Food and Beverage",
+  "Restaurants",
+  "Cafés and Coffee Shops",
+  "Fast Food Chains",
+  "Food Stalls and Kiosks",
+  "Catering Services",
+  "Bakeries and Pastry Shops",
+  "Bars and Pubs",
+  "Health and Wellness",
+  "Clinics and Medical Services",
+  "Fitness Centers and Gyms",
+  "Spas and Wellness Centers",
+  "Optical Shops",
+  "Dental Clinics",
+  "Professional Services",
+  "Accounting and Bookkeeping",
+  "Legal Services",
+  "Marketing and Advertising",
+  "IT and Web Development",
+  "Real Estate Agencies",
+  "Human Resource and Recruitment",
+  "Travel and Tour Agencies",
+  "Home and Construction",
+  "Interior Design Services",
+  "Construction Firms",
+  "Appliance Repair Services",
+  "Furniture Stores",
+  "Landscaping Services",
+  "Education and Training",
+  "Tutorial Centers",
+  "Daycares and Preschools",
+  "Vocational and Technical Schools",
+  "Language Learning Centers",
+  "Review Centers",
+  "Transportation and Logistics",
+  "Public Transportation Operators",
+  "Taxi and Ride-hailing Services",
+  "Delivery and Courier Services",
+  "Freight and Logistics Companies",
+  "Vehicle Rentals",
+  "Entertainment and Leisure",
+  "Event Planning Services",
+  "Party Supplies Rentals",
+  "Photography and Videography",
+  "Resorts and Hotels",
+  "Game Zones and Arcades",
+  "Agriculture and Farming",
+  "Poultry and Livestock",
+  "Agricultural Supply Stores",
+  "Rice Milling and Grains Trading",
+  "Fresh Produce Markets",
+  "Technology and Communications",
+  "Internet Service Providers",
+  "Gadget Repair Shops",
+  "Computer Shops",
+  "Printing and Photocopying Services",
+  "Financial Services",
+  "Banks and Lending Institutions",
+  "Pawnshops",
+  "Money Remittance Services",
+  "Insurance Agencies",
+  "Investment and Trading Services",
+];
 
-function onClick() {
-  loading.value = true
+// Vue Router for navigation
+const router = useRouter();
+
+const onClick = () => {
+  loading.value = true;
   setTimeout(() => {
-    loading.value = false
-    loaded.value = true
-  }, 2000)
-}
+    loading.value = false;
+    loaded.value = true;
+  }, 2000);
+};
 
-const formAction = ref({
-  ...formActionDefault,
-})
+const formAction = ref({ ...formActionDefault });
 
 // Logout function
 const Logout = async () => {
-  /// Reset Form Action utils; Turn on processing at the same time
-  formAction.value = { ...formActionDefault, formProcess: true }
+  formAction.value = { ...formActionDefault, formProcess: true };
 
-  // Get supabase logout functionality
-  const { error } = await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut();
   if (error) {
-    console.error('Error during logout:', error)
-    return
+    console.error('Error during logout:', error);
+    return;
   }
 
-  formAction.value.formProcess = false
-  // Reset State
+  formAction.value.formProcess = false;
+
   setTimeout(() => {
-    authStore.$reset()
-  }, 2500)
-  // Redirect to homepage
-  router.replace('/')
-}
+    authStore.$reset();
+  }, 2500);
+
+  router.replace('/');
+};
+
+
+// Fetch user data on component mount
+const fetchUserData = async () => {
+  try {
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      console.error('Error fetching current user:', userError);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('users') // Adjust table name to match your Supabase schema
+      .select('first_name, last_name') // Fetch only required fields
+      .eq('id', currentUser.user.id) // Use the logged-in user's ID
+      .single();
+
+    if (error) {
+      console.error('Error fetching user data:', error);
+      return;
+    }
+
+    // Update `user` with the fetched data
+    user.value = {
+      name: data.first_name + ' ' + data.last_name,  // Concatenate first and last name
+      avatar_url: data.avatar_url || 'https://via.placeholder.com/150', // Fallback avatar
+    };
+
+  } catch (err) {
+    console.error('Unexpected error fetching user data:', err);
+  }
+  console.log(user.value)
+};
+
+const switchToEmployer = async () => {
+  loading.value = true;
+
+  try {
+    // Get the current logged-in user
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    if (userError || !currentUser || !currentUser.user) {
+      console.error('Error fetching user:', userError);
+      return;
+    }
+
+    // Update the user's metadata to set `is_student` to false and `is_employer` to true
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: {
+        is_student: false,
+        is_employer: true,
+      },
+    });
+
+    if (updateError) {
+      console.error('Error updating user metadata:', updateError);
+      return;
+    }
+
+    // Insert the user into the `employer_table`
+    showEmployerDialog.value = true;
+  } catch (err) {
+    console.error('Unexpected error:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const submitEmployerDetails = async () => {
+  try {
+    // Get the current logged-in user
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    if (userError || !currentUser || !currentUser.user) {
+      console.error('Error fetching user:', userError);
+      return;
+    }
+
+    // Prepare the employer details to be inserted
+    const employerDetails = {
+      user_id: currentUser.user.id, // Map the foreign key
+      company_name: employerForm.value.company_name,
+      company_social: employerForm.value.company_social,
+      company_category: employerForm.value.company_category,
+      created_at: new Date().toISOString(), // Timestamp
+    };
+
+    // Insert the employer details into the 'employer_profiles' table
+    const { data, error } = await supabase
+      .from('employer_profiles') // Your table name
+      .insert([employerDetails]);
+
+    if (error) {
+      console.error('Error inserting employer details:', error);
+      return;
+    }
+
+    console.log('Employer details submitted successfully:', data);
+
+    // Close the dialog after successful submission
+    showEmployerDialog.value = false;
+
+    // Redirect to the employer dashboard
+    router.push('/employerdashboard');
+  } catch (err) {
+    console.error('Unexpected error:', err);
+  }
+};
+
+
+
+
+// Lifecycle hook
+onMounted(() => {
+  fetchUserData();
+});
 </script>
 
 <template>
   <v-app class="d-flex fill-height">
-    <!-- Fixed App Bar -->
     <v-app-bar
       fixed
-      color="primary"
-      class="px-3"
+      class="px-3 appbar"
       scroll-behavior="hide"
       scroll-threshold="100"
       :dense="mobile"
     >
       <v-img src="" alt="Logo" max-height="30" max-width="100" class="mr-4" />
-      <h3 v-if="!mobile">Job Finder Dashboard</h3>
+      <h3 v-if="!mobile">Dashboard</h3>
       <v-spacer></v-spacer>
-
-      <!-- Show search bar only on desktop -->
       <v-text-field
-        v-if="!mobile"
-        max-width="400"
-        clearable
-        class="mr-4"
-        :loading="loading"
-        append-inner-icon="mdi-magnify"
-        density="compact"
-        label="Search"
-        variant="solo"
-        hide-details
-        single-line
-        @click:append-inner="onClick"
-      ></v-text-field>
+          clearable
+          class="mr-4 search-bar"
+          :loading="loading"
+          append-inner-icon="mdi-magnify"
+          density="compact"
+          label="Search"
+          variant="solo"
+          hide-details
+          single-line
+          rounded
+          @click:append-inner="onClick"
+        />
+
+        <v-row class="button-row align-end justify-end">
+          <v-col>
+            <v-btn
+              class="w-50 rounded-pill btn"
+              depressed
+              @click="switchToEmployer"
+            >
+              Start Hiring
+            </v-btn>
+          </v-col>
+        </v-row>
     </v-app-bar>
 
-    <!-- Navigation Drawer (Rail Mode) -->
     <v-navigation-drawer
       v-model="drawer"
       :rail="rail"
       permanent
       @click="rail = false"
     >
+      <!-- Conditional Rendering of User Info -->
       <v-list-item
-        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-        title="John Leider"
+        :subtitle="authStore.userData.email"
+        :title="
+          authStore.userData.firstname + ' ' + authStore.userData.lastname
+        "
         nav
       >
+        <!-- Prepend Avatar -->
+        <template v-slot:prepend>
+          <v-avatar
+            v-if="authStore.userData.image_url"
+            :image="authStore.userData.image_url"
+            color="orange-darken-3"
+            size="large"
+          ></v-avatar>
+
+          <v-avatar v-else color="orange-darken-3" size="large">
+            <span class="text-h5">
+              {{
+                getAvatarText(
+                  authStore.userData.firstname +
+                    ' ' +
+                    authStore.userData.lastname,
+                )
+              }}
+            </span>
+          </v-avatar>
+        </template>
+
+        <!-- Append Slot for the Button -->
         <template v-slot:append>
           <v-btn
             icon="mdi-chevron-left"
@@ -119,11 +345,6 @@ const Logout = async () => {
           value="home"
         ></v-list-item>
         <v-list-item
-          prepend-icon="mdi-account"
-          title="Profile"
-          value="account"
-        ></v-list-item>
-        <v-list-item
           prepend-icon="mdi-file-document-outline"
           title="Resume"
           value="applications"
@@ -134,7 +355,6 @@ const Logout = async () => {
           value="settings"
         ></v-list-item>
 
-        <!-- Use style attribute to add margin -->
         <v-list-item
           prepend-icon="mdi-logout"
           title="Logout"
@@ -145,21 +365,123 @@ const Logout = async () => {
       </v-list>
     </v-navigation-drawer>
 
-    <!-- Main Content Area -->
+    <v-dialog v-model="showEmployerDialog" max-width="600px">
+    <v-card class="p-5" :style="{ backgroundColor: '#f7f9f7' }">
+      <v-card-title class="text-h6 text-center" :style="{ color: '#4caf50' }">
+        Employer Details
+      </v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="employerForm.company_name"
+          label="Company Name"
+          required
+          outlined
+          dense
+        />
+        <v-text-field
+          v-model="employerForm.company_social"
+          label="Company Socials"
+          outlined
+          dense
+        />
+        <v-select
+          v-model="employerForm.company_category"
+          :items="categories"
+          label="Company Category"
+          required
+          item-value="name"
+          item-text="name"
+          outlined
+          dense
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          text
+          @click="showEmployerDialog = false"
+          :style="{ color: '#4caf50' }"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          color="success"
+          @click="submitEmployerDetails"
+        >
+          Submit
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
     <v-main :class="{ 'pt-2': mobile, 'pt-8': !mobile }">
       <v-container :fluid="mobile">
         <slot name="content"></slot>
       </v-container>
     </v-main>
 
-    <!-- Footer -->
     <BottomNavigationLayout v-if="mobile" />
   </v-app>
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*{
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.button-row {
+  color: #fff; /* Same primary green for the text */
+  font-weight: 100;
+  font-size: 0.5rem;
+  transition: all 0.3s ease;
+  float: right;
+
+}
+.button-row .btn{
+  text-transform: none;
+  float: right;
+  background-color: rgb(22, 71, 35);
+}
+.search-bar {
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
 .v-list-item:hover {
   background-color: #4caf50;
-  color: white;
+  color: #fff;
+}
+.appbar {
+  background: #4caf50;
+}
+.v-btn {
+  font-weight: 500;
+}
+
+.v-select, .v-text-field {
+  margin-bottom: 20px; /* Margin between fields */
+}
+
+.v-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px; /* Padding around the card */
+}
+
+.v-dialog .v-card-title {
+  font-weight: 600;
+  padding-bottom: 20px; /* Padding below the title */
+}
+
+.v-card-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.v-btn.primary {
+  background-color: #4caf50 !important;
 }
 </style>

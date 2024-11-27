@@ -18,8 +18,8 @@ const termsAccepted = ref(false) //checkbox toggle
 const refVForm = ref() //onFormSubmit
 const formDataDefault = {
   //name,email, pass, confirmPass
-  firstname: '',
-  lastname: '',
+  first_name: '',
+  last_name: '',
   email: '',
   password: '',
   confirm_password: '',
@@ -43,9 +43,9 @@ const onSubmit = async () => {
     password: formData.value.password,
     options: {
       data: {
-        firstname: formData.value.firstname,
-        lastname: formData.value.lastname,
-        is_admin: false, // Just turn to true if super admin account
+        first_name: formData.value.first_name,
+        last_name: formData.value.last_name,
+        is_student: true, // Just turn to true if student account
         // role: 'Administrator' // If role based; just change the string based on role
       },
     },
@@ -60,7 +60,7 @@ const onSubmit = async () => {
     formAction.value.formSuccessMessage = 'Account created successfully'
     //add more action if necessary
     if (data.user) {
-      router.push('/dashboard') //redirect to dashboard
+      router.push('/jobdashboard') //redirect to dashboard
     } else {
       formAction.value.formErrorMessage = 'Error creating account'
     }
@@ -82,6 +82,8 @@ const onFormSubmit = () => {
     if (valid) onSubmit()
   })
 }
+
+console.log(formDataDefault)
 </script>
 
 <template>
@@ -94,7 +96,7 @@ const onFormSubmit = () => {
       <!-- fullname  -->
       <v-col>
         <v-text-field
-          v-model="formData.firstname"
+          v-model="formData.first_name"
           label="Firstname"
           :rules="[requiredValidator]"
           bg-color="white"
@@ -102,7 +104,7 @@ const onFormSubmit = () => {
       </v-col>
       <v-col>
         <v-text-field
-          v-model="formData.lastname"
+          v-model="formData.last_name"
           label="Lastname"
           :rules="[requiredValidator]"
           bg-color="white"
@@ -132,6 +134,9 @@ const onFormSubmit = () => {
           bg-color="white"
         ></v-text-field>
       </v-col>
+    </v-row>
+
+    <v-row>
       <v-col>
         <!-- confirming password  -->
         <v-text-field
@@ -170,6 +175,9 @@ const onFormSubmit = () => {
         >
       </v-col>
     </v-row>
+
+
+
     <v-col>
       <h5>
         already have an account?
