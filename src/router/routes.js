@@ -8,6 +8,7 @@ import RegisterView from '@/views/auth/Student/RegisterStudentView.vue';
 import JobDashboardView from '@/views/system/JobsDashboardView.vue';
 import EmployerDashboardView from '@/views/system/EmployerDashboardView.vue';
 import SettingsDashboard from '@/views/system/SettingsDashboard.vue';
+import ResumeDashboard from '@/views/system/ResumeDashboard.vue';
 
 export const routes = [
   // Auth Pages
@@ -47,6 +48,13 @@ export const routes = [
     path: '/settings',
     name: 'settings',
     component: SettingsDashboard,
+    meta: { requiresAuth: true, isDefault: true },
+  },
+
+  {
+    path: '/resume',
+    name: 'resume',
+    component: ResumeDashboard,
     meta: { requiresAuth: true, isDefault: true },
   },
 ];
