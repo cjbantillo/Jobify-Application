@@ -242,9 +242,6 @@ const submitEmployerDetails = async () => {
   }
 };
 
-
-
-
 // Lifecycle hook
 onMounted(() => {
   fetchUserData();
@@ -294,8 +291,11 @@ onMounted(() => {
       v-model="drawer"
       :rail="rail"
       permanent
+      rail-width="80"
+      width="250"
       @click="rail = false"
     >
+
       <!-- Conditional Rendering of User Info -->
       <v-list-item
         :subtitle="authStore.userData.email"
@@ -310,16 +310,16 @@ onMounted(() => {
             v-if="authStore.userData.image_url"
             :image="authStore.userData.image_url"
             color="orange-darken-3"
-            size="large"
+            :size="rail ? '24' : '40'"
           ></v-avatar>
 
-          <v-avatar v-else color="orange-darken-3" size="large">
-            <span class="text-h5">
+          <v-avatar v-else color="orange-darken-3">
+            <span>
               {{
                 getAvatarText(
-                  authStore.userData.firstname +
+                  authStore.userData.first_name +
                     ' ' +
-                    authStore.userData.lastname,
+                    authStore.userData.last_name,
                 )
               }}
             </span>
@@ -449,10 +449,6 @@ onMounted(() => {
   font-weight: 400;
   font-style: normal;
 }
-.v-list-item:hover {
-  background-color: #4caf50;
-  color: #fff;
-}
 .appbar {
   background: #4caf50;
 }
@@ -484,4 +480,31 @@ onMounted(() => {
 .v-btn.primary {
   background-color: #4caf50 !important;
 }
+.v-avatar {
+  width: 40px;
+  height: 40px;
+  min-width: 24px;
+  min-height: 24px;
+  border-radius: 50%; /* Keep it circular */
+  margin: 0 auto; /* Center the avatar */
+  transition: width 0.2s ease, height 0.2s ease; /* Smooth resizing */
+  margin: 0px;
+}
+
+.v-navigation-drawer[rail] .v-avatar {
+  width: 24px;
+  height: 24px;
+}
+.v-navigation-drawer[rail] .v-list-item {
+  justify-content: center; /* Center list items in collapsed state */
+}
+
+.v-list-item {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  height: 2rem;
+}
+
+
 </style>
