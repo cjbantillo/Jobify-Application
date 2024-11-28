@@ -343,16 +343,19 @@ onMounted(() => {
           prepend-icon="mdi-home-city"
           title="Dashboard"
           value="home"
+          to="jobdashboard"
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-file-document-outline"
           title="Resume"
           value="applications"
+          to="resume"
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-cog-outline"
           title="Settings"
           value="settings"
+          to="settings"
         ></v-list-item>
 
         <v-list-item
@@ -505,6 +508,9 @@ onMounted(() => {
   margin: 10px;
   height: 2rem;
 }
-
+.v-list-item:hover {
+    background-color: #4caf50;
+    color: white;
+  }
 
 </style>

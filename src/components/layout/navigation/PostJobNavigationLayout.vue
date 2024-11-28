@@ -52,7 +52,6 @@ const Logout = async () => {
   router.replace('/');
 };
 
-
 // Fetch user data on component mount
 const fetchUserData = async () => {
   try {
@@ -85,7 +84,6 @@ const fetchUserData = async () => {
   console.log(user.value)
 };
 
-
 // Lifecycle hook
 onMounted(() => {
   fetchUserData();
@@ -117,17 +115,6 @@ onMounted(() => {
           rounded
           @click:append-inner="onClick"
         />
-
-        <v-row class="button-row">
-          <v-col>
-            <v-btn
-              class="w-50 rounded-pill"
-              depressed
-              to="postajob"
-              >Post a Job</v-btn
-            >
-          </v-col>
-        </v-row>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -190,7 +177,6 @@ onMounted(() => {
     <BottomNavigationLayout v-if="mobile" />
   </v-app>
 </template>
-
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
