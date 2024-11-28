@@ -6,7 +6,6 @@ import HomePageView from '@/views/system/HomePageView.vue';
 import LoginView from '@/views/auth/Student/LoginStudentView.vue';
 import RegisterView from '@/views/auth/Student/RegisterStudentView.vue';
 import JobDashboardView from '@/views/system/JobsDashboardView.vue';
-import EmployerDashboardView from '@/views/system/EmployerDashboardView.vue';
 import SettingsDashboard from '@/views/system/SettingsDashboard.vue';
 import ResumeDashboard from '@/views/system/ResumeDashboard.vue';
 
@@ -37,13 +36,6 @@ export const routes = [
     component: JobDashboardView,
     meta: { requiresAuth: true, isDefault: true },
   },
-  {
-    path: '/employerdashboard',
-    name: 'employerdashboard',
-    component: EmployerDashboardView,
-    meta: { requiresAuth: true, isDefault: true },
-  },
-
   {
     path: '/settings',
     name: 'settings',
