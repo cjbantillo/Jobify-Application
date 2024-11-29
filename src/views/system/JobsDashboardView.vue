@@ -1,36 +1,68 @@
 <script setup>
-import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue';
-import { ref } from 'vue'
+import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue'
+import { useAuthUserStore } from '@/stores/authUser'
 
-// search bar
-const loaded = ref(false)
-const loading = ref(false)
+const authStore = useAuthUserStore()
 
-function onClick() {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    loaded.value = true
-  }, 2000)
-}
+const isStudent = authStore.userRole === 'Student'
 </script>
 
 <template>
   <JobNavigationLayout>
     <template #content>
-      <v-app :theme="theme" class="d-flex fill-height">
+      <v-app class="d-flex fill-height">
         <!-- Main Content Area -->
         <v-main class="pt-8">
           <v-container>
             <v-row>
               <v-col cols="12" md="6" xl="4" class="pb-6">
                 <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title">We’re looking for Part-Time Dish Washer</v-card-title>
+                  <v-card-title class="title"
+                    >We’re looking for Part-Time Dish Washer</v-card-title
+                  >
                   <v-card-text>
-                    <p class="budget"><span class="icon material-icons">attach_money</span>Est. Budget Php50/hr</p>
-                    <p class="location"><span class="icon material-icons">location_on</span>Doe Supplies • P-1 Ampayon, Butuan City</p>
-                    <div class="category-label"><span class="icon material-icons"></span>Category: Hospitality</div>
-                    <div class="job-type-duration">Job Type: Part-Time | Duration: 6 months</div>
+                    <p class="budget">
+                      <span class="icon material-icons">attach_money</span>Est.
+                      Budget Php50/hr
+                    </p>
+                    <p class="location">
+                      <span class="icon material-icons">location_on</span>Doe
+                      Supplies • P-1 Ampayon, Butuan City
+                    </p>
+                    <div class="category-label">
+                      <span class="icon material-icons"></span>Category:
+                      Hospitality
+                    </div>
+                    <div class="job-type-duration">
+                      Job Type: Part-Time | Duration: 6 months
+                    </div>
+                  </v-card-text>
+                  <div class="button-container">
+                    <v-btn class="apply-button mt-4">Apply</v-btn>
+                  </div>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="6" xl="4" class="pb-6" v-if="isStudent">
+                <v-card class="pa-6 hover-card" height="250px">
+                  <v-card-title class="title"
+                    >We’re looking for Full-Time Software
+                    Developer</v-card-title
+                  >
+                  <v-card-text>
+                    <p class="budget">
+                      <span class="icon material-icons">attach_money</span>Est.
+                      Budget Php100/hr
+                    </p>
+                    <p class="location">
+                      <span class="icon material-icons">location_on</span>Doe
+                      Tech • P-2 Libertad, Butuan City
+                    </p>
+                    <div class="category-label">
+                      <span class="icon material-icons"></span>Category: IT
+                    </div>
+                    <div class="job-type-duration">
+                      Job Type: Full-Time | Duration: Permanent
+                    </div>
                   </v-card-text>
                   <div class="button-container">
                     <v-btn class="apply-button mt-4">Apply</v-btn>
@@ -39,12 +71,25 @@ function onClick() {
               </v-col>
               <v-col cols="12" md="6" xl="4" class="pb-6">
                 <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title">We’re looking for Full-Time Software Developer</v-card-title>
+                  <v-card-title class="title"
+                    >We’re looking for Marketing Specialist</v-card-title
+                  >
                   <v-card-text>
-                    <p class="budget"><span class="icon material-icons">attach_money</span>Est. Budget Php100/hr</p>
-                    <p class="location"><span class="icon material-icons">location_on</span>Doe Tech • P-2 Libertad, Butuan City</p>
-                    <div class="category-label"><span class="icon material-icons"></span>Category: IT</div>
-                    <div class="job-type-duration">Job Type: Full-Time | Duration: Permanent</div>
+                    <p class="budget">
+                      <span class="icon material-icons">attach_money</span>Est.
+                      Budget Php75/hr
+                    </p>
+                    <p class="location">
+                      <span class="icon material-icons">location_on</span>Doe
+                      Marketing • P-3 Bancasi, Butuan City
+                    </p>
+                    <div class="category-label">
+                      <span class="icon material-icons"></span>Category:
+                      Marketing
+                    </div>
+                    <div class="job-type-duration">
+                      Job Type: Part-Time | Duration: 3 months
+                    </div>
                   </v-card-text>
                   <div class="button-container">
                     <v-btn class="apply-button mt-4">Apply</v-btn>
@@ -53,26 +98,24 @@ function onClick() {
               </v-col>
               <v-col cols="12" md="6" xl="4" class="pb-6">
                 <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title">We’re looking for Marketing Specialist</v-card-title>
+                  <v-card-title class="title"
+                    >We’re looking for Graphic Designer</v-card-title
+                  >
                   <v-card-text>
-                    <p class="budget"><span class="icon material-icons">attach_money</span>Est. Budget Php75/hr</p>
-                    <p class="location"><span class="icon material-icons">location_on</span>Doe Marketing • P-3 Bancasi, Butuan City</p>
-                    <div class="category-label"><span class="icon material-icons"></span>Category: Marketing</div>
-                    <div class="job-type-duration">Job Type: Part-Time | Duration: 3 months</div>
-                  </v-card-text>
-                  <div class="button-container">
-                    <v-btn class="apply-button mt-4">Apply</v-btn>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="6" xl="4" class="pb-6">
-                <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title">We’re looking for Graphic Designer</v-card-title>
-                  <v-card-text>
-                    <p class="budget"><span class="icon material-icons">attach_money</span>Est. Budget Php80/hr</p>
-                    <p class="location"><span class="icon material-icons">location_on</span>Doe Creative • P-4 Tandang Sora, Butuan City</p>
-                    <div class="category-label"><span class="icon material-icons"></span>Category: Design</div>
-                    <div class="job-type-duration">Job Type: Freelance | Duration: 1 month</div>
+                    <p class="budget">
+                      <span class="icon material-icons">attach_money</span>Est.
+                      Budget Php80/hr
+                    </p>
+                    <p class="location">
+                      <span class="icon material-icons">location_on</span>Doe
+                      Creative • P-4 Tandang Sora, Butuan City
+                    </p>
+                    <div class="category-label">
+                      <span class="icon material-icons"></span>Category: Design
+                    </div>
+                    <div class="job-type-duration">
+                      Job Type: Freelance | Duration: 1 month
+                    </div>
                   </v-card-text>
                   <div class="button-container">
                     <v-btn class="apply-button mt-4">Apply</v-btn>
@@ -94,7 +137,9 @@ function onClick() {
 }
 
 .hover-card {
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   cursor: pointer;
   position: relative;
   background-color: #fafbfa;
@@ -110,7 +155,8 @@ function onClick() {
   font-weight: bold;
 }
 
-.budget, .location {
+.budget,
+.location {
   color: #666; /* Subtle color for text */
 }
 
@@ -118,7 +164,7 @@ function onClick() {
   position: absolute;
   bottom: 20px;
   left: 20px;
-  margin-left: 18px
+  margin-left: 18px;
 }
 
 .category-label {

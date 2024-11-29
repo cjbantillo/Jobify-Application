@@ -1,12 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Create a single supabase client for interacting with your database
+// 👉 Create a single supabase client for interacting with your database
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
 )
 
 // 👉 Create a single supabase admin client for interacting auth users
+<<<<<<< HEAD
 export const supabaseAdmin = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_SERVICE_ROLE,
@@ -19,10 +20,29 @@ export const supabaseAdmin = createClient(
 )
 
 // form action utils 
+=======
+// export const supabaseAdmin = createClient(
+//   import.meta.env.VITE_SUPABASE_URL,
+//   import.meta.env.VITE_SUPABASE_SERVICE_ROLE,
+//   {
+//     auth: {
+//       autoRefreshToken: false,
+//       persistSession: false
+//     }
+//   }
+// )
+
+// 👉 Form Action utils
+>>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8
 export const formActionDefault = {
   formProcess: false,
   formStatus: 200,
   formErrorMessage: '',
+<<<<<<< HEAD
   formSuccessMessage: '',
 };
 
+=======
+  formSuccessMessage: ''
+}
+>>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8

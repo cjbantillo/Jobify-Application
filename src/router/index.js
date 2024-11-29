@@ -1,74 +1,40 @@
+import { useAuthUserStore } from '@/stores/authUser'
 import { createRouter, createWebHistory } from 'vue-router'
-import EmployerLoginView from '@/views/auth/Employeer/LoginEmployerView.vue'
-import StudentLoginView from '@/views/auth/Student/LoginStudentView.vue'
-import EmployerRegisterView from '@/views/auth/Employeer/RegisterEmployerView.vue'
-import StudentRegisterView from '@/views/auth/Student/RegisterStudentView.vue'
-import HomePageView from '@/views/system/HomePageView.vue'
-import AdminDashboardView from '@/views/system/AdminDashboardView.vue'
-import JobsDashboardView from '@/views/system/JobsDashboardView.vue'
-import TalentDashboardView from '@/views/system/TalentDashboardView.vue'
+import { routes } from './routes'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/', // Root path
-      redirect: '/homepage', // Redirect to login when accessing the root
-    },
-    {
-      path: '/employerlogin',
-      name: 'Employer Login',
-      component: EmployerLoginView,
-    },
-    {
-      path: '/studentlogin',
-      name: 'Student Login',
-      component: StudentLoginView,
-    },
-    {
-      path: '/employerregister',
-      name: 'Employer Register',
-      component: EmployerRegisterView,
-    },
-    {
-      path: '/studentregister',
-      name: 'Student Register',
-      component: StudentRegisterView,
-    },
-    {
-      path: '/homepage',
-      name: 'homepage',
-      component: HomePageView,
-    },
+  routes,
+})
 
-    // admin vue
-    {
-      path: '/dashboard-admin',
-      name: 'dashboard admin',
-      component: AdminDashboardView,
-    },
+router.beforeEach(async to => {
+  // Use Pinia Store
+  const authStore = useAuthUserStore()
+  // Load if user is logged in
+  const isLoggedIn = await authStore.isAuthenticated()
 
-    // Job seeker vue
-    {
-      path: '/job-dashboard',
-      name: 'job dashboard',
-      component: JobsDashboardView,
-    },
-    //talent vue
-    {
-      path: '/talent-dashboard',
-      name: 'talent dashboard',
-      component: TalentDashboardView,
-    },
-  ],
-  // Move scrollBehavior outside of routes
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition // Retain position when using browser's back/forward buttons
-    } else {
-      return { top: 0 } // Scroll to the top on navigation or refresh
+  // Redirect to appropriate page if accessing home route
+
+  // If logged in, prevent access to login or register pages
+  if (isLoggedIn && (to.name === 'login' || to.name === 'register')) {
+    // redirect the user to the dashboard page
+    return { name: 'dashboard' }
+  }
+
+  // If not logged in, prevent access to system pages
+  if (!isLoggedIn && to.meta.requiresAuth) {
+    // redirect the user to the login page
+    return { name: 'login' }
+  }
+
+  // Check if the user is logged in
+  if (isLoggedIn) {
+    // Load user data if not already done
+    if (!authStore.userData) {
+      await authStore.getUserInformation()
     }
-  },
+  }
 })
 
 export default router

@@ -18,8 +18,8 @@ const termsAccepted = ref(false) //checkbox toggle
 const refVForm = ref() //onFormSubmit
 const formDataDefault = {
   //name,email, pass, confirmPass
-  firstname: '',
-  lastname: '',
+  first_name: '',
+  last_name: '',
   email: '',
   password: '',
   confirm_password: '',
@@ -43,9 +43,9 @@ const onSubmit = async () => {
     password: formData.value.password,
     options: {
       data: {
-        firstname: formData.value.firstname,
-        lastname: formData.value.lastname,
-        is_admin: false, // Just turn to true if super admin account
+        first_name: formData.value.first_name,
+        last_name: formData.value.last_name,
+        is_student: true, // Just turn to true if student account
         // role: 'Administrator' // If role based; just change the string based on role
       },
     },
@@ -60,9 +60,7 @@ const onSubmit = async () => {
     formAction.value.formSuccessMessage = 'Account created successfully'
     //add more action if necessary
     if (data.user) {
-      router.push('/job-dashboard') //redirect to dashboard
-    } else if (data.error) {
-      router.push('/talent-dashboard') //redirect to login
+      router.push('/jobdashboard') //redirect to dashboard
     } else {
       formAction.value.formErrorMessage = 'Error creating account'
     }
@@ -84,6 +82,8 @@ const onFormSubmit = () => {
     if (valid) onSubmit()
   })
 }
+
+console.log(formDataDefault)
 </script>
 
 <template>
@@ -96,18 +96,20 @@ const onFormSubmit = () => {
       <!-- fullname  -->
       <v-col>
         <v-text-field
-          v-model="formData.firstname"
-          label="Firstname"
+          v-model="formData.first_name"
+          label="First Name"
           :rules="[requiredValidator]"
-          bg-color="white"
+          variant="outlined"
+          rounded
         ></v-text-field>
       </v-col>
       <v-col>
         <v-text-field
-          v-model="formData.lastname"
-          label="Lastname"
+          v-model="formData.last_name"
+          label="Last Name"
           :rules="[requiredValidator]"
-          bg-color="white"
+          variant="outlined"
+          rounded
         ></v-text-field>
       </v-col>
     </v-row>
@@ -117,7 +119,8 @@ const onFormSubmit = () => {
       label="Email"
       prepend-inner-icon="mdi-email"
       :rules="[requiredValidator, emailValidator]"
-      bg-color="white"
+      variant="outlined"
+      rounded
     ></v-text-field>
 
     <v-row>
@@ -131,9 +134,13 @@ const onFormSubmit = () => {
           prepend-inner-icon="mdi-lock-outline"
           @click:append-inner="toggleVisible"
           :rules="[requiredValidator, passwordValidator]"
-          bg-color="white"
+          variant="outlined"
+          rounded
         ></v-text-field>
       </v-col>
+    </v-row>
+
+    <v-row>
       <v-col>
         <!-- confirming password  -->
         <v-text-field
@@ -147,7 +154,8 @@ const onFormSubmit = () => {
             requiredValidator,
             confirmedValidator(formData.password, formData.confirm_password),
           ]"
-          bg-color="white"
+          variant="outlined"
+          rounded
         ></v-text-field>
       </v-col>
     </v-row>
@@ -172,10 +180,13 @@ const onFormSubmit = () => {
         >
       </v-col>
     </v-row>
+
+
+
     <v-col>
       <h5>
         already have an account?
-        <router-link class="link" to="studentlogin"> click here </router-link>
+        <router-link class="link" to="login"> click here </router-link>
       </h5>
     </v-col>
   </v-form>
