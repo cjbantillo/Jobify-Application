@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthUserStore } from '@/stores/authUser'
-import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue';
+import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue'
 
 // Router and store instances
 const router = useRouter()
@@ -11,7 +11,7 @@ const authStore = useAuthUserStore()
 const resumeFile = ref(null)
 const fileName = ref('')
 
-const handleFileUpload = (event) => {
+const handleFileUpload = event => {
   resumeFile.value = event.target.files[0]
   fileName.value = resumeFile.value ? resumeFile.value.name : ''
   console.log('Uploaded file:', resumeFile.value)
@@ -45,7 +45,10 @@ const goToSettings = () => {
           <v-col cols="12" md="10" xl="8">
             <v-card class="pa-8 hover-card move-down">
               <v-card-title class="title">Resume</v-card-title>
-              <v-card-subtitle class="subtitle">Manage your resume easily and keep track of your applications.</v-card-subtitle>
+              <v-card-subtitle class="subtitle"
+                >Manage your resume easily and keep track of your
+                applications.</v-card-subtitle
+              >
               <v-card-text>
                 <div class="upload-section">
                   <h3>Upload Your Resume</h3>
@@ -56,11 +59,22 @@ const goToSettings = () => {
                     ref="fileInput"
                     @change="handleFileUpload"
                   />
-                  <v-btn color="#4caf50" outlined @click="$refs.fileInput.click()">Choose a file</v-btn>
-                  <div v-if="fileName" class="file-name">Selected file: {{ fileName }}</div>
+                  <v-btn
+                    color="#4caf50"
+                    outlined
+                    @click="$refs.fileInput.click()"
+                    >Choose a file</v-btn
+                  >
+                  <div v-if="fileName" class="file-name">
+                    Selected file: {{ fileName }}
+                  </div>
                   <div class="upload-actions" v-if="resumeFile">
-                    <v-btn color="#4caf50" outlined @click="viewResume">View Resume</v-btn>
-                    <v-btn color="error" outlined @click="deleteResume">Delete Resume</v-btn>
+                    <v-btn color="#4caf50" outlined @click="viewResume"
+                      >View Resume</v-btn
+                    >
+                    <v-btn color="error" outlined @click="deleteResume"
+                      >Delete Resume</v-btn
+                    >
                   </div>
                 </div>
 
@@ -68,7 +82,10 @@ const goToSettings = () => {
 
                 <div class="info-section">
                   <h3>Welcome to Your Resume</h3>
-                  <p>Here, you can upload your resume, view and delete it as needed. Keep track of your professional journey efficiently.</p>
+                  <p>
+                    Here, you can upload your resume, view and delete it as
+                    needed. Keep track of your professional journey efficiently.
+                  </p>
                 </div>
               </v-card-text>
             </v-card>
@@ -86,7 +103,9 @@ const goToSettings = () => {
 }
 
 .hover-card {
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   cursor: pointer;
   position: relative;
   background-color: #fff;

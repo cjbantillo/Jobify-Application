@@ -4,7 +4,7 @@ import { ref, onMounted } from "vue";
 import { useAuthUserStore } from "@/stores/authUser";
 import { supabase } from "@/utils/supabase.js";
 import { getAvatarText } from "@/utils/helpers";
-import 'vue-cal/dist/vuecal.css';
+// import 'vue-cal/dist/vuecal.css';
 
 const authStore = useAuthUserStore();
 
