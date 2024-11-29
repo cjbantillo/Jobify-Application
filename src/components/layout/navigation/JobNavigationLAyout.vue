@@ -309,7 +309,7 @@ onMounted(() => {
           prepend-icon="mdi-file-document-outline"
           title="Resume"
           value="applications"
-          to="resume"
+          to="/resume"
         ></v-list-item>
 
         <v-list-group
