@@ -67,6 +67,7 @@ const onFormSubmit = () => {
       :rules="[requiredValidator, emailValidator]"
       class="modern-input"
       variant="outlined"
+      rounded
     ></v-text-field>
     <!-- password  -->
     <v-text-field
@@ -79,6 +80,7 @@ const onFormSubmit = () => {
       :rules="[requiredValidator]"
       class="modern-input"
       variant="outlined"
+      rounded
     ></v-text-field>
     <!-- checkbox  -->
     <v-row class="mt-2 align-center">

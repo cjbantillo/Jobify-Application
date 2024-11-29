@@ -59,6 +59,7 @@ onMounted(fetchUserData);
                         prepend-inner-icon="mdi-account"
                         class="modern-input"
                         variant="outlined"
+                        rounded
                       ></v-text-field>
                     </v-col>
                     <v-col cols="6">
@@ -68,6 +69,7 @@ onMounted(fetchUserData);
                         prepend-inner-icon="mdi-account"
                         class="modern-input"
                         variant="outlined"
+                        rounded
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -81,6 +83,7 @@ onMounted(fetchUserData);
                         prepend-inner-icon="mdi-email"
                         class="modern-input"
                         variant="outlined"
+                        rounded
                       ></v-text-field>
                     </v-col>
                     <v-col cols="6">
@@ -90,6 +93,7 @@ onMounted(fetchUserData);
                         prepend-inner-icon="mdi-phone"
                         class="modern-input"
                         variant="outlined"
+                        rounded
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -102,16 +106,18 @@ onMounted(fetchUserData);
                         prepend-inner-icon="mdi-calendar"
                         class="modern-input"
                         variant="outlined"
+                        rounded
                       ></v-text-field>
                     </v-col>
                     <v-col cols="6">
                       <v-select
-                        v-model="authStore.userData.addres"
+                        v-model="authStore.userData.address"
                         :items="authStore.userData.address"
                         label="Address"
                         prepend-inner-icon="mdi-earth"
                         class="modern-input"
                         variant="outlined"
+                        rounded
                       ></v-select>
                     </v-col>
                   </v-row>
