@@ -100,6 +100,7 @@ console.log(formDataDefault)
           label="First Name"
           :rules="[requiredValidator]"
           variant="outlined"
+          rounded
         ></v-text-field>
       </v-col>
       <v-col>
@@ -108,6 +109,7 @@ console.log(formDataDefault)
           label="Last Name"
           :rules="[requiredValidator]"
           variant="outlined"
+          rounded
         ></v-text-field>
       </v-col>
     </v-row>
@@ -118,6 +120,7 @@ console.log(formDataDefault)
       prepend-inner-icon="mdi-email"
       :rules="[requiredValidator, emailValidator]"
       variant="outlined"
+      rounded
     ></v-text-field>
 
     <v-row>
@@ -132,6 +135,7 @@ console.log(formDataDefault)
           @click:append-inner="toggleVisible"
           :rules="[requiredValidator, passwordValidator]"
           variant="outlined"
+          rounded
         ></v-text-field>
       </v-col>
     </v-row>
@@ -151,6 +155,7 @@ console.log(formDataDefault)
             confirmedValidator(formData.password, formData.confirm_password),
           ]"
           variant="outlined"
+          rounded
         ></v-text-field>
       </v-col>
     </v-row>

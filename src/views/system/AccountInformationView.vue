@@ -25,12 +25,11 @@ const fetchUserData = async () => {
 
 const saveChanges = async () => {
   try {
-    // Ensure authStore has the user data to update
     const userData = authStore.userData;
 
-    // Call Supabase to update the user data
+    // Update user data in Supabase
     const { error } = await supabase
-      .from('users')
+      .from("users")
       .update({
         first_name: userData.first_name,
         last_name: userData.last_name,
@@ -38,19 +37,18 @@ const saveChanges = async () => {
         date_of_birth: userData.date_of_birth,
         address: userData.address,
         bio: userData.bio,
-        //image_url: userData.image_url,
       })
-      .eq('id', userData.id);  // Assuming user data contains the 'id' field
+      .eq("id", userData.id);
 
-    if (error) throw error;  // If error exists, throw it
+    if (error) throw error;
 
-    // Display success message
     alert("User data saved successfully!");
   } catch (err) {
-    console.error("Error saving user data:", err);  // Log error to console
+    console.error("Error saving user data:", err);
     alert("Failed to save user data. Please try again.");
   }
 };
+
 
 onMounted(fetchUserData);
 </script>
