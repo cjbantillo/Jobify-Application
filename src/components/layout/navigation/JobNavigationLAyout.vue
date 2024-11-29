@@ -150,28 +150,12 @@ const Logout = async () => {
 // Fetch user data on component mount
 const fetchUserData = async () => {
   try {
+
     const { data: currentUser, error: userError } = await supabase.auth.getUser();
-    if (userError) {
-      console.error('Error fetching current user:', userError);
+    if (userError || !currentUser?.user?.id) {
+      console.error('Error fetching current user:', userError || 'No user logged in');
       return;
     }
-
-    const { data, error } = await supabase
-      .from('users') // Adjust table name to match your Supabase schema
-      .select('first_name, last_name') // Fetch only required fields
-      .eq('id', currentUser.user.id) // Use the logged-in user's ID
-      .single();
-
-    if (error) {
-      console.error('Error fetching user data:', error);
-      return;
-    }
-
-    // Update `user` with the fetched data
-    user.value = {
-      name: data.first_name + ' ' + data.last_name,  // Concatenate first and last name
-      avatar_url: data.avatar_url || 'https://via.placeholder.com/150', // Fallback avatar
-    };
 
   } catch (err) {
     console.error('Unexpected error fetching user data:', err);
@@ -286,21 +270,20 @@ onMounted(() => {
           <v-avatar
             v-if="authStore.userData.image_url"
             :image="authStore.userData.image_url"
-            color="orange-darken-3"
+            color="#4caf50"
             :size="rail ? '24' : '40'"
           ></v-avatar>
 
-          <v-avatar v-else color="orange-darken-3">
+          <v-avatar v-else color="#4caf50">
             <span>
               {{
                 getAvatarText(
-                  authStore.userData.first_name +
-                    ' ' +
-                    authStore.userData.last_name,
+                  authStore.userData.first_name + ' ' + authStore.userData.last_name,
                 )
               }}
             </span>
           </v-avatar>
+
         </template>
 
         <!-- Append Slot for the Button -->
