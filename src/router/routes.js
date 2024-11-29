@@ -3,8 +3,8 @@ import { useAuthUserStore } from '@/stores/authUser' // Assuming you use Pinia f
 import { supabase } from '@/utils/supabase' // Assuming you use Supabase for user data
 
 import HomePageView from '@/views/system/HomePageView.vue'
-import LoginView from '@/views/auth/user/LoginStudentView.vue'
-import RegisterView from '@/views/auth/user/RegisterStudentView.vue'
+import LoginView from '@/views/auth/LoginStudentView.vue'
+import RegisterView from '@/views/auth/RegisterStudentView.vue'
 import JobDashboardView from '@/views/system/JobsDashboardView.vue'
 import ResumeDashboard from '@/views/system/ResumeDashboard.vue'
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
