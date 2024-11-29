@@ -7,7 +7,13 @@ import LoginView from '@/views/auth/Student/LoginStudentView.vue'
 import RegisterView from '@/views/auth/Student/RegisterStudentView.vue'
 import JobDashboardView from '@/views/system/JobsDashboardView.vue'
 import ResumeDashboard from '@/views/system/ResumeDashboard.vue'
-import AccountSettings from '@/views/system/AccountInformationView.vue'
+import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
+//must be updated
+import AccountSettingsChangePassword from '@/views/system/settings/ChangePasswordView.vue'
+import AccountSettingsNotification from '@/views/system/settings/NotificationView.vue'
+import AccountSettingsPersonalization from '@/views/system/settings/PersonalizationView.vue'  
+import AccountSettingsSecurityPrivacy from '@/views/system/settings/SecurityPrivacyView.vue'
+
 
 const routes = [
   // Auth Pages
@@ -43,36 +49,36 @@ const routes = [
     component: ResumeDashboard,
     meta: { requiresAuth: true, isDefault: true },
   },
-  //settings
+  //settings pages
   {
     path: '/settings/account-information',
     name: 'account-information',
-    component: AccountSettings,
+    component: AccountSettingsInfo,
     meta: { requiresAuth: true, isDefault: true },
   },
   {
     path: '/settings/change-password',
     name: 'change-password',
-    component: AccountSettings,
+    component: AccountSettingsChangePassword,
     meta: { requiresAuth: true, isDefault: true },
   },
   {
     path: '/settings/notification',
     name: 'notification',
-    component: AccountSettings,
+    component: AccountSettingsNotification,
     meta: { requiresAuth: true, isDefault: true },
   },
   {
     path: '/settings/personalization',
     name: 'personalization',
-    component: AccountSettings,
+    component: AccountSettingsPersonalization,
     meta: { requiresAuth: true, isDefault: true },
   },
 
   {
     path: '/settings/security-privacy',
     name: 'security-privacy',
-    component: AccountSettings,
+    component: AccountSettingsSecurityPrivacy,
     meta: { requiresAuth: true, isDefault: true },
   },
 
