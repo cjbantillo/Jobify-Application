@@ -1,56 +1,68 @@
 <script setup>
-import JobNavigationLayout from "@/components/layout/navigation/JobNavigationLAyout.vue";
-import { ref, onMounted } from "vue";
-import { useAuthUserStore } from "@/stores/authUser";
-import { supabase } from "@/utils/supabase.js";
-import { getAvatarText } from "@/utils/helpers";
-// import 'vue-cal/dist/vuecal.css';
+import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue'
+import { ref, onMounted } from 'vue'
+import { useAuthUserStore } from '@/stores/authUser'
+import { supabase, formActionDefault } from '@/utils/supabase.js'
+import { getAvatarText } from '@/utils/helpers'
+import 'vue-cal/dist/vuecal.css'
 
-const authStore = useAuthUserStore();
+const authStore = useAuthUserStore()
 
-const birthdateMenu = ref(false);
-
+const birthdateMenu = ref(false)
+// supabase form action
+const formAction = ref({
+  ...formActionDefault,
+})
 
 const fetchUserData = async () => {
   try {
-    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    const { data: currentUser, error: userError } =
+      await supabase.auth.getUser()
     if (userError || !currentUser?.user?.id) {
-      console.error("Error fetching current user:", userError || "No user logged in");
-      return;
+      console.error(
+        'Error fetching current user:',
+        userError || 'No user logged in',
+      )
+      return
     }
   } catch (err) {
-    console.error("Unexpected error fetching user data:", err);
+    console.error('Unexpected error fetching user data:', err)
   }
-};
-
+}
 const saveChanges = async () => {
   try {
     const userData = authStore.userData;
 
     // Update user data in Supabase
-    const { error } = await supabase
-      .from("users")
-      .update({
+    const { data, error } = await supabase.auth.updateUser({
+      data: {
         first_name: userData.first_name,
         last_name: userData.last_name,
         phone: userData.phone,
         date_of_birth: userData.date_of_birth,
         address: userData.address,
         bio: userData.bio,
-      })
-      .eq("id", userData.id);
+      },
+    });
 
+    // Check for errors
     if (error) throw error;
 
-    alert("User data saved successfully!");
+    alert('User data saved successfully!');
+    if (data) {
+      console.log(data); // user data
+      formAction.value.formSuccessMessage = 'Save change';
+    } else {
+      formAction.value.formErrorMessage = 'Error Saving data';
+    }
   } catch (err) {
-    console.error("Error saving user data:", err);
-    alert("Failed to save user data. Please try again.");
+    console.error('Error saving user data:', err);
+    alert('Failed to save user data. Please try again.');
   }
-};
+}
 
 
-onMounted(fetchUserData);
+onMounted(fetchUserData)
 </script>
 
 <template>
@@ -60,7 +72,7 @@ onMounted(fetchUserData);
         <v-main class="pt-8">
           <v-container>
             <!-- Account Information Card -->
-             <v-form>
+            <v-form  ref="refVForm" @submit.prevent="saveChanges">
               <v-card class="pa-6 hover-card" height="700px">
                 <v-card-title class="title">Account Information</v-card-title>
                 <div class="user-info flex">
@@ -75,7 +87,9 @@ onMounted(fetchUserData);
                     <span>
                       {{
                         getAvatarText(
-                          authStore.userData.first_name + ' ' + authStore.userData.last_name,
+                          authStore.userData.first_name +
+                            ' ' +
+                            authStore.userData.last_name,
                         )
                       }}
                     </span>
@@ -131,46 +145,46 @@ onMounted(fetchUserData);
                     </v-row>
 
                     <v-row>
-                        <v-col cols="6">
-                          <v-menu
-                            v-model="birthdateMenu"
-                            :close-on-content-click="false"
-                            transition="scale-transition"
-                            offset-y
-                            max-width="290px"
-                            min-width="290px"
-                          >
-                            <template #activator="{ props }">
-                              <v-text-field
-                                v-model="authStore.userData.date_of_birth"
-                                label="Date of Birth"
-                                prepend-inner-icon="mdi-calendar"
-                                class="modern-input"
-                                v-bind="props"
-                                variant="outlined"
-                                rounded
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
+                      <v-col cols="6">
+                        <v-menu
+                          v-model="birthdateMenu"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-y
+                          max-width="290px"
+                          min-width="290px"
+                        >
+                          <template #activator="{ props }">
+                            <v-text-field
                               v-model="authStore.userData.date_of_birth"
-                              @input="birthdateMenu = false"
-                              :max="new Date().toISOString().substr(0, 10)"
-                            ></v-date-picker>
-                          </v-menu>
-                        </v-col>
+                              label="Date of Birth"
+                              prepend-inner-icon="mdi-calendar"
+                              class="modern-input"
+                              v-bind="props"
+                              variant="outlined"
+                              rounded
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="authStore.userData.date_of_birth"
+                            @input="birthdateMenu = false"
+                            :max="new Date().toISOString().substr(0, 10)"
+                          ></v-date-picker>
+                        </v-menu>
+                      </v-col>
 
-                          <v-col>
-                          <v-text-field
-                            v-model="authStore.userData.address"
-                            :items="authStore.userData.address"
-                            label="Address"
-                            prepend-inner-icon="mdi-earth"
-                            class="modern-input"
-                            variant="outlined"
-                            rounded
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
+                      <v-col>
+                        <v-text-field
+                          v-model="authStore.userData.address"
+                          :items="authStore.userData.address"
+                          label="Address"
+                          prepend-inner-icon="mdi-earth"
+                          class="modern-input"
+                          variant="outlined"
+                          rounded
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
                   </div>
                 </div>
 
@@ -186,10 +200,11 @@ onMounted(fetchUserData);
                 <v-btn
                   class="save-button w-25 rounded-pill"
                   depressed
-                  type="submit"
-                  @click="saveChanges"
+                  type="submit" 
+                  :disabled="formAction.formProcess"
+                  :loading="formAction.formProcess"
                 >
-                  Save
+                  Save Change
                 </v-btn>
               </v-card>
             </v-form>
@@ -236,7 +251,9 @@ onMounted(fetchUserData);
 }
 
 .hover-card {
-  transition: transform 0.2s, box-shadow 0.3s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.3s;
   background-color: #fafbfa;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -275,7 +292,7 @@ onMounted(fetchUserData);
 .modern-input .v-input--is-dirty .v-label {
   color: #fafbfa;
 }
-.modern-input{
+.modern-input {
   background: #fafbfa;
 }
 
@@ -302,5 +319,4 @@ onMounted(fetchUserData);
   background-color: #ffffff;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
-
 </style>
