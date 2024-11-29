@@ -7,20 +7,6 @@ export const supabase = createClient(
 )
 
 // 👉 Create a single supabase admin client for interacting auth users
-<<<<<<< HEAD
-export const supabaseAdmin = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_SERVICE_ROLE,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  }
-)
-
-// form action utils 
-=======
 // export const supabaseAdmin = createClient(
 //   import.meta.env.VITE_SUPABASE_URL,
 //   import.meta.env.VITE_SUPABASE_SERVICE_ROLE,
@@ -33,16 +19,9 @@ export const supabaseAdmin = createClient(
 // )
 
 // 👉 Form Action utils
->>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8
 export const formActionDefault = {
   formProcess: false,
   formStatus: 200,
   formErrorMessage: '',
-<<<<<<< HEAD
-  formSuccessMessage: '',
-};
-
-=======
   formSuccessMessage: ''
 }
->>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8
