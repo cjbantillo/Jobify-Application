@@ -6,6 +6,7 @@ import { useAuthUserStore } from '@/stores/authUser'
 import { useWindowSize } from '@vueuse/core'
 import { getAvatarText } from '@/utils/helpers';
 import { ref, computed, onMounted } from 'vue';
+import logo from "@/assets/jobify1_Logo.png";
 
 // Reactive screen dimensions
 const { width } = useWindowSize();
@@ -21,6 +22,7 @@ const loaded = ref(false);
 const loading = ref(false);
 const user = ref(null);
 const showEmployerDialog = ref(false);
+const settingsHover = ref(false);
 
 // Form data for employer details
 const employerForm = ref({
@@ -104,6 +106,14 @@ const categories = [
   "Investment and Trading Services",
 ];
 
+const settingsOptions = [
+  { title: 'Account Information', to: '/settings/account-information' },
+  { title: 'Change Password', to: '/settings/change-password' },
+  { title: 'Notification', to: '/settings/notification' },
+  { title: 'Personalization', to: '/settings/personalization' },
+  { title: 'Security & Privacy', to: '/settings/security-privacy' },
+];
+
 // Vue Router for navigation
 const router = useRouter();
 
@@ -169,39 +179,6 @@ const fetchUserData = async () => {
   console.log(user.value)
 };
 
-const switchToEmployer = async () => {
-  loading.value = true;
-
-  try {
-    // Get the current logged-in user
-    const { data: currentUser, error: userError } = await supabase.auth.getUser();
-    if (userError || !currentUser || !currentUser.user) {
-      console.error('Error fetching user:', userError);
-      return;
-    }
-
-    // Update the user's metadata to set `is_student` to false and `is_employer` to true
-    const { error: updateError } = await supabase.auth.updateUser({
-      data: {
-        is_student: false,
-        is_employer: true,
-      },
-    });
-
-    if (updateError) {
-      console.error('Error updating user metadata:', updateError);
-      return;
-    }
-
-    // Insert the user into the `employer_table`
-    showEmployerDialog.value = true;
-  } catch (err) {
-    console.error('Unexpected error:', err);
-  } finally {
-    loading.value = false;
-  }
-};
-
 const submitEmployerDetails = async () => {
   try {
     // Get the current logged-in user
@@ -257,8 +234,8 @@ onMounted(() => {
       scroll-threshold="100"
       :dense="mobile"
     >
-      <v-img src="" alt="Logo" max-height="30" max-width="100" class="mr-4" />
-      <h3 v-if="!mobile">Dashboard</h3>
+      <v-img :src="logo" alt="Logo" max-height="80" max-width="100" class="mr-4" />
+      <h3 v-if="!mobile">Jobify</h3>
       <v-spacer></v-spacer>
       <v-text-field
           clearable
@@ -343,7 +320,7 @@ onMounted(() => {
           prepend-icon="mdi-home-city"
           title="Dashboard"
           value="home"
-          to="jobdashboard"
+          to="/jobdashboard"
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-file-document-outline"
@@ -351,12 +328,29 @@ onMounted(() => {
           value="applications"
           to="resume"
         ></v-list-item>
-        <v-list-item
+
+        <v-list-group
           prepend-icon="mdi-cog-outline"
           title="Settings"
-          value="settings"
-          to="settings"
-        ></v-list-item>
+          :value="settingsHover"
+          no-action
+          @mouseenter="settingsHover = true"
+          @mouseleave="settingsHover = false"
+        >
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props">
+            </v-list-item>
+          </template>
+
+          <v-list-item
+            v-for="item in settingsOptions"
+            :key="item.title"
+            :title="item.title"
+            :to="item.to"
+            class="pl-4"
+          ></v-list-item>
+        </v-list-group>
+
 
         <v-list-item
           prepend-icon="mdi-logout"
@@ -501,16 +495,54 @@ onMounted(() => {
 .v-navigation-drawer[rail] .v-list-item {
   justify-content: center; /* Center list items in collapsed state */
 }
+.v-navigation-drawer {
+  transition: width 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.v-navigation-drawer:hover {
+  width: 250px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.v-navigation-drawer[rail] {
+  width: 40px !important;
+}
+
+.v-navigation-drawer[rail]:hover {
+  width: 250px !important;
+}
 
 .v-list-item {
   display: flex;
   align-items: center;
-  margin: 10px;
+  margin: 5px 0; /* Adjusted to avoid redundant margin conflicts */
   height: 2rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* List Item Hover */
 .v-list-item:hover {
-    background-color: #4caf50;
-    color: white;
-  }
+  background-color: #e8f5e9; /* Light green background on hover */
+  color: #4caf50; /* Primary green for text on hover */
+}
+
+/* List Group Header Styles */
+.v-list-group__header {
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* List Group Header Hover */
+.v-list-group__header:hover {
+  background-color: #4caf50; /* Primary green background */
+  color: white; /* White text for contrast */
+}
+
+/* Alternate Hover Background */
+.v-list-item:hover.alt {
+  background-color: #d0f0c0; /* Softer green alternative */
+  color: #388e3c; /* Darker green text for contrast */
+}
 
 </style>

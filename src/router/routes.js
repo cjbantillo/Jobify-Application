@@ -6,10 +6,10 @@ import HomePageView from '@/views/system/HomePageView.vue';
 import LoginView from '@/views/auth/Student/LoginStudentView.vue';
 import RegisterView from '@/views/auth/Student/RegisterStudentView.vue';
 import JobDashboardView from '@/views/system/JobsDashboardView.vue';
-import SettingsDashboard from '@/views/system/SettingsDashboard.vue';
 import ResumeDashboard from '@/views/system/ResumeDashboard.vue';
+import AccountSettings from '@/views/system/AccountInformationView.vue';
 
-export const routes = [
+const routes = [
   // Auth Pages
   {
     path: '/',
@@ -37,12 +37,11 @@ export const routes = [
     meta: { requiresAuth: true, isDefault: true },
   },
   {
-    path: '/settings',
-    name: 'settings',
-    component: SettingsDashboard,
+    path: '/settings/account-information',
+    name: 'settings/account-information',
+    component: AccountSettings,
     meta: { requiresAuth: true, isDefault: true },
   },
-
   {
     path: '/resume',
     name: 'resume',
@@ -51,21 +50,19 @@ export const routes = [
   },
 ];
 
-// Create the router instance
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
 
-// Navigation guard to check authentication status and prevent navigation based on roles
+// Navigation guard to handle authentication and redirection
 router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthUserStore();  // Assuming you have a store that manages authentication state
-  const isAuthenticated = authStore.isAuthenticated;  // Or use computed properties from your store
+  const authStore = useAuthUserStore();
+  const isAuthenticated = authStore.isAuthenticated;
   const currentUser = supabase.auth.user();
 
-  // Check if the user is authenticated and if they have `is_student` or `is_employer` set
   if (isAuthenticated && currentUser) {
-    const { data: userProfile, error } = await supabase
+    const { data: error } = await supabase
       .from('users')
       .select('is_student, is_employer')
       .eq('id', currentUser.id)
@@ -76,39 +73,21 @@ router.beforeEach(async (to, from, next) => {
       return next('/login'); // Redirect to login if there's an error
     }
 
-    // Prevent navigation if the user is already an employer and tries to access the job dashboard
-    if (to.name === 'jobdashboard' && userProfile.is_employer) {
-      console.log('Employer user cannot access job dashboard.');
-      return next('/employerdashboard'); // Redirect to employer dashboard
+    // Redirect `/settings/account-information` to `/jobdashboard`
+    if (to.path === '/settings/account-information') {
+      return next('/jobdashboard');
     }
 
-    // Prevent navigation if the user is already a student and tries to access the employer dashboard
-    if (to.name === 'employerdashboard' && userProfile.is_student) {
-      console.log('Student user cannot access employer dashboard.');
-      return next('/jobdashboard'); // Redirect to job dashboard
-    }
-
-    // Prevent accessing job dashboard if the employer has already submitted details (optional)
-    if (to.name === 'employerdashboard' && userProfile.is_employer) {
-      const { data: employerDetails } = await supabase
-        .from('employer_profiles')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .single();
-
-      if (employerDetails) {
-        return next('/employerdashboard'); // Prevent re-accessing employer dashboard after details are submitted
-      }
-    }
   }
 
-  // Check if the route requires authentication and user is not authenticated
+  // Redirect to login if the route requires authentication and user is not authenticated
   if (to.meta.requiresAuth && !isAuthenticated) {
-    return next('/login'); // Redirect to login if not authenticated
+    return next('/login');
   }
 
   // Allow navigation to the route if none of the above conditions were met
   next();
 });
 
-export default router;
+// Exporting router without `export default`
+export { router, routes };
