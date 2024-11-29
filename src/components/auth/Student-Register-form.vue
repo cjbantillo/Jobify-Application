@@ -97,17 +97,17 @@ console.log(formDataDefault)
       <v-col>
         <v-text-field
           v-model="formData.first_name"
-          label="Firstname"
+          label="First Name"
           :rules="[requiredValidator]"
-          bg-color="white"
+          variant="outlined"
         ></v-text-field>
       </v-col>
       <v-col>
         <v-text-field
           v-model="formData.last_name"
-          label="Lastname"
+          label="Last Name"
           :rules="[requiredValidator]"
-          bg-color="white"
+          variant="outlined"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -117,7 +117,7 @@ console.log(formDataDefault)
       label="Email"
       prepend-inner-icon="mdi-email"
       :rules="[requiredValidator, emailValidator]"
-      bg-color="white"
+      variant="outlined"
     ></v-text-field>
 
     <v-row>
@@ -131,7 +131,7 @@ console.log(formDataDefault)
           prepend-inner-icon="mdi-lock-outline"
           @click:append-inner="toggleVisible"
           :rules="[requiredValidator, passwordValidator]"
-          bg-color="white"
+          variant="outlined"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -150,7 +150,7 @@ console.log(formDataDefault)
             requiredValidator,
             confirmedValidator(formData.password, formData.confirm_password),
           ]"
-          bg-color="white"
+          variant="outlined"
         ></v-text-field>
       </v-col>
     </v-row>

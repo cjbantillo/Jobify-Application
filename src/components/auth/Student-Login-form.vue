@@ -66,7 +66,7 @@ const onFormSubmit = () => {
       prepend-inner-icon="mdi-email"
       :rules="[requiredValidator, emailValidator]"
       class="modern-input"
-      bg-color="white"
+      variant="outlined"
     ></v-text-field>
     <!-- password  -->
     <v-text-field
@@ -78,7 +78,7 @@ const onFormSubmit = () => {
       @click:append-inner="toggleVisible"
       :rules="[requiredValidator]"
       class="modern-input"
-      bg-color="white"
+      variant="outlined"
     ></v-text-field>
     <!-- checkbox  -->
     <v-row class="mt-2 align-center">
