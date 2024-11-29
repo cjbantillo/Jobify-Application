@@ -1,7 +1,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import JobNavigationLayout from "@/components/layout/navigation/JobNavigationLAyout.vue";
-import { supabase } from "@/utils/supabase.js";
+import { supabase } from '@/utils/supabase'
+import { useAuthUserStore } from "@/stores/authUser";
 
 const resumeFile = ref(null);
 const fileName = ref("");
@@ -10,29 +11,44 @@ const resumeUrl = ref("");
 const loading = ref(true);
 const isDragging = ref(false); // Track dragging state
 
-// Supabase bucket and file details
-const bucketName = "resume"; // Replace with your Supabase bucket name
-const filePath = "user-resume.pdf"; // Replace with user-specific file path if necessary
+const authStore = useAuthUserStore();
 
-// Fetch existing resume from Supabase
+
+const user_name = `${authStore.userData.first_name || ''} ${authStore.userData.last_name || ''}`;
+
+// Supabase bucket and file details
+const bucketName = "resumes"; // Replace with your Supabase bucket name
+const filePath = `${user_name}.pdf`; // Use user name and unique UUID
+
+// Fetch existing resume by ID (filePath)
+// Fetch existing resume URL
 const fetchResume = async () => {
   try {
-    const { data, error } = await supabase.storage.from(bucketName).list();
-    if (error) throw error;
+    loading.value = true;
 
-    // Check if the file exists
-    if (data.some((file) => file.name === filePath)) {
-      const { publicUrl } = supabase.storage
-        .from(bucketName)
-        .getPublicUrl(filePath);
-      resumeUrl.value = publicUrl;
+    // Generate the file path (replace with a user-specific file path logic)
+    // Example: const filePath = `${userId}/resume.pdf`;
+    const { data, error } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(filePath); // Correct use of getPublicUrl
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (data.publicUrl) {
+      resumeUrl.value = data.publicUrl; // Set resume URL to the fetched public URL
+    } else {
+      resumeUrl.value = ""; // File not found
     }
   } catch (error) {
     console.error("Error fetching resume:", error.message);
+    resumeUrl.value = ""; // Clear URL on error
   } finally {
     loading.value = false;
   }
 };
+
 
 // Handle file selection
 const handleFileUpload = () => {
@@ -63,10 +79,11 @@ const uploadResume = async () => {
   try {
     loading.value = true;
     const { error } = await supabase.storage
-      .from(bucketName)
+      .from('resumes')
       .upload(filePath, resumeFile.value, {
         cacheControl: "3600",
         upsert: true,
+        contentType: "application/pdf",
       });
 
     if (error) throw error;
@@ -155,20 +172,28 @@ onMounted(() => {
 
                 <v-divider class="my-4"></v-divider>
 
+
                 <div class="info-section">
                   <h3>Welcome to Your Resume</h3>
                   <p>
                     Here, you can upload your resume, view and delete it as
                     needed. Keep track of your professional journey efficiently.
                   </p>
-                  <v-btn
-                    v-if="resumeUrl"
-                    color="primary"
-                    outlined
-                    @click="viewResume"
-                  >
-                    View Uploaded Resume
+                  <div v-if="resumeUrl" class="resume-preview">
+                  <h3>Your Uploaded Resume:</h3>
+                  <iframe
+                    :src="resumeUrl"
+                    width="100%"
+                    height="500px"
+                    style="border: none;"
+                  ></iframe>
+                  <v-btn @click="viewResume">
+                    Open in Full Screen
                   </v-btn>
+                </div>
+                <div v-else>
+                  <p>No resume uploaded. Please upload one to view it here.</p>
+                </div>
                 </div>
               </v-card-text>
             </v-card>
