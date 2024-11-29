@@ -1,12 +1,12 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthUserStore } from '@/stores/authUser'
+// import { useRouter } from 'vue-router'
+// import { useAuthUserStore } from '@/stores/authUser'
 import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue'
 
 // Router and store instances
-const router = useRouter()
-const authStore = useAuthUserStore()
+// const router = useRouter()
+// const authStore = useAuthUserStore()
 
 const resumeFile = ref(null)
 const fileName = ref('')
@@ -32,9 +32,9 @@ const viewResume = () => {
   }
 }
 
-const goToSettings = () => {
-  router.push('/settings')
-}
+// const goToSettings = () => {
+//   router.push('/settings')
+// }
 </script>
 
 <template>
