@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { computed, ref } from 'vue'
-=======
 import { ref } from 'vue'
->>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8
 import { defineStore } from 'pinia'
 import { supabase } from '@/utils/supabase'
 
@@ -11,15 +7,6 @@ export const useAuthUserStore = defineStore('authUser', () => {
   const userData = ref(null)
   const authPages = ref([])
 
-<<<<<<< HEAD
-  // Getters
-  // Computed Properties; Use for getting the state but not modifying its reactive state
-  const userRole = computed(() => {
-    return userData.value?.is_admin ? 'Super Administrator' : userData.value.user_role
-  })
-
-=======
->>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8
   // Reset State Action
   function $reset() {
     userData.value = null
@@ -87,19 +74,10 @@ export const useAuthUserStore = defineStore('authUser', () => {
 
   return {
     userData,
-<<<<<<< HEAD
-    userRole,
-=======
->>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8
     authPages,
     $reset,
     isAuthenticated,
     getUserInformation,
-<<<<<<< HEAD
-    getAuthPages,
-    updateUserInformation,
-=======
->>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8
     updateUserImage
   }
 })

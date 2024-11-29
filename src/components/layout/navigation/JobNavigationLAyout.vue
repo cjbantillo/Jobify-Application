@@ -1,54 +1,212 @@
 <script setup>
 import BottomNavigationLayout from './BottomNavigationLayout.vue'
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAvatarText } from '@/utils/helpers'
-import { supabase, formActionDefault } from '@/utils/supabase'
-import { useAuthUserStore } from '@/stores/authUser.js'
+import { supabase, formActionDefault } from '@/utils/supabase.js'
+import { useAuthUserStore } from '@/stores/authUser'
+import { useWindowSize } from '@vueuse/core'
+import { getAvatarText } from '@/utils/helpers';
+import { ref, computed, onMounted } from 'vue';
+import logo from "@/assets/jobify1_Logo.png";
 
-// Use Pinia Store
-const authStore = useAuthUserStore()
+// Reactive screen dimensions
+const { width } = useWindowSize();
+const mobile = computed(() => width.value <= 768);
 
-const drawer = ref(true)
-const rail = ref(true)
-const loaded = ref(false)
-const loading = ref(false)
+// Pinia store for auth user
+const authStore = useAuthUserStore();
 
-// Use Vue Router for navigation
-const router = useRouter()
+// Reactive variables
+const drawer = ref(true);
+const rail = ref(true);
+const loaded = ref(false);
+const loading = ref(false);
+const user = ref(null);
+const showEmployerDialog = ref(false);
+const settingsHover = ref(false);
 
-function onClick() {
-  loading.value = true
+// Form data for employer details
+const employerForm = ref({
+  company_name: '',
+  company_social: '',
+  company_description: '',
+  company_category: '',
+});
+
+const categories = [
+  "Retail and Wholesale",
+  "Supermarkets and Grocery Stores",
+  "Convenience Stores",
+  "Pharmacies",
+  "Hardware and Construction Supplies",
+  "Clothing and Apparel",
+  "Electronics and Gadgets",
+  "Auto Parts and Accessories",
+  "Wholesale and Trading Businesses",
+  "Food and Beverage",
+  "Restaurants",
+  "Cafés and Coffee Shops",
+  "Fast Food Chains",
+  "Food Stalls and Kiosks",
+  "Catering Services",
+  "Bakeries and Pastry Shops",
+  "Bars and Pubs",
+  "Health and Wellness",
+  "Clinics and Medical Services",
+  "Fitness Centers and Gyms",
+  "Spas and Wellness Centers",
+  "Optical Shops",
+  "Dental Clinics",
+  "Professional Services",
+  "Accounting and Bookkeeping",
+  "Legal Services",
+  "Marketing and Advertising",
+  "IT and Web Development",
+  "Real Estate Agencies",
+  "Human Resource and Recruitment",
+  "Travel and Tour Agencies",
+  "Home and Construction",
+  "Interior Design Services",
+  "Construction Firms",
+  "Appliance Repair Services",
+  "Furniture Stores",
+  "Landscaping Services",
+  "Education and Training",
+  "Tutorial Centers",
+  "Daycares and Preschools",
+  "Vocational and Technical Schools",
+  "Language Learning Centers",
+  "Review Centers",
+  "Transportation and Logistics",
+  "Public Transportation Operators",
+  "Taxi and Ride-hailing Services",
+  "Delivery and Courier Services",
+  "Freight and Logistics Companies",
+  "Vehicle Rentals",
+  "Entertainment and Leisure",
+  "Event Planning Services",
+  "Party Supplies Rentals",
+  "Photography and Videography",
+  "Resorts and Hotels",
+  "Game Zones and Arcades",
+  "Agriculture and Farming",
+  "Poultry and Livestock",
+  "Agricultural Supply Stores",
+  "Rice Milling and Grains Trading",
+  "Fresh Produce Markets",
+  "Technology and Communications",
+  "Internet Service Providers",
+  "Gadget Repair Shops",
+  "Computer Shops",
+  "Printing and Photocopying Services",
+  "Financial Services",
+  "Banks and Lending Institutions",
+  "Pawnshops",
+  "Money Remittance Services",
+  "Insurance Agencies",
+  "Investment and Trading Services",
+];
+
+const settingsOptions = [
+  { title: 'Account Information', to: '/settings/account-information' },
+  { title: 'Change Password', to: '/settings/change-password' },
+  { title: 'Notification', to: '/settings/notification' },
+  { title: 'Personalization', to: '/settings/personalization' },
+  { title: 'Security & Privacy', to: '/settings/security-privacy' },
+];
+
+// Vue Router for navigation
+const router = useRouter();
+
+const onClick = () => {
+  loading.value = true;
   setTimeout(() => {
-    loading.value = false
-    loaded.value = true
-  }, 2000)
-}
-// Load Variables
-const formAction = ref({
-  ...formActionDefault,
-})
+    loading.value = false;
+    loaded.value = true;
+  }, 2000);
+};
 
-// Logout Functionality
-const onLogout = async () => {
-  /// Reset Form Action utils; Turn on processing at the same time
-  formAction.value = { ...formActionDefault, formProcess: true }
+const formAction = ref({ ...formActionDefault });
 
-  // Get supabase logout functionality
-  const { error } = await supabase.auth.signOut()
+// Logout function
+const Logout = async () => {
+  formAction.value = { ...formActionDefault, formProcess: true };
+
+  const { error } = await supabase.auth.signOut();
   if (error) {
-    console.error('Error during logout:', error)
-    return
+    console.error('Error during logout:', error);
+    return;
   }
 
-  formAction.value.formProcess = false
-  // Reset State
+  formAction.value.formProcess = false;
+
   setTimeout(() => {
-    authStore.$reset()
-  }, 2500)
-  // Redirect to homepage
-  router.replace('/')
-}
+    authStore.$reset();
+  }, 2500);
+
+  router.replace('/');
+};
+
+
+// Fetch user data on component mount
+const fetchUserData = async () => {
+  try {
+
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    if (userError || !currentUser?.user?.id) {
+      console.error('Error fetching current user:', userError || 'No user logged in');
+      return;
+    }
+
+  } catch (err) {
+    console.error('Unexpected error fetching user data:', err);
+  }
+  console.log(user.value)
+};
+
+const submitEmployerDetails = async () => {
+  try {
+    // Get the current logged-in user
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    if (userError || !currentUser || !currentUser.user) {
+      console.error('Error fetching user:', userError);
+      return;
+    }
+
+    // Prepare the employer details to be inserted
+    const employerDetails = {
+      user_id: currentUser.user.id, // Map the foreign key
+      company_name: employerForm.value.company_name,
+      company_social: employerForm.value.company_social,
+      company_category: employerForm.value.company_category,
+      created_at: new Date().toISOString(), // Timestamp
+    };
+
+    // Insert the employer details into the 'employer_profiles' table
+    const { data, error } = await supabase
+      .from('employer_profiles') // Your table name
+      .insert([employerDetails]);
+
+    if (error) {
+      console.error('Error inserting employer details:', error);
+      return;
+    }
+
+    console.log('Employer details submitted successfully:', data);
+
+    // Close the dialog after successful submission
+    showEmployerDialog.value = false;
+
+    // Redirect to the employer dashboard
+    router.push('/employerdashboard');
+  } catch (err) {
+    console.error('Unexpected error:', err);
+  }
+};
+
+// Lifecycle hook
+onMounted(() => {
+  fetchUserData();
+});
 </script>
 
 <template>
@@ -246,18 +404,12 @@ const onLogout = async () => {
 </template>
 
 <style scoped>
-<<<<<<< HEAD
-.v-list-item:hover {
-  background-color: #4caf50;
-  color: white;
-=======
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
 *{
   font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;
->>>>>>> 03f741c8566eaa163699614422f45d0f1e099eb8
 }
 .button-row {
   color: #fff; /* Same primary green for the text */
