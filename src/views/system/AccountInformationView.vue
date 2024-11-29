@@ -1,11 +1,15 @@
 <script setup>
 import JobNavigationLayout from "@/components/layout/navigation/JobNavigationLAyout.vue";
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthUserStore } from "@/stores/authUser";
 import { supabase } from "@/utils/supabase.js";
 import { getAvatarText } from "@/utils/helpers";
+import 'vue-cal/dist/vuecal.css';
 
 const authStore = useAuthUserStore();
+
+const birthdateMenu = ref(false);
+
 
 const fetchUserData = async () => {
   try {
@@ -19,6 +23,35 @@ const fetchUserData = async () => {
   }
 };
 
+const saveChanges = async () => {
+  try {
+    // Ensure authStore has the user data to update
+    const userData = authStore.userData;
+
+    // Call Supabase to update the user data
+    const { error } = await supabase
+      .from('users')
+      .update({
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        phone: userData.phone,
+        date_of_birth: userData.date_of_birth,
+        address: userData.address,
+        bio: userData.bio,
+        //image_url: userData.image_url,
+      })
+      .eq('id', userData.id);  // Assuming user data contains the 'id' field
+
+    if (error) throw error;  // If error exists, throw it
+
+    // Display success message
+    alert("User data saved successfully!");
+  } catch (err) {
+    console.error("Error saving user data:", err);  // Log error to console
+    alert("Failed to save user data. Please try again.");
+  }
+};
+
 onMounted(fetchUserData);
 </script>
 
@@ -29,110 +62,139 @@ onMounted(fetchUserData);
         <v-main class="pt-8">
           <v-container>
             <!-- Account Information Card -->
-            <v-card class="pa-6 hover-card" height="700px">
-              <v-card-title class="title">Account Information</v-card-title>
-              <div class="user-info flex">
-                <!-- User Avatar -->
-                <v-avatar
-                  v-if="authStore.userData.image_url"
-                  :image="authStore.userData.image_url"
-                  color="#4caf50"
-                  size="120"
-                ></v-avatar>
-                <v-avatar v-else color="#4caf50" size="120">
-                  <span>
-                    {{
-                      getAvatarText(
-                        authStore.userData.first_name + ' ' + authStore.userData.last_name,
-                      )
-                    }}
-                  </span>
-                </v-avatar>
+             <v-form>
+              <v-card class="pa-6 hover-card" height="700px">
+                <v-card-title class="title">Account Information</v-card-title>
+                <div class="user-info flex">
+                  <!-- User Avatar -->
+                  <v-avatar
+                    v-if="authStore.userData.image_url"
+                    :image="authStore.userData.image_url"
+                    color="#4caf50"
+                    size="120"
+                  ></v-avatar>
+                  <v-avatar v-else color="#4caf50" size="120">
+                    <span>
+                      {{
+                        getAvatarText(
+                          authStore.userData.first_name + ' ' + authStore.userData.last_name,
+                        )
+                      }}
+                    </span>
+                  </v-avatar>
 
-                <!-- User Details Section -->
-                <div class="user-details ml-4">
-                  <v-row>
-                    <v-col cols="6">
-                      <v-text-field
-                        v-model="authStore.userData.first_name"
-                        label="First Name"
-                        prepend-inner-icon="mdi-account"
-                        class="modern-input"
-                        variant="outlined"
-                        rounded
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        v-model="authStore.userData.last_name"
-                        label="Last Name"
-                        prepend-inner-icon="mdi-account"
-                        class="modern-input"
-                        variant="outlined"
-                        rounded
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
+                  <!-- User Details Section -->
+                  <div class="user-details ml-4">
+                    <v-row>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="authStore.userData.first_name"
+                          label="First Name"
+                          prepend-inner-icon="mdi-account"
+                          class="modern-input"
+                          variant="outlined"
+                          rounded
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="authStore.userData.last_name"
+                          label="Last Name"
+                          prepend-inner-icon="mdi-account"
+                          class="modern-input"
+                          variant="outlined"
+                          rounded
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
 
-                  <v-row>
-                    <v-col cols="6">
-                      <v-text-field
-                        v-model="authStore.userData.email"
-                        label="Email"
-                        readonly
-                        prepend-inner-icon="mdi-email"
-                        class="modern-input"
-                        variant="outlined"
-                        rounded
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        v-model="authStore.userData.phone"
-                        label="Phone Number"
-                        prepend-inner-icon="mdi-phone"
-                        class="modern-input"
-                        variant="outlined"
-                        rounded
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="authStore.userData.email"
+                          label="Email"
+                          readonly
+                          prepend-inner-icon="mdi-email"
+                          class="modern-input"
+                          variant="outlined"
+                          rounded
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="authStore.userData.phone"
+                          label="Phone Number"
+                          prepend-inner-icon="mdi-phone"
+                          class="modern-input"
+                          variant="outlined"
+                          rounded
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
 
-                  <v-row>
-                    <v-col cols="6">
-                      <v-text-field
-                        v-model="authStore.userData.date_of_birth"
-                        label="Date of Birth"
-                        prepend-inner-icon="mdi-calendar"
-                        class="modern-input"
-                        variant="outlined"
-                        rounded
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select
-                        v-model="authStore.userData.address"
-                        :items="authStore.userData.address"
-                        label="Address"
-                        prepend-inner-icon="mdi-earth"
-                        class="modern-input"
-                        variant="outlined"
-                        rounded
-                      ></v-select>
-                    </v-col>
-                  </v-row>
+                    <v-row>
+                        <v-col cols="6">
+                          <v-menu
+                            v-model="birthdateMenu"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="290px"
+                          >
+                            <template #activator="{ props }">
+                              <v-text-field
+                                v-model="authStore.userData.date_of_birth"
+                                label="Date of Birth"
+                                prepend-inner-icon="mdi-calendar"
+                                class="modern-input"
+                                v-bind="props"
+                                variant="outlined"
+                                rounded
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              v-model="authStore.userData.date_of_birth"
+                              @input="birthdateMenu = false"
+                              :max="new Date().toISOString().substr(0, 10)"
+                            ></v-date-picker>
+                          </v-menu>
+                        </v-col>
+
+                          <v-col>
+                          <v-text-field
+                            v-model="authStore.userData.address"
+                            :items="authStore.userData.address"
+                            label="Address"
+                            prepend-inner-icon="mdi-earth"
+                            class="modern-input"
+                            variant="outlined"
+                            rounded
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Bio Section -->
-              <v-textarea
-                v-model="authStore.userData.bio"
-                label="Bio"
-                rows="4"
-                class="mt-6"
-                variant="outlined"
-              ></v-textarea>
-            </v-card>
+                <!-- Bio Section -->
+                <v-textarea
+                  v-model="authStore.userData.bio"
+                  label="Bio"
+                  rows="4"
+                  class="mt-6"
+                  variant="outlined"
+                ></v-textarea>
+
+                <v-btn
+                  class="save-button w-25 rounded-pill"
+                  depressed
+                  type="submit"
+                  @click="saveChanges"
+                >
+                  Save
+                </v-btn>
+              </v-card>
+            </v-form>
           </v-container>
         </v-main>
       </v-app>
@@ -217,6 +279,30 @@ onMounted(fetchUserData);
 }
 .modern-input{
   background: #fafbfa;
+}
+
+.save-button {
+  background-color: #4caf50; /* Primary green color */
+  color: #ffffff;
+  font-weight: 100;
+  font-size: 0.5rem;
+  box-shadow: 0px 4px 10px rgba(76, 175, 80, 0.2); /* Soft shadow */
+  transition: all 0.3s ease;
+  float: right;
+}
+.save-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+  box-shadow: 0px 6px 12px rgba(76, 175, 80, 0.3); /* More pronounced shadow on hover */
+}
+.v-menu__content {
+  border-radius: 8px;
+  background-color: #fafbfa;
+}
+
+.v-date-picker {
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 </style>
