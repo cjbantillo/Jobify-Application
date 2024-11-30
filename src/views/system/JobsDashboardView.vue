@@ -1,10 +1,27 @@
 <script setup>
 import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue'
-import { useAuthUserStore } from '@/stores/authUser'
+import { ref, onMounted } from 'vue';
+import { supabase } from '@/utils/supabase'
 
-const authStore = useAuthUserStore()
+const jobListings = ref([]);
+const loading = ref(true);
+const error = ref(null);
 
-const isStudent = authStore.userRole === 'Student'
+const fetchJobListings = async () => {
+  loading.value = true;
+  const { data, error: fetchError } = await supabase
+    .from('job_listings')
+    .select('*');
+
+  if (fetchError) {
+    error.value = fetchError.message;
+  } else {
+    jobListings.value = data;
+  }
+  loading.value = false;
+};
+
+onMounted(fetchJobListings);
 </script>
 
 <template>
@@ -15,106 +32,29 @@ const isStudent = authStore.userRole === 'Student'
         <v-main class="pt-8">
           <v-container>
             <v-row>
-              <v-col cols="12" md="6" xl="4" class="pb-6">
+              <v-col
+                cols="12"
+                md="6"
+                xl="4"
+                class="pb-6"
+                v-for="job in jobListings"
+                :key="job.id"
+              >
                 <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title"
-                    >We’re looking for Part-Time Dish Washer</v-card-title
-                  >
+                  <v-card-title class="title">{{ job.job_title }}</v-card-title>
                   <v-card-text>
                     <p class="budget">
-                      <span class="icon material-icons">attach_money</span>Est.
-                      Budget Php50/hr
+                      <span class="icon material-icons">attach_money</span>Est. Budget
+                      {{ job.salary_range }} / hr
                     </p>
                     <p class="location">
-                      <span class="icon material-icons">location_on</span>Doe
-                      Supplies • P-1 Ampayon, Butuan City
+                      <span class="icon material-icons">location_on</span>{{ job.location }}
                     </p>
                     <div class="category-label">
-                      <span class="icon material-icons"></span>Category:
-                      Hospitality
+                      Category: {{ job.category }}
                     </div>
                     <div class="job-type-duration">
-                      Job Type: Part-Time | Duration: 6 months
-                    </div>
-                  </v-card-text>
-                  <div class="button-container">
-                    <v-btn class="apply-button mt-4">Apply</v-btn>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="6" xl="4" class="pb-6" v-if="isStudent">
-                <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title"
-                    >We’re looking for Full-Time Software
-                    Developer</v-card-title
-                  >
-                  <v-card-text>
-                    <p class="budget">
-                      <span class="icon material-icons">attach_money</span>Est.
-                      Budget Php100/hr
-                    </p>
-                    <p class="location">
-                      <span class="icon material-icons">location_on</span>Doe
-                      Tech • P-2 Libertad, Butuan City
-                    </p>
-                    <div class="category-label">
-                      <span class="icon material-icons"></span>Category: IT
-                    </div>
-                    <div class="job-type-duration">
-                      Job Type: Full-Time | Duration: Permanent
-                    </div>
-                  </v-card-text>
-                  <div class="button-container">
-                    <v-btn class="apply-button mt-4">Apply</v-btn>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="6" xl="4" class="pb-6">
-                <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title"
-                    >We’re looking for Marketing Specialist</v-card-title
-                  >
-                  <v-card-text>
-                    <p class="budget">
-                      <span class="icon material-icons">attach_money</span>Est.
-                      Budget Php75/hr
-                    </p>
-                    <p class="location">
-                      <span class="icon material-icons">location_on</span>Doe
-                      Marketing • P-3 Bancasi, Butuan City
-                    </p>
-                    <div class="category-label">
-                      <span class="icon material-icons"></span>Category:
-                      Marketing
-                    </div>
-                    <div class="job-type-duration">
-                      Job Type: Part-Time | Duration: 3 months
-                    </div>
-                  </v-card-text>
-                  <div class="button-container">
-                    <v-btn class="apply-button mt-4">Apply</v-btn>
-                  </div>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="6" xl="4" class="pb-6">
-                <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title"
-                    >We’re looking for Graphic Designer</v-card-title
-                  >
-                  <v-card-text>
-                    <p class="budget">
-                      <span class="icon material-icons">attach_money</span>Est.
-                      Budget Php80/hr
-                    </p>
-                    <p class="location">
-                      <span class="icon material-icons">location_on</span>Doe
-                      Creative • P-4 Tandang Sora, Butuan City
-                    </p>
-                    <div class="category-label">
-                      <span class="icon material-icons"></span>Category: Design
-                    </div>
-                    <div class="job-type-duration">
-                      Job Type: Freelance | Duration: 1 month
+                      Job Type: {{ job.job_type }} | Duration: {{ job.duration }}
                     </div>
                   </v-card-text>
                   <div class="button-container">
@@ -123,6 +63,7 @@ const isStudent = authStore.userRole === 'Student'
                 </v-card>
               </v-col>
             </v-row>
+
           </v-container>
         </v-main>
       </v-app>
