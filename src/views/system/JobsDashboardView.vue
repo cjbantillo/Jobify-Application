@@ -17,6 +17,7 @@ const fetchJobListings = async () => {
     error.value = fetchError.message;
   } else {
     jobListings.value = data;
+    console.log(data);
   }
   loading.value = false;
 };
@@ -31,39 +32,41 @@ onMounted(fetchJobListings);
         <!-- Main Content Area -->
         <v-main class="pt-8">
           <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-                md="6"
-                xl="4"
-                class="pb-6"
-                v-for="job in jobListings"
-                :key="job.id"
-              >
-                <v-card class="pa-6 hover-card" height="250px">
-                  <v-card-title class="title">{{ job.job_title }}</v-card-title>
-                  <v-card-text>
-                    <p class="budget">
-                      <span class="icon material-icons">attach_money</span>Est. Budget
-                      {{ job.salary_range }} / hr
-                    </p>
-                    <p class="location">
-                      <span class="icon material-icons">location_on</span>{{ job.location }}
-                    </p>
-                    <div class="category-label">
-                      Category: {{ job.category }}
+            <v-card class="pa-8">
+              <v-card-title class="title">Dashboard</v-card-title>
+              <v-row>
+                <v-col
+                  cols="12"
+                  md="6"
+                  xl="4"
+                  class="pb-6"
+                  v-for="job in jobListings"
+                  :key="job.id"
+                >
+                  <v-card class="pa-6 hover-card" height="250px">
+                    <v-card-title class="title">{{ job.job_title }}</v-card-title>
+                    <v-card-text>
+                      <p class="budget">
+                        <span class="icon material-icons">attach_money</span>Est. Budget
+                        {{ job.salary_range }} / hr
+                      </p>
+                      <p class="location">
+                        <span class="icon material-icons">location_on</span>{{ job.location }}
+                      </p>
+                      <div class="category-label">
+                        Category: {{ job.category }}
+                      </div>
+                      <div class="job-type-duration">
+                        Job Type: {{ job.job_type }} | Duration: {{ job.duration }}
+                      </div>
+                    </v-card-text>
+                    <div class="button-container">
+                      <v-btn class="apply-button mt-4">Apply</v-btn>
                     </div>
-                    <div class="job-type-duration">
-                      Job Type: {{ job.job_type }} | Duration: {{ job.duration }}
-                    </div>
-                  </v-card-text>
-                  <div class="button-container">
-                    <v-btn class="apply-button mt-4">Apply</v-btn>
-                  </div>
                 </v-card>
               </v-col>
             </v-row>
-
+          </v-card>
           </v-container>
         </v-main>
       </v-app>
