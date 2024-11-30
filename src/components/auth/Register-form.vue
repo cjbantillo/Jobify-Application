@@ -23,6 +23,7 @@ const formDataDefault = {
   email: '',
   password: '',
   confirm_password: '',
+  is_employer: false,
 }
 
 const formData = ref({
@@ -45,26 +46,29 @@ const onSubmit = async () => {
       data: {
         first_name: formData.value.first_name,
         last_name: formData.value.last_name,
-        is_student: true, // Just turn to true if student account
+        is_employer: formData.value.is_employer, // Just turn to true if student account
         // role: 'Administrator' // If role based; just change the string based on role
       },
     },
   })
 
   if (error) {
-    // console.log(error)
-    formAction.value.formErrorMessage = error.message
-    formAction.value.formStatus = error.status
+    formAction.value.formErrorMessage = error.message;
+    formAction.value.formStatus = error.status;
   } else if (data) {
-    console.log(data) //user data
-    formAction.value.formSuccessMessage = 'Account created successfully'
-    //add more action if necessary
+    formAction.value.formSuccessMessage = 'Account created successfully';
+
+    // Redirect based on role
     if (data.user) {
-      router.push('/jobdashboard') //redirect to dashboard
+      const dashboardRoute = formData.value.is_employer
+        ? '/employerdashboard'
+        : '/jobdashboard';
+      router.push(dashboardRoute);
     } else {
-      formAction.value.formErrorMessage = 'Error creating account'
+      formAction.value.formErrorMessage = 'Error creating account';
     }
   }
+
   //reset form
   refVForm.value?.reset()
   //turn off form process
@@ -101,6 +105,7 @@ console.log(formDataDefault)
           :rules="[requiredValidator]"
           variant="outlined"
           rounded
+          density="compact"
         ></v-text-field>
       </v-col>
       <v-col>
@@ -110,6 +115,7 @@ console.log(formDataDefault)
           :rules="[requiredValidator]"
           variant="outlined"
           rounded
+          density="compact"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -121,6 +127,7 @@ console.log(formDataDefault)
       :rules="[requiredValidator, emailValidator]"
       variant="outlined"
       rounded
+      density="compact"
     ></v-text-field>
 
     <v-row>
@@ -136,6 +143,7 @@ console.log(formDataDefault)
           :rules="[requiredValidator, passwordValidator]"
           variant="outlined"
           rounded
+          density="compact"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -156,9 +164,23 @@ console.log(formDataDefault)
           ]"
           variant="outlined"
           rounded
+          density="compact"
         ></v-text-field>
       </v-col>
     </v-row>
+
+    <v-radio-group
+      v-model="formData.is_employer"
+      :rules="[requiredValidator]"
+      label="I'm a/an:"
+      density="compact"
+      row
+      class="small-radio-group"
+    >
+      <v-radio label="Partimer" :value="false"></v-radio>
+      <v-radio label="Employer" :value="true"></v-radio>
+    </v-radio-group>
+
 
     <!-- checkbox with toggle -->
     <v-checkbox
@@ -224,5 +246,10 @@ console.log(formDataDefault)
   font-size: 0.75rem;
   font-weight: 400;
   color: #6c757d; /* Link color */
+}
+.small-radio-group v-radio {
+  font-size: 0.5rem; /* Adjust font size as needed */
+  gap: 8px; /* Add spacing between radio buttons */
+  display: block;
 }
 </style>

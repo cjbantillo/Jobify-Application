@@ -98,15 +98,6 @@ const uploadResume = async () => {
   }
 };
 
-// View the resume
-const viewResume = () => {
-  if (resumeUrl.value) {
-    window.open(resumeUrl.value, "_blank");
-  } else {
-    alert("No resume found.");
-  }
-};
-
 // Delete the resume
 const deleteResume = async () => {
   try {
@@ -187,9 +178,6 @@ onMounted(() => {
                     height="500px"
                     style="border: none;"
                   ></iframe>
-                  <v-btn @click="viewResume">
-                    Open in Full Screen
-                  </v-btn>
                 </div>
                 <div v-else>
                   <p>No resume uploaded. Please upload one to view it here.</p>

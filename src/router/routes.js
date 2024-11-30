@@ -6,12 +6,13 @@ import HomePageView from '@/views/system/HomePageView.vue'
 import LoginView from '@/views/auth/LoginStudentView.vue'
 import RegisterView from '@/views/auth/RegisterStudentView.vue'
 import JobDashboardView from '@/views/system/JobsDashboardView.vue'
+import EmployerDashboardView from '@/views/system/EmployerDashboard.vue'
 import ResumeDashboard from '@/views/system/ResumeDashboard.vue'
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
 //must be updated
 import AccountSettingsChangePassword from '@/views/system/settings/ChangePasswordView.vue'
 import AccountSettingsNotification from '@/views/system/settings/NotificationView.vue'
-import AccountSettingsPersonalization from '@/views/system/settings/PersonalizationView.vue'  
+import AccountSettingsPersonalization from '@/views/system/settings/PersonalizationView.vue'
 import AccountSettingsSecurityPrivacy from '@/views/system/settings/SecurityPrivacyView.vue'
 
 
@@ -40,6 +41,12 @@ const routes = [
     path: '/jobdashboard',
     name: 'jobdashboard',
     component: JobDashboardView,
+    meta: { requiresAuth: true, isDefault: true },
+  },
+  {
+    path: '/employerdashboard',
+    name: 'employerdashboard',
+    component: EmployerDashboardView,
     meta: { requiresAuth: true, isDefault: true },
   },
   // resume dashboard
