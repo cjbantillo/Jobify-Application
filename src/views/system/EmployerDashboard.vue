@@ -92,13 +92,13 @@ const fetchEmployerProfile = async () => {
     .eq("user_id", user?.id)
     .single();
 
-  if (error || !data) {
-    showPopup.value = true; // Show the popup if no profile exists
-  }
+  // Show popup if no profile exists, else hide it
+  showPopup.value = !data || !!error;
 };
 
 const createEmployerProfile = async () => {
   const { data: user } = await supabase.auth.getUser();
+
   const { error } = await supabase.from("employer_profiles").insert([
     {
       ...profileForm.value,
@@ -107,14 +107,15 @@ const createEmployerProfile = async () => {
   ]);
 
   if (!error) {
-    showPopup.value = false; // Close popup on success
+    await fetchEmployerProfile(); // Re-fetch profile to confirm it was inserted
+    showPopup.value = false; // Close popup after successful insert
   } else {
     console.error(error);
   }
 };
 
+// Fetch profile on component mount
 onMounted(fetchEmployerProfile);
-
 </script>
 
 <template>
