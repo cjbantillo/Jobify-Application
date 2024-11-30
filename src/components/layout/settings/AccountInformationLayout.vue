@@ -33,7 +33,7 @@ const saveChanges = async () => {
     const userData = authStore.userData
 
     // Update user data in Supabase
-    const { data } = await supabase.auth.updateUser({
+    const { data, error } = await supabase.auth.updateUser({
       data: {
         first_name: userData.first_name,
         last_name: userData.last_name,
@@ -47,58 +47,62 @@ const saveChanges = async () => {
     // Check for errors
     if (error) throw error
 
-    alert('User data saved successfully!')
     if (data) {
-      console.log(data) // user data
-      formAction.value.formSuccessMessage = 'Save change'
+      console.log(data) // Log updated user data
+      formAction.value.formSuccessMessage = 'User data saved successfully!'
+      alert('User data saved successfully!')
     } else {
-      formAction.value.formErrorMessage = 'Failed to save user data'
+      formAction.value.formErrorMessage =
+        'Failed to save user data. Please try again.'
+      console.error('Save operation completed, but no data was returned.')
     }
   } catch (err) {
     console.error('Error saving user data:', err)
+    formAction.value.formErrorMessage =
+      'Failed to save user data. Please try again.'
     alert('Failed to save user data. Please try again.')
   }
 }
 
 // Handle file change event and upload the new image
-const handleFileChange = async (event) => {
-  const file = event.target.files[0];
+const handleFileChange = async event => {
+  const file = event.target.files[0]
   if (file) {
     // Check if the user already has an avatar
     if (authStore.userData.image_url) {
-      const fileName = authStore.userData.image_url.split('/').pop();
+      const fileName = authStore.userData.image_url.split('/').pop()
       const { error: deleteError } = await supabase.storage
         .from('avatars')
-        .remove([`public/${fileName}`]);
+        .remove([`public/${fileName}`])
 
       if (deleteError) {
-        console.error('Error deleting existing file:', deleteError);
-        alert('Failed to delete existing image. Please try again.');
-        return;
+        console.error('Error deleting existing file:', deleteError)
+        alert('Failed to delete existing image. Please try again.')
+        return
       }
     }
 
     // Upload the new image
     const { data, error } = await supabase.storage
       .from('avatars')
-      .upload(`public/${file.name}`, file);
+      .upload(`public/${file.name}`, file)
 
     if (error) {
-      console.error('Error uploading file:', error);
-      alert('Failed to upload image. Please try again.');
-      return;
+      console.error('Error uploading file:', error)
+      alert('Failed to upload image. Please try again.')
+      return
     }
 
     // Get the public URL of the uploaded image
     const imageUrl = supabase.storage
       .from('avatars')
-      .getPublicUrl(`public/${file.name}`).publicURL;
+      .getPublicUrl(`public/${file.name}`).publicURL
 
     // Update the user's profile with the new image URL
-    authStore.userData.image_url = imageUrl;
-    await saveChanges();
+    authStore.userData.image_url = imageUrl
+    await saveChanges()
   }
-};
+}
 
 onMounted(fetchUserData)
 </script>
@@ -119,7 +123,9 @@ onMounted(fetchUserData)
                 color="#4caf50"
                 size="120"
                 @click="$refs.fileInput.click()"
-              ></v-avatar>
+              >
+                <div class="avatar-text">Change Picture</div>
+              </v-avatar>
               <v-avatar
                 v-else
                 color="#4caf50"
@@ -135,6 +141,7 @@ onMounted(fetchUserData)
                     )
                   }}
                 </span>
+                <div class="avatar-text">Change Picture</div>
               </v-avatar>
               <input
                 ref="fileInput"
