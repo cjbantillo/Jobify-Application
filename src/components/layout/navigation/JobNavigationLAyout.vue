@@ -221,32 +221,24 @@ onMounted(() => {
       <v-img :src="logo" alt="Logo" max-height="80" max-width="100" class="mr-4" />
       <h3 v-if="!mobile">Jobify</h3>
       <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
       <v-text-field
           clearable
-          class="mr-4 search-bar"
+          class="my-auto search-bar"
           :loading="loading"
           append-inner-icon="mdi-magnify"
           density="compact"
           label="Search"
-          variant="solo"
+          variant="outlined"
           hide-details
           single-line
           rounded
           @click:append-inner="onClick"
         />
-
-        <v-row class="button-row align-end justify-end">
-          <v-col>
-            <v-btn
-              class="w-50 rounded-pill btn"
-              depressed
-              @click="switchToEmployer"
-            >
-              Start Hiring
-            </v-btn>
-          </v-col>
-        </v-row>
+        <v-spacer></v-spacer>
     </v-app-bar>
+
 
     <v-navigation-drawer
       v-model="drawer"
@@ -425,6 +417,7 @@ onMounted(() => {
   background-color: rgb(22, 71, 35);
 }
 .search-bar {
+  margin: 0 auto;
   font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;

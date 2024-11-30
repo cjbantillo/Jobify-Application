@@ -1,9 +1,13 @@
 <script setup>
-
+import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue';
+import { ref } from 'vue';
+import SecurityPrivacyLayout from '@/components/system/settings/SecurityPrivacyLayout.vue';
 </script>
 
 <template>
-    <div>
-        
-    </div>
+  <JobNavigationLayout>
+    <template #content>
+      <SecurityPrivacyLayout />
+    </template>
+  </JobNavigationLayout>
 </template>

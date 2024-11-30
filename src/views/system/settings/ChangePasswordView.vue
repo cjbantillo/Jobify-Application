@@ -1,9 +1,13 @@
 <script setup>
-
+import JobNavigationLAyout from '@/components/layout/navigation/JobNavigationLAyout.vue'
+import ChangePasswordLayout from '@/components/system/settings/ChangePasswordLayout.vue';
 </script>
 
 <template>
-    <div>
-        
-    </div>
+  <JobNavigationLAyout>
+    <template #content>
+     <ChangePasswordLayout />
+    </template>
+  </JobNavigationLAyout>
 </template>
+
