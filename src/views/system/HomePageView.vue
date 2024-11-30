@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import { useWindowSize } from '@vueuse/core'
 import hero from '@/assets/bg2.jpg'
+import router from '@/router'
 
 const { width } = useWindowSize()
 
