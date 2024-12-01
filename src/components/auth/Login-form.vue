@@ -38,13 +38,22 @@ const onSubmit = async () => {
     formAction.value.formStatus = error.status
   } else if (data) {
     console.log(data) // user data
-    formAction.value.formSuccessMessage = 'Logged in successfully'
-    router.replace('/jobdashboard')
+
+    // Check if user is an employer by checking the `is_employer` flag
+    const { user } = data
+    if (user?.user_metadata?.is_employer) {
+      formAction.value.formSuccessMessage = 'Logged in as employer successfully'
+      router.replace('/employerdashboard') // Redirect to employer dashboard
+    } else {
+      formAction.value.formSuccessMessage = 'Logged in successfully'
+      router.replace('/jobdashboard') // Redirect to job dashboard
+    }
   }
 
   refVForm.value?.reset()
   formAction.value.formProcess = false
 }
+
 
 // Validate and submit the form
 const onFormSubmit = () => {
