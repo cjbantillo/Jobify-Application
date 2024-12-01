@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from 'vue'
-import guidelines from '@/assets/gif/guidelines.gif'
-import password from '@/assets/gif/password.gif'
-import securityCamera from '@/assets/gif/security-camera.gif'
+import { ref } from 'vue';
+import guidelines from '@/assets/gif/guidelines.gif';
+import password from '@/assets/gif/password.gif';
+import securityCamera from '@/assets/gif/security-camera.gif';
 
 const securityGuidelines = ref([
   {
@@ -55,12 +55,12 @@ const securityGuidelines = ref([
     description:
       'We respect your privacy and follow strict protocols to ensure your data is protected. Detailed policies can be found in our Privacy Policy document.',
   },
-])
+]);
 </script>
 
 <template>
   <v-container class="container-with-gifs">
-    <v-card class="pa-6 mt-5">
+    <v-card class="pa-6 mt-5 card-elevation">
       <v-card-title class="title">
         Security, Privacy, and Community Guidelines
       </v-card-title>
@@ -81,7 +81,6 @@ const securityGuidelines = ref([
         </v-list-item>
       </v-list>
     </v-card>
-    <!-- GIFs positioned inside the container -->
     <div class="gif-container">
       <img :src="securityCamera" alt="Security Camera" class="gif" />
       <img :src="guidelines" alt="Guidelines" class="gif" />
