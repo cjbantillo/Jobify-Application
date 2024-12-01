@@ -1,7 +1,7 @@
 <script setup>
-import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue';
+import EmployerNavigationLayout from '@/components/layout/navigation/EmployerNavigationLayout.vue';
 import { ref, onMounted } from 'vue';
-import { supabase } from '@/utils/supabase';
+import { supabase, supabaseAdmin } from '@/utils/supabase';
 
 const showPopup = ref(false);
 const userInfo = ref(null); // Store user information
@@ -80,65 +80,67 @@ const submitEmployerDetails = async () => {
   }
 };
 
+// Users data and error handling
 const users = ref([]);
+const loading = ref(true);
+const errorMessage = ref('');
 
-const fetchUsersExcludingEmployers = async () => {
+// Function to fetch users
+const fetchAllUsers = async () => {
+  loading.value = true;
+  errorMessage.value = '';
   try {
-    // Fetch all users from auth.users
-    const { data: allUsers, error: usersError } = await supabase.auth.admin.listUsers();
-
+    const { data: allUsers, error: usersError } = await supabaseAdmin.auth.admin.listUsers();
     if (usersError || !allUsers?.users) {
       console.error('Error fetching users:', usersError);
+      errorMessage.value = 'Failed to load users';
       return;
     }
 
-    // Fetch all employer user IDs
-    const { data: employerProfiles, error: employersError } = await supabase
-      .from('employer_profiles')
-      .select('user_id');
-
-    if (employersError) {
-      console.error('Error fetching employer profiles:', employersError);
-      return;
-    }
-
-    const employerIds = employerProfiles.map((profile) => profile.user_id);
-
-    // Filter out employer users
-    users.value = allUsers.users.filter((user) => !employerIds.includes(user.id));
+    // Filter users where 'is_employer' is true
+    const filteredUsers = allUsers.users.filter(user => user.user_metadata.is_employer);
+    users.value = filteredUsers;
   } catch (err) {
     console.error('Unexpected error fetching users:', err);
+    errorMessage.value = 'An unexpected error occurred while fetching users';
+  } finally {
+    loading.value = false;
   }
 };
 
+
+
 // Fetch user info on component mount
-onMounted(fetchUserInfo);
-onMounted(fetchUsersExcludingEmployers);
+onMounted(async () => {
+  await fetchUserInfo();
+  await fetchAllUsers();
+});
 </script>
 
 <template>
-  <JobNavigationLayout>
+  <EmployerNavigationLayout>
     <template #content>
-      <!-- Display User Info -->
-      <v-container>
-        <h2>Users (Excluding Employers)</h2>
-        <v-card
-          v-for="user in users"
-          :key="user.id"
-          class="mb-4"
-        >
-          <v-card-title>
-            {{ user.email }}
-          </v-card-title>
-          <v-card-subtitle>
-            {{ user.id }}
-          </v-card-subtitle>
-          <v-card-text>
-            <p><strong>Created at:</strong> {{ user.created_at }}</p>
-            <p><strong>Last sign-in:</strong> {{ user.last_sign_in_at }}</p>
-          </v-card-text>
-        </v-card>
-      </v-container>
+        <v-main class="pt-8">
+          <v-container>
+
+          <div v-if="loading">Loading users...</div>
+            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+            <div v-if="!loading && !errorMessage">
+              <h2>Employer Users</h2>
+              <v-list>
+                <v-list-item-group v-for="(user, index) in users" :key="index">
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-list-item-title>
+                      <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </div>
+          </v-container>
+        </v-main>
 
       <!-- Employer Profile Creation Popup -->
       <v-dialog v-model="showPopup" persistent max-width="500">
@@ -180,7 +182,7 @@ onMounted(fetchUsersExcludingEmployers);
         </v-card>
       </v-dialog>
     </template>
-  </JobNavigationLayout>
+  </EmployerNavigationLayout>
 </template>
 
 <style scoped>

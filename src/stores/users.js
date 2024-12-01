@@ -27,6 +27,7 @@ export const useUsersStore = defineStore('users', () => {
     usersTotal.value = total
   }
 
+
   // Add User
   async function addUser(formData) {
     // eslint-disable-next-line no-unused-vars

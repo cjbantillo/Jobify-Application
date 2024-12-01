@@ -53,8 +53,6 @@ const onSubmit = async () => {
   refVForm.value?.reset()
   formAction.value.formProcess = false
 }
-
-
 // Validate and submit the form
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
