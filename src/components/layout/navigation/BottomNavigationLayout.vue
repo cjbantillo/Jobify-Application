@@ -44,4 +44,4 @@
   </footer>
 </template>
 
-<style scoped src="./css/JobNavigationLAyoutStyle.css"></style>
+<style scoped src="./css/BottomNavigationLayoutStyle.css"></style>
