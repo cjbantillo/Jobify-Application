@@ -12,7 +12,7 @@ const isDragging = ref(false) // Track dragging state
 
 const authStore = useAuthUserStore()
 
-const user_name = `${authStore.userData.first_name || ''} ${authStore.userData.last_name || ''}`
+const user_name = `${authStore.userData.first_name || ''} ${authStore.userData.last_name || ''} Resume`
 
 // Supabase bucket and file details
 const bucketName = 'resumes' // Replace with your Supabase bucket name
@@ -80,7 +80,7 @@ const uploadResume = async () => {
       .upload(filePath, resumeFile.value, {
         cacheControl: '3600',
         upsert: true,
-        contentType: resumeFile.value.type,
+        contentType: 'application/pdf',
       })
 
     if (error) throw error
