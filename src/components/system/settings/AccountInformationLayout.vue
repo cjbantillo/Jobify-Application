@@ -4,6 +4,8 @@ import { useAuthUserStore } from '@/stores/authUser'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { getAvatarText } from '@/utils/helpers'
 
+
+
 const authStore = useAuthUserStore()
 
 const birthdateMenu = ref(false)
