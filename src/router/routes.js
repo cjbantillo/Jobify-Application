@@ -13,6 +13,7 @@ import AccountSettingsChangePassword from '@/views/system/settings/ChangePasswor
 import AccountSettingsNotification from '@/views/system/settings/NotificationView.vue'
 import AccountSettingsPersonalization from '@/views/system/settings/PersonalizationView.vue'
 import AccountSettingsSecurityPrivacy from '@/views/system/settings/SecurityPrivacyView.vue'
+import EmployerInformationView from '@/views/system/EmployerInformationView.vue'
 
 
 const routes = [
@@ -53,6 +54,12 @@ const routes = [
     path: '/resume',
     name: 'resume',
     component: ResumeDashboard,
+    meta: { requiresAuth: true, isDefault: true },
+  },
+  {
+    path: '/employerinformation',
+    name: 'employerinformation',
+    component: EmployerInformationView,
     meta: { requiresAuth: true, isDefault: true },
   },
   //settings pages
