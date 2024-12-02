@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 import { useAuthUserStore } from '@/stores/authUser'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { getAvatarText } from '@/utils/helpers'
-import 'vue-cal/dist/vuecal.css'
 
 const authStore = useAuthUserStore()
 
@@ -83,7 +82,7 @@ const handleFileChange = async event => {
     }
 
     // Upload the new image
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('avatars')
       .upload(`public/${file.name}`, file)
 
