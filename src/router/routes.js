@@ -6,6 +6,7 @@ import LoginView from '@/views/auth/LoginStudentView.vue'
 import RegisterView from '@/views/auth/RegisterStudentView.vue'
 import JobDashboardView from '@/views/system/JobsDashboardView.vue'
 import EmployerDashboardView from '@/views/system/EmployerDashboard.vue'
+import PostedJobView from '@/views/system/PostJobDashboard.vue'
 import ResumeDashboard from '@/views/system/ResumeDashboard.vue'
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
 //must be updated
@@ -47,6 +48,12 @@ const routes = [
     path: '/employerdashboard',
     name: 'employerdashboard',
     component: EmployerDashboardView,
+    meta: { requiresAuth: true, isDefault: true },
+  },
+  {
+    path: '/postedjobs',
+    name: 'postedjobs',
+    component: PostedJobView,
     meta: { requiresAuth: true, isDefault: true },
   },
   // resume dashboard

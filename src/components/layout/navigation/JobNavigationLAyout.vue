@@ -19,8 +19,6 @@ const drawer = ref(true);
 const rail = ref(true);
 const loaded = ref(false);
 const loading = ref(false);
-const user = ref(null);
-const showEmployerDialog = ref(false);
 const showUploadDialog = ref(false);
 const settingsHover = ref(false);
 const selectedFile = ref(null);
@@ -30,88 +28,6 @@ const fileInput = ref(null);
 // Supabase bucket and file details
 const schedules = 'schedules'; // Ensure this matches your Supabase bucket name exactly
 const filePath = ref(''); // Use a ref for filePath
-
-// Form data for employer details
-const employerForm = ref({
-  company_name: '',
-  company_social: '',
-  company_description: '',
-  company_category: '',
-});
-
-const categories = [
-  "Retail and Wholesale",
-  "Supermarkets and Grocery Stores",
-  "Convenience Stores",
-  "Pharmacies",
-  "Hardware and Construction Supplies",
-  "Clothing and Apparel",
-  "Electronics and Gadgets",
-  "Auto Parts and Accessories",
-  "Wholesale and Trading Businesses",
-  "Food and Beverage",
-  "Restaurants",
-  "Cafés and Coffee Shops",
-  "Fast Food Chains",
-  "Food Stalls and Kiosks",
-  "Catering Services",
-  "Bakeries and Pastry Shops",
-  "Bars and Pubs",
-  "Health and Wellness",
-  "Clinics and Medical Services",
-  "Fitness Centers and Gyms",
-  "Spas and Wellness Centers",
-  "Optical Shops",
-  "Dental Clinics",
-  "Professional Services",
-  "Accounting and Bookkeeping",
-  "Legal Services",
-  "Marketing and Advertising",
-  "IT and Web Development",
-  "Real Estate Agencies",
-  "Human Resource and Recruitment",
-  "Travel and Tour Agencies",
-  "Home and Construction",
-  "Interior Design Services",
-  "Construction Firms",
-  "Appliance Repair Services",
-  "Furniture Stores",
-  "Landscaping Services",
-  "Education and Training",
-  "Tutorial Centers",
-  "Daycares and Preschools",
-  "Vocational and Technical Schools",
-  "Language Learning Centers",
-  "Review Centers",
-  "Transportation and Logistics",
-  "Public Transportation Operators",
-  "Taxi and Ride-hailing Services",
-  "Delivery and Courier Services",
-  "Freight and Logistics Companies",
-  "Vehicle Rentals",
-  "Entertainment and Leisure",
-  "Event Planning Services",
-  "Party Supplies Rentals",
-  "Photography and Videography",
-  "Resorts and Hotels",
-  "Game Zones and Arcades",
-  "Agriculture and Farming",
-  "Poultry and Livestock",
-  "Agricultural Supply Stores",
-  "Rice Milling and Grains Trading",
-  "Fresh Produce Markets",
-  "Technology and Communications",
-  "Internet Service Providers",
-  "Gadget Repair Shops",
-  "Computer Shops",
-  "Printing and Photocopying Services",
-  "Financial Services",
-  "Banks and Lending Institutions",
-  "Pawnshops",
-  "Money Remittance Services",
-  "Insurance Agencies",
-  "Investment and Trading Services",
-];
 
 const settingsOptions = [
   { title: 'Account Information', to: '/settings/account-information' },
@@ -163,38 +79,6 @@ const fetchUserData = async () => {
     }
   } catch (err) {
     console.error('Unexpected error fetching user data:', err);
-  }
-};
-
-const submitEmployerDetails = async () => {
-  try {
-    const { data: currentUser, error: userError } = await supabase.auth.getUser();
-    if (userError || !currentUser || !currentUser.user) {
-      console.error('Error fetching user:', userError);
-      return;
-    }
-
-    const employerDetails = {
-      user_id: currentUser.user.id,
-      company_name: employerForm.value.company_name,
-      company_social: employerForm.value.company_social,
-      company_category: employerForm.value.company_category,
-      created_at: new Date().toISOString(),
-    };
-
-    const { data, error } = await supabase
-      .from('employer_profiles')
-      .insert([employerDetails]);
-
-    if (error) {
-      console.error('Error inserting employer details:', error);
-      return;
-    }
-
-    showEmployerDialog.value = false;
-    router.push('/employerdashboard');
-  } catch (err) {
-    console.error('Unexpected error:', err);
   }
 };
 
@@ -362,7 +246,7 @@ onMounted(() => {
         </v-card-title>
         <v-card-text>
           <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-            <v-btn 
+            <v-btn
               color="success"
               @click="$refs.fileInput.click()"
               :style="{ backgroundColor: '#4caf50', color: 'white' }"
@@ -370,8 +254,8 @@ onMounted(() => {
             >
               Upload Schedule
             </v-btn>
-            <input 
-              type="file" 
+            <input
+              type="file"
               ref="fileInput"
               @change="handleFileChange"
               style="display: none"

@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { supabase } from '@/utils/supabase'
 import { useAuthUserStore } from '@/stores/authUser'
+import router from "@/router";
 
 const resumeFile = ref(null)
 const fileName = ref('')
@@ -85,6 +86,7 @@ const uploadResume = async () => {
 
     if (error) throw error
 
+    router.push('/resume');
     await fetchResume() // Refresh to show the uploaded file
     alert('Resume uploaded successfully!')
   } catch (error) {

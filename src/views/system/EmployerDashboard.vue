@@ -172,7 +172,7 @@ const fetchAllUsers = async () => {
     //fetch resumes for each user
     const resumePromises = filteredUsers.map(async (user) => {
       const resumePath = `${user.user_metadata.first_name}_${user.user_metadata.last_name}.pdf`;
-      const { data, error } = await supabase.storage.from('resumes').getPublicUrl(resumePath);
+      const { data, error } = supabase.storage.from('resumes').getPublicUrl(resumePath);
       return {
         id: user.id,
         name: `${user.user_metadata.first_name} ${user.user_metadata.last_name}`,
@@ -215,16 +215,7 @@ onMounted(async () => {
                       <v-card-subtitle class="text-body-2 mb-4">{{ user.id }}</v-card-subtitle>
                       <v-card-text>
                         <div v-if="resumes" class="resume-preview">
-                  <h3>Your Uploaded Resume:</h3>
-                  <iframe
-                    :src="resumeUrl"
-                    width="100%"
-                    height="500px"
-                    style="border: none;"
-                  ></iframe>
-                  <v-btn @click="viewResume">
-                    Open in Full Screen
-                  </v-btn>
+                  <v-btn :src="resumeURL">Resume</v-btn>
                 </div>
                 <div v-else>
                   <p>No resume uploaded. Please upload one to view it here.</p>
