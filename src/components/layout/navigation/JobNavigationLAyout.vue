@@ -1,11 +1,10 @@
 <script setup>
-import BottomNavigationLayout from './BottomNavigationLayout.vue'
-import { useRouter } from 'vue-router'
-import { supabase, formActionDefault } from '@/utils/supabase.js'
-import { useAuthUserStore } from '@/stores/authUser'
-import { useWindowSize } from '@vueuse/core'
-import { getAvatarText } from '@/utils/helpers';
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { supabase, formActionDefault } from '@/utils/supabase.js';
+import { useAuthUserStore } from '@/stores/authUser';
+import { useWindowSize } from '@vueuse/core';
+import { getAvatarText } from '@/utils/helpers';
 import logo from "@/assets/jobify1_Logo.png";
 
 // Reactive screen dimensions
@@ -22,7 +21,15 @@ const loaded = ref(false);
 const loading = ref(false);
 const user = ref(null);
 const showEmployerDialog = ref(false);
+const showUploadDialog = ref(false);
 const settingsHover = ref(false);
+const selectedFile = ref(null);
+const fileName = ref('');
+const fileInput = ref(null);
+
+// Supabase bucket and file details
+const schedules = 'schedules'; // Ensure this matches your Supabase bucket name exactly
+const filePath = ref(''); // Use a ref for filePath
 
 // Form data for employer details
 const employerForm = ref({
@@ -146,44 +153,37 @@ const Logout = async () => {
   router.replace('/');
 };
 
-
 // Fetch user data on component mount
 const fetchUserData = async () => {
   try {
-
     const { data: currentUser, error: userError } = await supabase.auth.getUser();
     if (userError || !currentUser?.user?.id) {
       console.error('Error fetching current user:', userError || 'No user logged in');
       return;
     }
-
   } catch (err) {
     console.error('Unexpected error fetching user data:', err);
   }
-  console.log(user.value)
 };
 
 const submitEmployerDetails = async () => {
   try {
-    // Get the current logged-in user
     const { data: currentUser, error: userError } = await supabase.auth.getUser();
     if (userError || !currentUser || !currentUser.user) {
       console.error('Error fetching user:', userError);
       return;
     }
 
-    // Prepare the employer details to be inserted
     const employerDetails = {
-      user_id: currentUser.user.id, // Map the foreign key
+      user_id: currentUser.user.id,
       company_name: employerForm.value.company_name,
       company_social: employerForm.value.company_social,
       company_category: employerForm.value.company_category,
-      created_at: new Date().toISOString(), // Timestamp
+      created_at: new Date().toISOString(),
     };
 
-    // Insert the employer details into the 'employer_profiles' table
     const { data, error } = await supabase
-      .from('employer_profiles') // Your table name
+      .from('employer_profiles')
       .insert([employerDetails]);
 
     if (error) {
@@ -191,16 +191,49 @@ const submitEmployerDetails = async () => {
       return;
     }
 
-    console.log('Employer details submitted successfully:', data);
-
-    // Close the dialog after successful submission
     showEmployerDialog.value = false;
-
-    // Redirect to the employer dashboard
     router.push('/employerdashboard');
   } catch (err) {
     console.error('Unexpected error:', err);
   }
+};
+
+// Upload file to Supabase
+const uploadFile = async () => {
+  if (!selectedFile.value) return;
+
+  try {
+    loading.value = true;
+    const { error } = await supabase.storage
+      .from(schedules) // Ensure the bucket name is correct
+      .upload(filePath.value, selectedFile.value, {
+        cacheControl: '3600',
+        upsert: true,
+        contentType: selectedFile.value.type,
+      });
+
+    if (error) throw error;
+
+    alert('Successfully submitted!');
+    showUploadDialog.value = false;
+  } catch (error) {
+    console.error('Error uploading schedule:', error.message);
+    alert(`Failed to upload schedule: ${error.message}`);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Handle file input change
+const handleFileChange = (event) => {
+  processFile(event.target.files[0]);
+};
+
+// Process the selected file
+const processFile = (file) => {
+  selectedFile.value = file;
+  fileName.value = file.name;
+  filePath.value = `${authStore.userData.first_name || ''} ${authStore.userData.last_name || ''}/${file.name}`; // Create a unique file path
 };
 
 // Lifecycle hook
@@ -221,24 +254,21 @@ onMounted(() => {
       <v-img :src="logo" alt="Logo" max-height="80" max-width="100" class="mr-4" />
       <h3 v-if="!mobile">Jobify</h3>
       <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
       <v-text-field
-          clearable
-          class="my-auto search-bar"
-          :loading="loading"
-          append-inner-icon="mdi-magnify"
-          density="compact"
-          label="Search"
-          variant="outlined"
-          hide-details
-          single-line
-          rounded
-          @click:append-inner="onClick"
-        />
-        <v-spacer></v-spacer>
+        clearable
+        class="my-auto search-bar"
+        :loading="loading"
+        append-inner-icon="mdi-magnify"
+        density="compact"
+        label="Search"
+        variant="outlined"
+        hide-details
+        single-line
+        rounded
+        @click:append-inner="onClick"
+      />
+      <v-spacer></v-spacer>
     </v-app-bar>
-
 
     <v-navigation-drawer
       v-model="drawer"
@@ -248,16 +278,11 @@ onMounted(() => {
       width="250"
       @click="rail = false"
     >
-
-      <!-- Conditional Rendering of User Info -->
       <v-list-item
         :subtitle="authStore.userData.email"
-        :title="
-          authStore.userData.first_name + ' ' + authStore.userData.last_name
-        "
+        :title="authStore.userData.first_name + ' ' + authStore.userData.last_name"
         nav
       >
-        <!-- Prepend Avatar -->
         <template v-slot:prepend>
           <v-avatar
             v-if="authStore.userData.image_url"
@@ -265,20 +290,10 @@ onMounted(() => {
             color="#4caf50"
             :size="rail ? '24' : '40'"
           ></v-avatar>
-
           <v-avatar v-else color="#4caf50">
-            <span>
-              {{
-                getAvatarText(
-                  authStore.userData.first_name + ' ' + authStore.userData.last_name,
-                )
-              }}
-            </span>
+            <span>{{ getAvatarText(authStore.userData.first_name + ' ' + authStore.userData.last_name) }}</span>
           </v-avatar>
-
         </template>
-
-        <!-- Append Slot for the Button -->
         <template v-slot:append>
           <v-btn
             icon="mdi-chevron-left"
@@ -303,6 +318,12 @@ onMounted(() => {
           value="applications"
           to="/resume"
         ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-upload"
+          title="Upload Schedule"
+          value="upload"
+          @click="showUploadDialog = true"
+        ></v-list-item>
 
         <v-list-group
           prepend-icon="mdi-cog-outline"
@@ -313,10 +334,8 @@ onMounted(() => {
           @mouseleave="settingsHover = false"
         >
           <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props">
-            </v-list-item>
+            <v-list-item v-bind="props"></v-list-item>
           </template>
-
           <v-list-item
             v-for="item in settingsOptions"
             :key="item.title"
@@ -325,7 +344,6 @@ onMounted(() => {
             class="pl-4"
           ></v-list-item>
         </v-list-group>
-
 
         <v-list-item
           prepend-icon="mdi-logout"
@@ -337,53 +355,47 @@ onMounted(() => {
       </v-list>
     </v-navigation-drawer>
 
-    <v-dialog v-model="showEmployerDialog" max-width="600px">
-    <v-card class="p-5" :style="{ backgroundColor: '#f7f9f7' }">
-      <v-card-title class="text-h6 text-center" :style="{ color: '#4caf50' }">
-        Employer Details
-      </v-card-title>
-      <v-card-text>
-        <v-text-field
-          v-model="employerForm.company_name"
-          label="Company Name"
-          required
-          outlined
-          dense
-        />
-        <v-text-field
-          v-model="employerForm.company_social"
-          label="Company Socials"
-          outlined
-          dense
-        />
-        <v-select
-          v-model="employerForm.company_category"
-          :items="categories"
-          label="Company Category"
-          required
-          item-value="name"
-          item-text="name"
-          outlined
-          dense
-        />
-      </v-card-text>
-      <v-card-actions>
-        <v-btn
-          text
-          @click="showEmployerDialog = false"
-          :style="{ color: '#4caf50' }"
-        >
-          Cancel
-        </v-btn>
-        <v-btn
-          color="success"
-          @click="submitEmployerDetails"
-        >
-          Submit
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <v-dialog v-model="showUploadDialog" max-width="600px">
+      <v-card class="p-5" :style="{ backgroundColor: '#f7f9f7' }">
+        <v-card-title class="text-h6 text-center" :style="{ color: '#4caf50' }">
+          Upload Schedule
+        </v-card-title>
+        <v-card-text>
+          <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <v-btn 
+              color="success"
+              @click="$refs.fileInput.click()"
+              :style="{ backgroundColor: '#4caf50', color: 'white' }"
+              prepend-icon="mdi-upload"
+            >
+              Upload Schedule
+            </v-btn>
+            <input 
+              type="file" 
+              ref="fileInput"
+              @change="handleFileChange"
+              style="display: none"
+            />
+            <span v-if="fileName" style="margin-top: 10px;">{{ fileName }}</span>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            text
+            @click="showUploadDialog = false"
+            :style="{ color: '#4caf50' }"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="success"
+            @click="uploadFile"
+          >
+            Submit
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-main :class="{ 'pt-2': mobile, 'pt-8': !mobile }">
       <v-container :fluid="mobile">
@@ -395,36 +407,41 @@ onMounted(() => {
   </v-app>
 </template>
 
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
-*{
+* {
   font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;
 }
+
 .button-row {
   color: #fff; /* Same primary green for the text */
   font-weight: 100;
   font-size: 0.5rem;
   transition: all 0.3s ease;
   float: right;
-
 }
-.button-row .btn{
+
+.button-row .btn {
   text-transform: none;
   float: right;
   background-color: rgb(22, 71, 35);
 }
+
 .search-bar {
   margin: 0 auto;
   font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;
 }
+
 .appbar {
   background: #4caf50;
 }
+
 .v-btn {
   font-weight: 500;
 }
@@ -450,9 +467,11 @@ onMounted(() => {
   padding: 20px 24px;
 }
 
-.v-btn.primary {
+.v-btn.primary, .v-btn.success {
   background-color: #4caf50 !important;
+  color: white !important;
 }
+
 .v-avatar {
   width: 40px;
   height: 40px;
@@ -468,9 +487,11 @@ onMounted(() => {
   width: 24px;
   height: 24px;
 }
+
 .v-navigation-drawer[rail] .v-list-item {
   justify-content: center; /* Center list items in collapsed state */
 }
+
 .v-navigation-drawer {
   transition: width 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
@@ -521,4 +542,30 @@ onMounted(() => {
   color: #388e3c; /* Darker green text for contrast */
 }
 
+/* Upload Schedule Styles */
+.v-dialog .v-card {
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.v-dialog .v-card-title {
+  font-weight: 600;
+  text-align: center;
+  color: #4caf50;
+}
+
+.v-dialog .v-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.v-btn.success {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.v-dialog .v-btn {
+  margin: auto;
+}
 </style>
