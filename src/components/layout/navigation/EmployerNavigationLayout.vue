@@ -304,6 +304,13 @@ onMounted(() => {
           to="/employerinformation"
         ></v-list-item>
 
+        <v-list-item
+          prepend-icon="mdi-alpha-a"
+          title="Posted Jobs"
+          value="postedjobs"
+          to="/postedjobs"
+        ></v-list-item>
+
         <v-list-group
           prepend-icon="mdi-cog-outline"
           title="Settings"
@@ -391,12 +398,16 @@ onMounted(() => {
       </v-container>
     </v-main>
 
-    <BottomNavigationLayout v-if="mobile" />
+    <BottomNavigationLayout />
   </v-app>
 </template>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+.BottomNavigationLayout{
+  z-index: 1000;
+}
 
 *{
   font-family: 'Varela Round', sans-serif;

@@ -23,6 +23,7 @@ const mobile = computed(() => width.value <= 768)
 const authStore = useAuthUserStore()
 
 // Reactive variables
+<<<<<<< HEAD
 const drawer = ref(true)
 const rail = ref(true)
 const loaded = ref(false)
@@ -34,11 +35,23 @@ const settingsHover = ref(false)
 const selectedFile = ref(null)
 const fileName = ref('')
 const fileInput = ref(null)
+=======
+const drawer = ref(true);
+const rail = ref(true);
+const loaded = ref(false);
+const loading = ref(false);
+const showUploadDialog = ref(false);
+const settingsHover = ref(false);
+const selectedFile = ref(null);
+const fileName = ref('');
+const fileInput = ref(null);
+>>>>>>> safety
 
 // Supabase bucket and file details
 const schedules = 'schedules' // Ensure this matches your Supabase bucket name exactly
 const filePath = ref('') // Use a ref for filePath
 
+<<<<<<< HEAD
 // Form data for employer details
 const employerForm = ref({
   company_name: '',
@@ -121,6 +134,8 @@ const categories = [
   'Investment and Trading Services',
 ]
 
+=======
+>>>>>>> safety
 const settingsOptions = [
   { title: 'Account Information', to: '/settings/account-information' },
   { title: 'Change Password', to: '/settings/change-password' },
@@ -176,6 +191,7 @@ const fetchUserData = async () => {
   }
 }
 
+<<<<<<< HEAD
 const submitEmployerDetails = async () => {
   try {
     const { data: currentUser, error: userError } =
@@ -209,6 +225,8 @@ const submitEmployerDetails = async () => {
   }
 }
 
+=======
+>>>>>>> safety
 // Upload file to Supabase
 const uploadFile = async () => {
   if (!selectedFile.value) return
@@ -411,6 +429,7 @@ onMounted(() => {
           Upload Schedule
         </v-card-title>
         <v-card-text>
+<<<<<<< HEAD
           <div
             style="
               display: flex;
@@ -419,6 +438,9 @@ onMounted(() => {
               flex-direction: column;
             "
           >
+=======
+          <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+>>>>>>> safety
             <v-btn
               color="success"
               @click="$refs.fileInput.click()"
