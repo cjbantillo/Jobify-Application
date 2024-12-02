@@ -405,10 +405,6 @@ onMounted(() => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
-.BottomNavigationLayout{
-  z-index: 1000;
-}
-
 *{
   font-family: 'Varela Round', sans-serif;
   font-weight: 400;
