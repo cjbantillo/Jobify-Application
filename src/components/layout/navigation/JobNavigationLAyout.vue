@@ -242,9 +242,6 @@ onMounted(() => {
 });
 </script>
 
-
-
-
 <template>
   <v-app class="d-flex fill-height">
     <v-app-bar
@@ -369,6 +366,7 @@ onMounted(() => {
               color="success"
               @click="$refs.fileInput.click()"
               :style="{ backgroundColor: '#4caf50', color: 'white' }"
+              prepend-icon="mdi-upload"
             >
               Upload Schedule
             </v-btn>
@@ -408,6 +406,7 @@ onMounted(() => {
     <BottomNavigationLayout v-if="mobile" />
   </v-app>
 </template>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
