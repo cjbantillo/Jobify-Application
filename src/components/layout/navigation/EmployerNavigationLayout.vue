@@ -8,6 +8,15 @@ import { getAvatarText } from '@/utils/helpers';
 import { ref, computed, onMounted } from 'vue';
 import logo from "@/assets/jobify1_Logo.png";
 
+// this item is for the notification bell for further update
+const items = [
+  { title: 'Click Me' },
+  { title: 'Click Me' },
+  { title: 'Click Me' },
+  { title: 'Click Me 2' },
+]
+
+
 // Reactive screen dimensions
 const { width } = useWindowSize();
 const mobile = computed(() => width.value <= 768);
@@ -109,8 +118,6 @@ const categories = [
 const settingsOptions = [
   { title: 'Account Information', to: '/settings/account-information' },
   { title: 'Change Password', to: '/settings/change-password' },
-  { title: 'Notification', to: '/settings/notification' },
-  { title: 'Personalization', to: '/settings/personalization' },
   { title: 'Security & Privacy', to: '/settings/security-privacy' },
 ];
 
@@ -237,6 +244,22 @@ onMounted(() => {
           @click:append-inner="onClick"
         />
         <v-spacer></v-spacer>
+
+        <!-- // Notification Bell -->
+         
+      <v-menu open-on-click>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" icon>
+            <v-icon>mdi-bell-outline</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item v-for="(item, index) in items" :key="index">
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
 
