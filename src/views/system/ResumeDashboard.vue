@@ -38,6 +38,7 @@ const fetchResume = async () => {
 
     if (data.publicUrl) {
       resumeUrl.value = data.publicUrl; // Set resume URL to the fetched public URL
+      console.log(resumeUrl)
     } else {
       resumeUrl.value = ""; // File not found
     }

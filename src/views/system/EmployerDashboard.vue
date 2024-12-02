@@ -15,7 +15,74 @@ const categories = ref([
   "Retail and Wholesale",
   "Supermarkets and Grocery Stores",
   "Convenience Stores",
-  // ... other categories
+  "Pharmacies",
+  "Hardware and Construction Supplies",
+  "Clothing and Apparel",
+  "Electronics and Gadgets",
+  "Auto Parts and Accessories",
+  "Wholesale and Trading Businesses",
+  "Food and Beverage",
+  "Restaurants",
+  "Cafés and Coffee Shops",
+  "Fast Food Chains",
+  "Food Stalls and Kiosks",
+  "Catering Services",
+  "Bakeries and Pastry Shops",
+  "Bars and Pubs",
+  "Health and Wellness",
+  "Clinics and Medical Services",
+  "Fitness Centers and Gyms",
+  "Spas and Wellness Centers",
+  "Optical Shops",
+  "Dental Clinics",
+  "Professional Services",
+  "Accounting and Bookkeeping",
+  "Legal Services",
+  "Marketing and Advertising",
+  "IT and Web Development",
+  "Real Estate Agencies",
+  "Human Resource and Recruitment",
+  "Travel and Tour Agencies",
+  "Home and Construction",
+  "Interior Design Services",
+  "Construction Firms",
+  "Appliance Repair Services",
+  "Furniture Stores",
+  "Landscaping Services",
+  "Education and Training",
+  "Tutorial Centers",
+  "Daycares and Preschools",
+  "Vocational and Technical Schools",
+  "Language Learning Centers",
+  "Review Centers",
+  "Transportation and Logistics",
+  "Public Transportation Operators",
+  "Taxi and Ride-hailing Services",
+  "Delivery and Courier Services",
+  "Freight and Logistics Companies",
+  "Vehicle Rentals",
+  "Entertainment and Leisure",
+  "Event Planning Services",
+  "Party Supplies Rentals",
+  "Photography and Videography",
+  "Resorts and Hotels",
+  "Game Zones and Arcades",
+  "Agriculture and Farming",
+  "Poultry and Livestock",
+  "Agricultural Supply Stores",
+  "Rice Milling and Grains Trading",
+  "Fresh Produce Markets",
+  "Technology and Communications",
+  "Internet Service Providers",
+  "Gadget Repair Shops",
+  "Computer Shops",
+  "Printing and Photocopying Services",
+  "Financial Services",
+  "Banks and Lending Institutions",
+  "Pawnshops",
+  "Money Remittance Services",
+  "Insurance Agencies",
+  "Investment and Trading Services",
 ]);
 
 const fetchUserInfo = async () => {
@@ -44,7 +111,6 @@ const fetchUserInfo = async () => {
 
     // Fetch and store user details
     userInfo.value = { ...user.user }; // Store user info
-    delete userInfo.value.is_employers; // Remove the `is_employers` field
   } catch (err) {
     console.error('Unexpected error while fetching user information:', err);
   }
@@ -86,10 +152,11 @@ const loading = ref(true);
 const errorMessage = ref('');
 const resumes = ref([]);
 
-// Function to fetch users
+//function to fetch users
 const fetchAllUsers = async () => {
   loading.value = true;
   errorMessage.value = '';
+
   try {
     const { data: allUsers, error: usersError } = await supabaseAdmin.auth.admin.listUsers();
     if (usersError || !allUsers?.users) {
@@ -98,41 +165,25 @@ const fetchAllUsers = async () => {
       return;
     }
 
-    // Filter users where 'is_employer' is true
+    //filter users who are not employers
     const filteredUsers = allUsers.users.filter(user => !user.user_metadata.is_employer);
-    const user_name = allUsers.users.map(user => `${user.user_metadata.first_name} ${user.user_metadata.last_name}`);
     users.value = filteredUsers;
 
-    // Fetch signed URLs for resumes
+    //fetch resumes for each user
     const resumePromises = filteredUsers.map(async (user) => {
-      const user_id = user.id; // Assuming `user_id` is stored in `user_metadata`
-      try {
-        const { data: signedURL, error: urlError } = await supabase.storage
-          .from('resumes')
-          .createSignedUrl(`${ user_name }.pdf`); // 1-hour expiry
-
-        if (urlError) {
-          console.error(`Error generating signed URL for user ${user_id}:`, urlError.message);
-          return { user_id, resumeLink: null, error: urlError.message };
-        }
-
-        return { user_id, resumeLink: signedURL.signedUrl, error: null }; // Success
-      } catch (err) {
-        console.error(`Unexpected error generating URL for user ${user_id}:`, err.message);
-        return { user_id, resumeLink: null, error: err.message };
-      }
+      const resumePath = `${user.user_metadata.first_name}_${user.user_metadata.last_name}.pdf`;
+      const { data, error } = await supabase.storage.from('resumes').getPublicUrl(resumePath);
+      return {
+        id: user.id,
+        name: `${user.user_metadata.first_name} ${user.user_metadata.last_name}`,
+        resumeUrl: error ? null : data.publicUrl,
+      };
     });
 
-    // Resolve all promises
-    const fetchedResumes = await Promise.all(resumePromises);
-
-    // Store resume links or handle further
-    resumes.value = fetchedResumes.filter(({ resumeLink }) => resumeLink); // Store only successful fetches
-
-
+    resumes.value = await Promise.all(resumePromises);
   } catch (err) {
     console.error('Unexpected error fetching users:', err);
-    errorMessage.value = 'An unexpected error occurred while fetching users';
+    errorMessage.value = 'An unexpected error occurred while fetching users.';
   } finally {
     loading.value = false;
   }
@@ -163,9 +214,21 @@ onMounted(async () => {
                       <v-card-title class="text-h6">{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-card-title>
                       <v-card-subtitle class="text-body-2 mb-4">{{ user.id }}</v-card-subtitle>
                       <v-card-text>
-                        <div v-for="resume in resumes" :key="resume.user_id">
-                          <a :href="resume.resumeLink" target="_blank">View Resume for User {{ resume.user_id }}</a>
-                        </div>
+                        <div v-if="resumes" class="resume-preview">
+                  <h3>Your Uploaded Resume:</h3>
+                  <iframe
+                    :src="resumeUrl"
+                    width="100%"
+                    height="500px"
+                    style="border: none;"
+                  ></iframe>
+                  <v-btn @click="viewResume">
+                    Open in Full Screen
+                  </v-btn>
+                </div>
+                <div v-else>
+                  <p>No resume uploaded. Please upload one to view it here.</p>
+                </div>
                       </v-card-text>
                     </v-card>
                   </v-col>
@@ -229,7 +292,7 @@ onMounted(async () => {
   font-style: normal;
 }
 .cont{
-  border-radius: 4%;
+  border-radius: 20px;
 }
 .title{
   margin-left: 0.5rem;
