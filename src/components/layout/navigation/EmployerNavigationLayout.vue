@@ -8,6 +8,15 @@ import { getAvatarText } from '@/utils/helpers';
 import { ref, computed, onMounted } from 'vue';
 import logo from "@/assets/jobify1_Logo.png";
 
+// this item is for the notification bell for further update
+const items = [
+  { title: 'Click Me' },
+  { title: 'Click Me' },
+  { title: 'Click Me' },
+  { title: 'Click Me 2' },
+]
+
+
 // Reactive screen dimensions
 const { width } = useWindowSize();
 const mobile = computed(() => width.value <= 768);
@@ -109,8 +118,6 @@ const categories = [
 const settingsOptions = [
   { title: 'Account Information', to: '/settings/account-information' },
   { title: 'Change Password', to: '/settings/change-password' },
-  { title: 'Notification', to: '/settings/notification' },
-  { title: 'Personalization', to: '/settings/personalization' },
   { title: 'Security & Privacy', to: '/settings/security-privacy' },
 ];
 
@@ -237,6 +244,22 @@ onMounted(() => {
           @click:append-inner="onClick"
         />
         <v-spacer></v-spacer>
+
+        <!-- // Notification Bell -->
+         
+      <v-menu open-on-click>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" icon>
+            <v-icon>mdi-bell-outline</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item v-for="(item, index) in items" :key="index">
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
 
@@ -302,6 +325,13 @@ onMounted(() => {
           title="Employer Information"
           value="applications"
           to="/employerinformation"
+        ></v-list-item>
+
+        <v-list-item
+          prepend-icon="mdi-alpha-a"
+          title="Posted Jobs"
+          value="postedjobs"
+          to="/postedjobs"
         ></v-list-item>
 
         <v-list-group
@@ -391,134 +421,10 @@ onMounted(() => {
       </v-container>
     </v-main>
 
-    <BottomNavigationLayout v-if="mobile" />
+    <BottomNavigationLayout />
   </v-app>
 </template>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
-
-*{
-  font-family: 'Varela Round', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.button-row {
-  color: #fff; /* Same primary green for the text */
-  font-weight: 100;
-  font-size: 0.5rem;
-  transition: all 0.3s ease;
-  float: right;
-
-}
-.button-row .btn{
-  text-transform: none;
-  float: right;
-  background-color: rgb(22, 71, 35);
-}
-.search-bar {
-  margin: 0 auto;
-  font-family: 'Varela Round', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.appbar {
-  background: #4caf50;
-}
-.v-btn {
-  font-weight: 500;
-}
-
-.v-select, .v-text-field {
-  margin-bottom: 20px; /* Margin between fields */
-}
-
-.v-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px; /* Padding around the card */
-}
-
-.v-dialog .v-card-title {
-  font-weight: 600;
-  padding-bottom: 20px; /* Padding below the title */
-}
-
-.v-card-actions {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 24px;
-}
-
-.v-btn.primary {
-  background-color: #4caf50 !important;
-}
-.v-avatar {
-  width: 40px;
-  height: 40px;
-  min-width: 24px;
-  min-height: 24px;
-  border-radius: 50%; /* Keep it circular */
-  margin: 0 auto; /* Center the avatar */
-  transition: width 0.2s ease, height 0.2s ease; /* Smooth resizing */
-  margin: 0px;
-}
-
-.v-navigation-drawer[rail] .v-avatar {
-  width: 24px;
-  height: 24px;
-}
-.v-navigation-drawer[rail] .v-list-item {
-  justify-content: center; /* Center list items in collapsed state */
-}
-.v-navigation-drawer {
-  transition: width 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden;
-}
-
-.v-navigation-drawer:hover {
-  width: 250px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.v-navigation-drawer[rail] {
-  width: 40px !important;
-}
-
-.v-navigation-drawer[rail]:hover {
-  width: 250px !important;
-}
-
-.v-list-item {
-  display: flex;
-  align-items: center;
-  margin: 5px 0; /* Adjusted to avoid redundant margin conflicts */
-  height: 2rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* List Item Hover */
-.v-list-item:hover {
-  background-color: #e8f5e9; /* Light green background on hover */
-  color: #4caf50; /* Primary green for text on hover */
-}
-
-/* List Group Header Styles */
-.v-list-group__header {
-  font-weight: 500;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* List Group Header Hover */
-.v-list-group__header:hover {
-  background-color: #4caf50; /* Primary green background */
-  color: white; /* White text for contrast */
-}
-
-/* Alternate Hover Background */
-.v-list-item:hover.alt {
-  background-color: #d0f0c0; /* Softer green alternative */
-  color: #388e3c; /* Darker green text for contrast */
-}
+<style scoped src="./css/EmployerNavigationLayoutStyle.css">
 
 </style>

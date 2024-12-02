@@ -1,4 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
+*{
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
 /* General avatar styling */
 .v-avatar {
   width: 120px;
