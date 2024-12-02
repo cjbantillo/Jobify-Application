@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue'
-import { useAuthUserStore } from '@/stores/authUser'
+// import { useAuthUserStore } from '@/stores/authUser'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 
-const authStore = useAuthUserStore()
+// const authStore = useAuthUserStore()
 
 // supabase form action
 const formAction = ref({
@@ -31,7 +31,7 @@ const changePassword = async () => {
   }
 
   try {
-    const { data, error } = await supabase.auth.updateUser({
+    const { error } = await supabase.auth.updateUser({
       password: newPassword.value,
     })
 

@@ -10,7 +10,6 @@ import ResumeDashboard from '@/views/system/ResumeDashboard.vue'
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
 //must be updated
 import AccountSettingsChangePassword from '@/views/system/settings/ChangePasswordView.vue'
-import AccountSettingsNotification from '@/views/system/settings/NotificationView.vue'
 import AccountSettingsPersonalization from '@/views/system/settings/PersonalizationView.vue'
 import AccountSettingsSecurityPrivacy from '@/views/system/settings/SecurityPrivacyView.vue'
 
@@ -68,12 +67,7 @@ const routes = [
     component: AccountSettingsChangePassword,
     meta: { requiresAuth: true, isDefault: true },
   },
-  {
-    path: '/settings/notification',
-    name: 'notification',
-    component: AccountSettingsNotification,
-    meta: { requiresAuth: true, isDefault: true },
-  },
+
   {
     path: '/settings/personalization',
     name: 'personalization',
