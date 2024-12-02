@@ -15,7 +15,74 @@ const categories = ref([
   "Retail and Wholesale",
   "Supermarkets and Grocery Stores",
   "Convenience Stores",
-  // ... other categories
+  "Pharmacies",
+  "Hardware and Construction Supplies",
+  "Clothing and Apparel",
+  "Electronics and Gadgets",
+  "Auto Parts and Accessories",
+  "Wholesale and Trading Businesses",
+  "Food and Beverage",
+  "Restaurants",
+  "Cafés and Coffee Shops",
+  "Fast Food Chains",
+  "Food Stalls and Kiosks",
+  "Catering Services",
+  "Bakeries and Pastry Shops",
+  "Bars and Pubs",
+  "Health and Wellness",
+  "Clinics and Medical Services",
+  "Fitness Centers and Gyms",
+  "Spas and Wellness Centers",
+  "Optical Shops",
+  "Dental Clinics",
+  "Professional Services",
+  "Accounting and Bookkeeping",
+  "Legal Services",
+  "Marketing and Advertising",
+  "IT and Web Development",
+  "Real Estate Agencies",
+  "Human Resource and Recruitment",
+  "Travel and Tour Agencies",
+  "Home and Construction",
+  "Interior Design Services",
+  "Construction Firms",
+  "Appliance Repair Services",
+  "Furniture Stores",
+  "Landscaping Services",
+  "Education and Training",
+  "Tutorial Centers",
+  "Daycares and Preschools",
+  "Vocational and Technical Schools",
+  "Language Learning Centers",
+  "Review Centers",
+  "Transportation and Logistics",
+  "Public Transportation Operators",
+  "Taxi and Ride-hailing Services",
+  "Delivery and Courier Services",
+  "Freight and Logistics Companies",
+  "Vehicle Rentals",
+  "Entertainment and Leisure",
+  "Event Planning Services",
+  "Party Supplies Rentals",
+  "Photography and Videography",
+  "Resorts and Hotels",
+  "Game Zones and Arcades",
+  "Agriculture and Farming",
+  "Poultry and Livestock",
+  "Agricultural Supply Stores",
+  "Rice Milling and Grains Trading",
+  "Fresh Produce Markets",
+  "Technology and Communications",
+  "Internet Service Providers",
+  "Gadget Repair Shops",
+  "Computer Shops",
+  "Printing and Photocopying Services",
+  "Financial Services",
+  "Banks and Lending Institutions",
+  "Pawnshops",
+  "Money Remittance Services",
+  "Insurance Agencies",
+  "Investment and Trading Services",
 ]);
 
 const fetchUserInfo = async () => {
@@ -44,7 +111,6 @@ const fetchUserInfo = async () => {
 
     // Fetch and store user details
     userInfo.value = { ...user.user }; // Store user info
-    delete userInfo.value.is_employers; // Remove the `is_employers` field
   } catch (err) {
     console.error('Unexpected error while fetching user information:', err);
   }
@@ -84,11 +150,13 @@ const submitEmployerDetails = async () => {
 const users = ref([]);
 const loading = ref(true);
 const errorMessage = ref('');
+const resumes = ref([]);
 
-// Function to fetch users
+//function to fetch users
 const fetchAllUsers = async () => {
   loading.value = true;
   errorMessage.value = '';
+
   try {
     const { data: allUsers, error: usersError } = await supabaseAdmin.auth.admin.listUsers();
     if (usersError || !allUsers?.users) {
@@ -97,17 +165,29 @@ const fetchAllUsers = async () => {
       return;
     }
 
-    // Filter users where 'is_employer' is true
+    //filter users who are not employers
     const filteredUsers = allUsers.users.filter(user => !user.user_metadata.is_employer);
     users.value = filteredUsers;
+
+    //fetch resumes for each user
+    const resumePromises = filteredUsers.map(async (user) => {
+      const resumePath = `${user.user_metadata.first_name}_${user.user_metadata.last_name}.pdf`;
+      const { data, error } = supabase.storage.from('resumes').getPublicUrl(resumePath);
+      return {
+        id: user.id,
+        name: `${user.user_metadata.first_name} ${user.user_metadata.last_name}`,
+        resumeUrl: error ? null : data.publicUrl,
+      };
+    });
+
+    resumes.value = await Promise.all(resumePromises);
   } catch (err) {
     console.error('Unexpected error fetching users:', err);
-    errorMessage.value = 'An unexpected error occurred while fetching users';
+    errorMessage.value = 'An unexpected error occurred while fetching users.';
   } finally {
     loading.value = false;
   }
 };
-
 
 
 // Fetch user info on component mount
@@ -125,26 +205,30 @@ onMounted(async () => {
           <v-container>
             <div v-if="loading">Loading users...</div>
             <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-            <v-card outlined class="d-flex fill-height p-8 ">
-            <div v-if="!loading && !errorMessage">
-              <v-card-title class="title">Dashboard</v-card-title>
-              <v-row>
-                <v-col v-for="(user, index) in users" :key="index" width="full">
-                  <v-card outlined>
-                    <v-card-title>{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-card-title>
-                    <v-card-subtitle>{{ user.email }}</v-card-subtitle>
-                    <v-card-text>
-                      <!-- Add more user details here if needed -->
-                      <div><strong>User ID:</strong> {{ user.id }}</div>
-                      <div><strong>Joined:</strong> {{ user.created_at }}</div>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div>
+            <v-card outlined class="py-8 cont" height="fill">
+              <div v-if="!loading && !errorMessage">
+                <v-card-title class="title text-h5 mb-6">Dashboard</v-card-title>
+                <v-row>
+                  <v-col v-for="(user, index) in users" :key="index" cols="10" class="ma-auto my-5 p-5">
+                    <v-card outlined class="user-card">
+                      <v-card-title class="text-h6">{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-card-title>
+                      <v-card-subtitle class="text-body-2 mb-4">{{ user.id }}</v-card-subtitle>
+                      <v-card-text>
+                        <div v-if="resumes" class="resume-preview">
+                  <v-btn :src="resumeURL">Resume</v-btn>
+                </div>
+                <div v-else>
+                  <p>No resume uploaded. Please upload one to view it here.</p>
+                </div>
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </div>
             </v-card>
           </v-container>
         </v-main>
+
 
       <!-- Employer Profile Creation Popup -->
       <v-dialog v-model="showPopup" persistent max-width="500">
@@ -191,6 +275,22 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*{
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.cont{
+  border-radius: 20px;
+}
+.title{
+  margin-left: 0.5rem;
+  font-weight: 700;
+  font-size: larger;
+  color: #4caf50;
+}
 .popup-card {
   position: fixed;
   top: 50%;
@@ -217,5 +317,43 @@ onMounted(async () => {
 
 .apply-button {
   width: 100%;
+}
+
+.user-card {
+  border: 1px solid black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+.user-card:hover{
+  -webkit-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
+}
+
+/* Font hierarchy and color palette */
+.text-primary {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.text-secondary {
+  color: rgba(76, 175, 80, 0.7);
+}
+
+.text-h6 {
+  font-size: 1.25rem;
+}
+
+.text-body-2 {
+  font-size: 1rem;
+}
+
+/* Padding adjustments */
+.v-card-title {
+  margin-bottom: 0.5rem;
+}
+
+.v-card-subtitle {
+  margin-bottom: 1rem;
 }
 </style>

@@ -10,9 +10,9 @@ import ResumeDashboardsWidget from "@/components/widget/ResumeDashboardsWidget.v
 
       <ResumeDashboardsWidget />
 
-     </template> 
-     
-  
+     </template>
+
+
   </JobNavigationLayout>
 </template>
 
