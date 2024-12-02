@@ -36,44 +36,41 @@ const formAction = ref({
 })
 
 const onSubmit = async () => {
-  //reset form action utils
-  formAction.value = { ...formActionDefault, formProcess: true }
+  formAction.value = { ...formActionDefault, formProcess: true };
 
-  const { data, error } = await supabase.auth.signUp({
-    email: formData.value.email,
-    password: formData.value.password,
-    options: {
-      data: {
-        first_name: formData.value.first_name,
-        last_name: formData.value.last_name,
-        is_employer: formData.value.is_employer, // Just turn to true if student account
-        // role: 'Administrator' // If role based; just change the string based on role
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.value.email,
+      password: formData.value.password,
+      options: {
+        data: {
+          first_name: formData.value.first_name,
+          last_name: formData.value.last_name,
+          is_employer: formData.value.is_employer,
+        },
       },
-    },
-  })
+    });
 
-  if (error) {
-    formAction.value.formErrorMessage = error.message;
-    formAction.value.formStatus = error.status;
-  } else if (data) {
-    formAction.value.formSuccessMessage = 'Account created successfully';
-
-    // Redirect based on role
-    if (data.user) {
+    if (error) {
+      console.error("Supabase Error: ", error); // Log detailed error
+      formAction.value.formErrorMessage = error.message;
+      formAction.value.formStatus = error.status;
+    } else if (data) {
+      formAction.value.formSuccessMessage = "Account created successfully";
       const dashboardRoute = formData.value.is_employer
-        ? '/employerdashboard'
-        : '/jobdashboard';
+        ? "/employerdashboard"
+        : "/jobdashboard";
       router.push(dashboardRoute);
-    } else {
-      formAction.value.formErrorMessage = 'Error creating account';
     }
+  } catch (err) {
+    console.error("Unexpected Error: ", err); // Catch unexpected errors
+    formAction.value.formErrorMessage = "Unexpected error occurred. Try again.";
+  } finally {
+    formAction.value.formProcess = false;
+    refVForm.value?.reset();
   }
+};
 
-  //reset form
-  refVForm.value?.reset()
-  //turn off form process
-  formAction.value.formProcess = false
-}
 
 const toggleVisible = () => (visible.value = !visible.value) //eye icon
 const toggleVisibleConfirm = () =>

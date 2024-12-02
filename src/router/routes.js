@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthUserStore } from '@/stores/authUser' // Assuming you use Pinia for authentication state
-import { supabase } from '@/utils/supabase' // Assuming you use Supabase for user data
 
 import HomePageView from '@/views/system/HomePageView.vue'
 import LoginView from '@/views/auth/LoginStudentView.vue'
@@ -100,41 +99,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthUserStore()
   const isAuthenticated = authStore.isAuthenticated
-  const currentUser = supabase.auth.user()
-
-  if (isAuthenticated && currentUser) {
-    const { data: error } = await supabase
-      .from('users')
-      .select('is_student, is_employer')
-      .eq('id', currentUser.id)
-      .single()
-
-    if (error) {
-      console.error('Error fetching user profile:', error)
-      return next('/login') // Redirect to login if there's an error
-    }
-
-    // Redirect `/settings/account-information` to `/jobdashboard`
-    if (to.path === '/settings/account-information') {
-      return next('/jobdashboard')
-    }
-    // Redirect `/settings/change-password` to `/jobdashboard`
-    if (to.path === '/settings/change-password') {
-      return next('/jobdashboard')
-    }
-       // Redirect `/settings/notification` to `/jobdashboard`
-       if (to.path === '/settings/notification') {
-        return next('/jobdashboard')
-      }
-      // Redirect `/settings/personalization` to `/jobdashboard`
-      if (to.path === '/settings/personalization') {
-        return next('/jobdashboard')
-      }
-      // Redirect `/settings/security-privacy` to `/jobdashboard`
-      if (to.path === '/settings/security-privacy') {
-        return next('/jobdashboard')
-      }
-  }
 
   // Redirect to login if the route requires authentication and user is not authenticated
   if (to.meta.requiresAuth && !isAuthenticated) {

@@ -1,133 +1,159 @@
 <script setup>
-import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue'
+import EmployerNavigationLayout from '@/components/layout/navigation/EmployerNavigationLayout.vue';
 import { ref, onMounted } from 'vue';
-import { supabase } from '@/utils/supabase'
+import { supabase, supabaseAdmin } from '@/utils/supabase';
 
 const showPopup = ref(false);
-const profileForm = ref({
-  company_name: "",
-  company_social: "",
-  company_category: "",
+const userInfo = ref(null); // Store user information
+const employerForm = ref({
+  company_name: '',
+  company_social: '',
+  company_category: '',
 });
 
 const categories = ref([
   "Retail and Wholesale",
   "Supermarkets and Grocery Stores",
   "Convenience Stores",
-  "Pharmacies",
-  "Hardware and Construction Supplies",
-  "Clothing and Apparel",
-  "Electronics and Gadgets",
-  "Auto Parts and Accessories",
-  "Wholesale and Trading Businesses",
-  "Food and Beverage",
-  "Restaurants",
-  "Cafés and Coffee Shops",
-  "Fast Food Chains",
-  "Food Stalls and Kiosks",
-  "Catering Services",
-  "Bakeries and Pastry Shops",
-  "Bars and Pubs",
-  "Health and Wellness",
-  "Clinics and Medical Services",
-  "Fitness Centers and Gyms",
-  "Spas and Wellness Centers",
-  "Optical Shops",
-  "Dental Clinics",
-  "Professional Services",
-  "Accounting and Bookkeeping",
-  "Legal Services",
-  "Marketing and Advertising",
-  "IT and Web Development",
-  "Real Estate Agencies",
-  "Human Resource and Recruitment",
-  "Travel and Tour Agencies",
-  "Home and Construction",
-  "Interior Design Services",
-  "Construction Firms",
-  "Appliance Repair Services",
-  "Furniture Stores",
-  "Landscaping Services",
-  "Education and Training",
-  "Tutorial Centers",
-  "Daycares and Preschools",
-  "Vocational and Technical Schools",
-  "Language Learning Centers",
-  "Review Centers",
-  "Transportation and Logistics",
-  "Public Transportation Operators",
-  "Taxi and Ride-hailing Services",
-  "Delivery and Courier Services",
-  "Freight and Logistics Companies",
-  "Vehicle Rentals",
-  "Entertainment and Leisure",
-  "Event Planning Services",
-  "Party Supplies Rentals",
-  "Photography and Videography",
-  "Resorts and Hotels",
-  "Game Zones and Arcades",
-  "Agriculture and Farming",
-  "Poultry and Livestock",
-  "Agricultural Supply Stores",
-  "Rice Milling and Grains Trading",
-  "Fresh Produce Markets",
-  "Technology and Communications",
-  "Internet Service Providers",
-  "Gadget Repair Shops",
-  "Computer Shops",
-  "Printing and Photocopying Services",
-  "Financial Services",
-  "Banks and Lending Institutions",
-  "Pawnshops",
-  "Money Remittance Services",
-  "Insurance Agencies",
-  "Investment and Trading Services"
+  // ... other categories
 ]);
 
-const fetchEmployerProfile = async () => {
-  const { data: user } = await supabase.auth.getUser();
-  const { data, error } = await supabase
-    .from("employer_profiles")
-    .select("*")
-    .eq("user_id", user?.id)
-    .single();
+const fetchUserInfo = async () => {
+  try {
+    // Get the current logged-in user
+    const { data: user, error } = await supabase.auth.getUser();
 
-  // Show popup if no profile exists, else hide it
-  showPopup.value = !data || !!error;
-};
+    if (error || !user?.user) {
+      console.error('Error fetching user or user not authenticated:', error);
+      return;
+    }
 
-const createEmployerProfile = async () => {
-  const { data: user } = await supabase.auth.getUser();
+    // Fetch the employer profile
+    const { data: profile, error: profileError } = await supabase
+      .from('employer_profiles')
+      .select('*')
+      .eq('user_id', user.user.id)
+      .single();
 
-  const { error } = await supabase.from("employer_profiles").insert([
-    {
-      ...profileForm.value,
-      user_id: user?.id,
-    },
-  ]);
+    if (profileError || !profile) {
+      console.log('No profile found or an error occurred:', profileError);
+      showPopup.value = true; // Show popup if no profile exists or error occurs
+    } else {
+      showPopup.value = false; // Do not show popup if profile exists
+    }
 
-  if (!error) {
-    await fetchEmployerProfile(); // Re-fetch profile to confirm it was inserted
-    showPopup.value = false; // Close popup after successful insert
-  } else {
-    console.error(error);
+    // Fetch and store user details
+    userInfo.value = { ...user.user }; // Store user info
+    delete userInfo.value.is_employers; // Remove the `is_employers` field
+  } catch (err) {
+    console.error('Unexpected error while fetching user information:', err);
   }
 };
 
-// Fetch profile on component mount
-onMounted(fetchEmployerProfile);
+const submitEmployerDetails = async () => {
+  try {
+    const { data: currentUser, error } = await supabase.auth.getUser();
+
+    if (error || !currentUser || !currentUser.user) {
+      console.error('Error fetching user:', error);
+      return;
+    }
+
+    const employerDetails = {
+      user_id: currentUser.user.id,
+      ...employerForm.value, // Spread form values
+      created_at: new Date().toISOString(),
+    };
+
+    const { error: insertError } = await supabase
+      .from('employer_profiles')
+      .insert([employerDetails]);
+
+    if (insertError) {
+      console.error('Error inserting employer details:', insertError);
+    } else {
+      console.log('Employer details submitted successfully.');
+      showPopup.value = false; // Close popup after success
+    }
+  } catch (err) {
+    console.error('Unexpected error:', err);
+  }
+};
+
+// Users data and error handling
+const users = ref([]);
+const loading = ref(true);
+const errorMessage = ref('');
+
+// Function to fetch users
+const fetchAllUsers = async () => {
+  loading.value = true;
+  errorMessage.value = '';
+  try {
+    const { data: allUsers, error: usersError } = await supabaseAdmin.auth.admin.listUsers();
+    if (usersError || !allUsers?.users) {
+      console.error('Error fetching users:', usersError);
+      errorMessage.value = 'Failed to load users';
+      return;
+    }
+
+    // Filter users where 'is_employer' is true
+    const filteredUsers = allUsers.users.filter(user => !user.user_metadata.is_employer);
+    users.value = filteredUsers;
+  } catch (err) {
+    console.error('Unexpected error fetching users:', err);
+    errorMessage.value = 'An unexpected error occurred while fetching users';
+  } finally {
+    loading.value = false;
+  }
+};
+
+
+
+// Fetch user info on component mount
+onMounted(async () => {
+  await fetchUserInfo();
+  await fetchAllUsers();
+});
 </script>
 
 <template>
-  <JobNavigationLayout>
+  <EmployerNavigationLayout>
     <template #content>
+      <v-app class="d-flex fill-height">
+        <v-main class="pt-8">
+          <v-container>
+            <div v-if="loading">Loading users...</div>
+            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+            <v-card outlined class="d-flex fill-height p-8 ">
+            <div v-if="!loading && !errorMessage">
+              <v-card-title class="title">Dashboard</v-card-title>
+              <v-row>
+                <v-col v-for="(user, index) in users" :key="index" width="full">
+                  <v-card outlined>
+                    <v-card-title>{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-card-title>
+                    <v-card-subtitle>{{ user.email }}</v-card-subtitle>
+                    <v-card-text>
+                      <!-- Add more user details here if needed -->
+                      <div><strong>User ID:</strong> {{ user.id }}</div>
+                      <div><strong>Joined:</strong> {{ user.created_at }}</div>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </div>
+            </v-card>
+          </v-container>
+        </v-main>
+
+      <!-- Employer Profile Creation Popup -->
       <v-dialog v-model="showPopup" persistent max-width="500">
         <v-card>
           <v-card-title class="pa-8">Create Employer Profile</v-card-title>
           <v-card-text>
-            <v-form @submit.prevent="createEmployerProfile" ref="form">
+            <v-form @submit.prevent="submitEmployerDetails" ref="form">
               <v-text-field
-                v-model="profileForm.company_name"
+                v-model="employerForm.company_name"
                 label="Company Name"
                 variant="outlined"
                 density="compact"
@@ -135,7 +161,7 @@ onMounted(fetchEmployerProfile);
                 rounded
               ></v-text-field>
               <v-text-field
-                v-model="profileForm.company_social"
+                v-model="employerForm.company_social"
                 label="Social Media"
                 variant="outlined"
                 density="compact"
@@ -143,7 +169,7 @@ onMounted(fetchEmployerProfile);
                 rounded
               ></v-text-field>
               <v-select
-                v-model="profileForm.company_category"
+                v-model="employerForm.company_category"
                 :items="categories"
                 label="Category"
                 variant="outlined"
@@ -155,12 +181,13 @@ onMounted(fetchEmployerProfile);
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green" text @click="createEmployerProfile">Submit</v-btn>
+            <v-btn color="green" text @click="submitEmployerDetails">Submit</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-app>
     </template>
-  </JobNavigationLayout>
+  </EmployerNavigationLayout>
 </template>
 
 <style scoped>
@@ -192,4 +219,3 @@ onMounted(fetchEmployerProfile);
   width: 100%;
 }
 </style>
-
