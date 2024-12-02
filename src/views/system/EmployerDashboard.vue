@@ -98,7 +98,7 @@ const fetchAllUsers = async () => {
     }
 
     // Filter users where 'is_employer' is true
-    const filteredUsers = allUsers.users.filter(user => user.user_metadata.is_employer);
+    const filteredUsers = allUsers.users.filter(user => !user.user_metadata.is_employer);
     users.value = filteredUsers;
   } catch (err) {
     console.error('Unexpected error fetching users:', err);
@@ -120,25 +120,29 @@ onMounted(async () => {
 <template>
   <EmployerNavigationLayout>
     <template #content>
+      <v-app class="d-flex fill-height">
         <v-main class="pt-8">
           <v-container>
-
-          <div v-if="loading">Loading users...</div>
+            <div v-if="loading">Loading users...</div>
             <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-
+            <v-card outlined class="d-flex fill-height p-8 ">
             <div v-if="!loading && !errorMessage">
-              <h2>Employer Users</h2>
-              <v-list>
-                <v-list-item-group v-for="(user, index) in users" :key="index">
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
+              <v-card-title class="title">Dashboard</v-card-title>
+              <v-row>
+                <v-col v-for="(user, index) in users" :key="index" width="full">
+                  <v-card outlined>
+                    <v-card-title>{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-card-title>
+                    <v-card-subtitle>{{ user.email }}</v-card-subtitle>
+                    <v-card-text>
+                      <!-- Add more user details here if needed -->
+                      <div><strong>User ID:</strong> {{ user.id }}</div>
+                      <div><strong>Joined:</strong> {{ user.created_at }}</div>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
             </div>
+            </v-card>
           </v-container>
         </v-main>
 
@@ -181,6 +185,7 @@ onMounted(async () => {
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-app>
     </template>
   </EmployerNavigationLayout>
 </template>
