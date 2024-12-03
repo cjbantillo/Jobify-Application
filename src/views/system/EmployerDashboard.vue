@@ -135,6 +135,7 @@ const submitEmployerDetails = async () => {
       .from('employer_profiles')
       .insert([employerDetails]);
 
+    await fetchUserInfo();
     if (insertError) {
       console.error('Error inserting employer details:', insertError);
     } else {
@@ -150,7 +151,6 @@ const submitEmployerDetails = async () => {
 const users = ref([]);
 const loading = ref(true);
 const errorMessage = ref('');
-const resumes = ref([]);
 
 //function to fetch users
 const fetchAllUsers = async () => {
@@ -169,18 +169,6 @@ const fetchAllUsers = async () => {
     const filteredUsers = allUsers.users.filter(user => !user.user_metadata.is_employer);
     users.value = filteredUsers;
 
-    //fetch resumes for each user
-    const resumePromises = filteredUsers.map(async (user) => {
-      const resumePath = `${user.user_metadata.first_name}_${user.user_metadata.last_name}.pdf`;
-      const { data, error } = supabase.storage.from('resumes').getPublicUrl(resumePath);
-      return {
-        id: user.id,
-        name: `${user.user_metadata.first_name} ${user.user_metadata.last_name}`,
-        resumeUrl: error ? null : data.publicUrl,
-      };
-    });
-
-    resumes.value = await Promise.all(resumePromises);
   } catch (err) {
     console.error('Unexpected error fetching users:', err);
     errorMessage.value = 'An unexpected error occurred while fetching users.';
@@ -189,6 +177,29 @@ const fetchAllUsers = async () => {
   }
 };
 
+const hireUser = async (user) => {
+  try {
+    const hireDetails = {
+      employer_id: userInfo.value.id, // Assuming the current employer's ID is stored in `userInfo`
+      user_id: user.id, // The user to be hired
+      hired_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from('hires') // Replace with the actual table name
+      .insert([hireDetails]);
+
+    if (error) {
+      console.error('Error hiring user:', error);
+      alert('Failed to hire user. Please try again.');
+    } else {
+      alert(`${user.user_metadata.first_name} ${user.user_metadata.last_name} has been successfully hired.`);
+    }
+  } catch (err) {
+    console.error('Unexpected error during hiring:', err);
+    alert('An unexpected error occurred.');
+  }
+};
 
 // Fetch user info on component mount
 onMounted(async () => {
@@ -203,24 +214,29 @@ onMounted(async () => {
       <v-app class="d-flex fill-height">
         <v-main class="pt-8">
           <v-container>
-            <div v-if="loading">Loading users...</div>
+            <div v-if="loading">Loading...</div>
             <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-            <v-card outlined class="py-8 cont" height="fill">
+            <v-card outlined class="pa-8 cont" height="fill">
               <div v-if="!loading && !errorMessage">
                 <v-card-title class="title text-h5 mb-6">Dashboard</v-card-title>
                 <v-row>
-                  <v-col v-for="(user, index) in users" :key="index" cols="10" class="ma-auto my-5 p-5">
-                    <v-card outlined class="user-card">
+                  <v-col
+                    v-for="(user, index) in users"
+                    :key="index"
+                    cols="12"
+                    sm="6"
+                    md="5"
+                    lg="4"
+
+                  >
+                    <!-- Updated user card -->
+                    <v-card class="user-card" outlined>
                       <v-card-title class="text-h6">{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-card-title>
-                      <v-card-subtitle class="text-body-2 mb-4">{{ user.id }}</v-card-subtitle>
-                      <v-card-text>
-                        <div v-if="resumes" class="resume-preview">
-                  <v-btn :src="resumeURL">Resume</v-btn>
-                </div>
-                <div v-else>
-                  <p>No resume uploaded. Please upload one to view it here.</p>
-                </div>
-                      </v-card-text>
+                      <v-card-subtitle class="text-body-2 mb-4">{{ user.email || "Email Unavailable" }}</v-card-subtitle>
+                      <v-card-subtitle class="text-body-2 mb-4">{{ user.bio || "Bio Unavailable" }}</v-card-subtitle>
+                      <v-card-actions>
+                        <v-btn rounded @click="hireUser(user)">Hire</v-btn>
+                      </v-card-actions>
                     </v-card>
                   </v-col>
                 </v-row>
@@ -228,48 +244,55 @@ onMounted(async () => {
             </v-card>
           </v-container>
         </v-main>
+        <!-- Employer Profile Creation Popup -->
+        <v-dialog v-model="showPopup" persistent max-width="500">
+          <v-card>
+            <v-card-title class="pa-8">Create Employer Profile</v-card-title>
+            <v-card-text>
+              <v-form @submit.prevent="submitEmployerDetails" ref="form">
+                <v-text-field
+                  v-model="employerForm.company_name"
+                  label="Company Name"
+                  variant="outlined"
+                  density="compact"
+                  required
+                  rounded
+                ></v-text-field>
+                <v-text-field
+                  v-model="employerForm.company_social"
+                  label="Social Media"
+                  variant="outlined"
+                  density="compact"
+                  required
+                  rounded
+                ></v-text-field>
+                <v-text-field
+                  v-model="employerForm.address"
+                  label="Address"
+                  variant="outlined"
+                  density="compact"
+                  required
+                  rounded
+                ></v-text-field>
+                <v-select
+                  v-model="employerForm.company_category"
+                  :items="categories"
+                  label="Category"
+                  variant="outlined"
+                  required
+                  rounded
+                  density="compact"
+                ></v-select>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green" text @click="submitEmployerDetails">Submit</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-
-      <!-- Employer Profile Creation Popup -->
-      <v-dialog v-model="showPopup" persistent max-width="500">
-        <v-card>
-          <v-card-title class="pa-8">Create Employer Profile</v-card-title>
-          <v-card-text>
-            <v-form @submit.prevent="submitEmployerDetails" ref="form">
-              <v-text-field
-                v-model="employerForm.company_name"
-                label="Company Name"
-                variant="outlined"
-                density="compact"
-                required
-                rounded
-              ></v-text-field>
-              <v-text-field
-                v-model="employerForm.company_social"
-                label="Social Media"
-                variant="outlined"
-                density="compact"
-                required
-                rounded
-              ></v-text-field>
-              <v-select
-                v-model="employerForm.company_category"
-                :items="categories"
-                label="Category"
-                variant="outlined"
-                required
-                rounded
-                density="compact"
-              ></v-select>
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green" text @click="submitEmployerDetails">Submit</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-app>
+      </v-app>
     </template>
   </EmployerNavigationLayout>
 </template>
@@ -277,20 +300,20 @@ onMounted(async () => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
-*{
+* {
   font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;
 }
-.cont{
-  border-radius: 20px;
-}
-.title{
+
+
+.title {
   margin-left: 0.5rem;
   font-weight: 700;
   font-size: larger;
   color: #4caf50;
 }
+
 .popup-card {
   position: fixed;
   top: 50%;
@@ -320,17 +343,21 @@ onMounted(async () => {
 }
 
 .user-card {
-  border: 1px solid black;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
   border-radius: 20px;
-}
-.user-card:hover{
-  -webkit-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background-color: #f9fafb;
+  transition: transform 0.3s ease-in-out;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Font hierarchy and color palette */
+.user-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
 .text-primary {
   color: #4caf50;
   font-weight: bold;
@@ -348,12 +375,40 @@ onMounted(async () => {
   font-size: 1rem;
 }
 
-/* Padding adjustments */
 .v-card-title {
   margin-bottom: 0.5rem;
 }
 
 .v-card-subtitle {
   margin-bottom: 1rem;
+}
+
+.v-btn {
+  background-color: #4caf50 !important;
+  color: #fff;
+  text-transform: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+.cont {
+  border-radius: 12px;
+}
+
+.user-card {
+  border-radius: 8px;
+}
+
+.error {
+  color: red;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+  .user-card {
+    margin: 10px;
+  }
 }
 </style>

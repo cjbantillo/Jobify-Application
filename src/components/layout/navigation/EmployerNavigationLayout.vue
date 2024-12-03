@@ -6,7 +6,7 @@ import { useAuthUserStore } from '@/stores/authUser'
 import { useWindowSize } from '@vueuse/core'
 import { getAvatarText } from '@/utils/helpers';
 import { ref, computed, onMounted } from 'vue';
-import logo from '@/assets/logo.png'
+import logo from '@/assets/logo-removebg-preview.png'
 
 // this item is for the notification bell for further update
 const items = ref([
@@ -29,7 +29,6 @@ const drawer = ref(true);
 const rail = ref(true);
 const loaded = ref(false);
 const loading = ref(false);
-const user = ref(null);
 const showEmployerDialog = ref(false);
 const settingsHover = ref(false);
 
@@ -121,6 +120,8 @@ const settingsOptions = [
   { title: 'Security & Privacy', to: '/settings/security-privacy' },
 ];
 
+const companyName = ref('');
+
 // Vue Router for navigation
 const router = useRouter();
 
@@ -163,11 +164,28 @@ const fetchUserData = async () => {
       console.error('Error fetching current user:', userError || 'No user logged in');
       return;
     }
+    // Fetch employer profile
+    const { data: employerProfile, error: employerError } = await supabase
+      .from('employer_profiles') // Replace with your table name
+      .select('company_name')
+      .eq('user_id', currentUser.user.id)
+      .single();
 
+    if (employerError) {
+      console.error('Error fetching employer profile:', employerError);
+      return;
+    }
+
+  // Set company name
+  if (employerProfile) {
+      companyName.value = employerProfile.company_name;
+    }
   } catch (err) {
     console.error('Unexpected error fetching user data:', err);
   }
-  console.log(user.value)
+
+
+
 };
 
 const submitEmployerDetails = async () => {
@@ -226,7 +244,7 @@ onMounted(() => {
       :dense="mobile"
     >
       <v-img :src="logo" alt="Logo" max-height="80" max-width="100" class="mr-4" />
-      <h3 v-if="!mobile">Jobify</h3>
+      <h3 v-if="!mobile">&middot; {{ companyName || 'Loading' }}</h3>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
