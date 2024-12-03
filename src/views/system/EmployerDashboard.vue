@@ -150,7 +150,6 @@ const submitEmployerDetails = async () => {
 const users = ref([]);
 const loading = ref(true);
 const errorMessage = ref('');
-const resumes = ref([]);
 
 //function to fetch users
 const fetchAllUsers = async () => {
@@ -169,18 +168,6 @@ const fetchAllUsers = async () => {
     const filteredUsers = allUsers.users.filter(user => !user.user_metadata.is_employer);
     users.value = filteredUsers;
 
-    //fetch resumes for each user
-    const resumePromises = filteredUsers.map(async (user) => {
-      const resumePath = `${user.user_metadata.first_name}_${user.user_metadata.last_name}.pdf`;
-      const { data, error } = supabase.storage.from('resumes').getPublicUrl(resumePath);
-      return {
-        id: user.id,
-        name: `${user.user_metadata.first_name} ${user.user_metadata.last_name}`,
-        resumeUrl: error ? null : data.publicUrl,
-      };
-    });
-
-    resumes.value = await Promise.all(resumePromises);
   } catch (err) {
     console.error('Unexpected error fetching users:', err);
     errorMessage.value = 'An unexpected error occurred while fetching users.';
@@ -188,6 +175,33 @@ const fetchAllUsers = async () => {
     loading.value = false;
   }
 };
+
+const hireUser = async (user) => {
+  try {
+    // Replace this logic with your desired hiring process
+    const hireDetails = {
+      employer_id: userInfo.value.id, // Assuming the current employer's ID is stored in `userInfo`
+      user_id: user.id, // The user to be hired
+      hired_at: new Date().toISOString(),
+    };
+
+    // Insert into your database (adjust the table name as needed)
+    const { error } = await supabase
+      .from('hires') // Replace with the actual table name
+      .insert([hireDetails]);
+
+    if (error) {
+      console.error('Error hiring user:', error);
+      alert('Failed to hire user. Please try again.');
+    } else {
+      alert(`${user.user_metadata.first_name} ${user.user_metadata.last_name} has been successfully hired.`);
+    }
+  } catch (err) {
+    console.error('Unexpected error during hiring:', err);
+    alert('An unexpected error occurred.');
+  }
+};
+
 
 
 // Fetch user info on component mount
@@ -203,23 +217,21 @@ onMounted(async () => {
       <v-app class="d-flex fill-height">
         <v-main class="pt-8">
           <v-container>
-            <div v-if="loading">Loading users...</div>
+            <div v-if="loading">Loading...</div>
             <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
             <v-card outlined class="py-8 cont" height="fill">
               <div v-if="!loading && !errorMessage">
                 <v-card-title class="title text-h5 mb-6">Dashboard</v-card-title>
                 <v-row>
-                  <v-col v-for="(user, index) in users" :key="index" cols="10" class="ma-auto my-5 p-5">
+                  <v-col v-for="(user, index) in users" :key="index" cols="5" class="ma-auto pa-5">
                     <v-card outlined class="user-card">
                       <v-card-title class="text-h6">{{ user.user_metadata.first_name }} {{ user.user_metadata.last_name }}</v-card-title>
-                      <v-card-subtitle class="text-body-2 mb-4">{{ user.id }}</v-card-subtitle>
+                      <v-card-subtitle class="text-body-2 mb-4">{{ user.email || "Email Unavailable" }}</v-card-subtitle>
+                      <v-card-subtitle class="text-body-2 mb-4">{{ user.bio || "Bio Unavailable" }}</v-card-subtitle>
                       <v-card-text>
-                        <div v-if="resumes" class="resume-preview">
-                  <v-btn :src="resumeURL">Resume</v-btn>
-                </div>
-                <div v-else>
-                  <p>No resume uploaded. Please upload one to view it here.</p>
-                </div>
+                        <div>
+                          <v-btn density="compact" rounded @click="hireUser(user)">Hire</v-btn>
+                        </div>
                       </v-card-text>
                     </v-card>
                   </v-col>
@@ -355,5 +367,11 @@ onMounted(async () => {
 
 .v-card-subtitle {
   margin-bottom: 1rem;
+}
+
+.v-btn {
+  background-color: #4caf50 !important;
+  color: #fff;
+  text-transform: none;
 }
 </style>
