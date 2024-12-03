@@ -201,8 +201,8 @@ v-btn {
   background-color: rgba(0, 0, 0, 0.5);
 } */
 .hero-text{
-  background-color:rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(5px) brightness(0.57);
+  background-color:rgba(76, 175, 80, 0);
+  backdrop-filter: blur(12px) brightness(1.05);
   border-radius: 20px;
   overflow: hidden;
 }
