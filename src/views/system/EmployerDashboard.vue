@@ -135,6 +135,7 @@ const submitEmployerDetails = async () => {
       .from('employer_profiles')
       .insert([employerDetails]);
 
+      await fetchUserInfo();
     if (insertError) {
       console.error('Error inserting employer details:', insertError);
     } else {
