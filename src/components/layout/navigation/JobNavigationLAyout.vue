@@ -8,13 +8,13 @@ import { getAvatarText } from '@/utils/helpers'
 import logo from '@/assets/logo.png'
 
 // this item is for the notification bell for further update
-const items = ref([
-  { title: 'notification 1' },
-  { title: 'notification 2' },
-  { title: 'notification 3' },
-  { title: 'notification 4' },
-])
-const itemCount = computed(() => items.value.length);
+const items = [
+  { title: 'Click Me' },
+  { title: 'Click Me' },
+  { title: 'Click Me' },
+  { title: 'Click Me 2' },
+]
+
 // Reactive screen dimensions
 const { width } = useWindowSize()
 const mobile = computed(() => width.value <= 768)
@@ -174,10 +174,7 @@ onMounted(() => {
       <v-menu open-on-click>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" icon>
-            <v-badge :color="'error'" :content="itemCount">
-              <v-icon>mdi-bell-outline</v-icon>
-            </v-badge>
-            
+            <v-icon>mdi-bell-outline</v-icon>
           </v-btn>
         </template>
 
