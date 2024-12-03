@@ -88,6 +88,19 @@ onMounted(async () => {
                             <v-text-field
                               v-model="companyCategory"
                               label="Company Category"
+                              prepend-inner-icon="mdi-shape-plus"
+                              class="modern-input"
+                              variant="outlined"
+                              rounded
+                            >
+                            </v-text-field>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="5" class="ma-auto">
+                            <v-text-field
+                              v-model="companyAddress"
+                              label="Company Address"
                               prepend-inner-icon="mdi-earth"
                               class="modern-input"
                               variant="outlined"

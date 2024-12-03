@@ -264,6 +264,14 @@ onMounted(async () => {
                 required
                 rounded
               ></v-text-field>
+              <v-text-field
+                v-model="employerForm.address"
+                label="Address"
+                variant="outlined"
+                density="compact"
+                required
+                rounded
+              ></v-text-field>
               <v-select
                 v-model="employerForm.company_category"
                 :items="categories"
