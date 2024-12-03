@@ -287,7 +287,7 @@ onMounted(async () => {
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green" text @click="submitEmployerDetails">Submit</v-btn>
+              <v-btn text @click="submitEmployerDetails">Submit</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -388,7 +388,7 @@ onMounted(async () => {
   color: #fff;
   text-transform: none;
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 20px;
 }
 .cont {
   border-radius: 12px;
