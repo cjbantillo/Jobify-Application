@@ -5,7 +5,7 @@ import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { useAuthUserStore } from '@/stores/authUser'
 import { useWindowSize } from '@vueuse/core'
 import { getAvatarText } from '@/utils/helpers'
-import logo from '@/assets/jobify1_Logo.png'
+import logo from '@/assets/logo.png'
 
 // this item is for the notification bell for further update
 const items = [

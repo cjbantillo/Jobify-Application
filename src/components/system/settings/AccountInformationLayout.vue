@@ -1,10 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,computed } from 'vue'
 import { useAuthUserStore } from '@/stores/authUser'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { getAvatarText } from '@/utils/helpers'
-
-
 
 const authStore = useAuthUserStore()
 
@@ -13,6 +11,21 @@ const birthdateMenu = ref(false)
 const formAction = ref({
   ...formActionDefault,
 })
+
+// Computed property for formatted date
+const formattedDate = computed(() => {
+  if (!authStore.userData.date_of_birth) return ''
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  return new Intl.DateTimeFormat('en-US', options).format(
+    new Date(authStore.userData.date_of_birth),
+  )
+})
+
+// Handle input from the date picker
+const handleDateInput = value => {
+  authStore.userData.date_of_birth = value
+  birthdateMenu.value = false
+}
 
 const fetchUserData = async () => {
   try {
@@ -213,19 +226,19 @@ onMounted(fetchUserData)
                     >
                       <template #activator="{ props }">
                         <v-text-field
-                          v-model="authStore.userData.date_of_birth"
+                          :value="formattedDate"
                           label="Date of Birth"
                           prepend-inner-icon="mdi-calendar"
                           class="modern-input"
                           v-bind="props"
                           variant="outlined"
                           rounded
+                          persistent-placeholder
                         ></v-text-field>
                       </template>
                       <v-date-picker
                         v-model="authStore.userData.date_of_birth"
-                        @input="birthdateMenu = false"
-                        :max="new Date().toISOString().substr(0, 10)"
+                        @input="handleDateInput"
                       ></v-date-picker>
                     </v-menu>
                   </v-col>
