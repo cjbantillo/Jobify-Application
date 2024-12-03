@@ -125,10 +125,10 @@ const mobile = computed(() => width.value <= 768)
         <!-- Fourth Section: Why Choose Us -->
         <section class="why-jobify">
           <div class="container">
-            <h2 class="section-title">Why Choose Jobify?</h2>
+            <h2 class="section-title">Why Choose StuGiG?</h2>
             <p class="section-description">
-              At Jobify, we’re redefining how talent meets opportunity. Here’s
-              why Jobify is the best choice for your career or hiring journey:
+              At StuGiG, we’re redefining how talent meets opportunity. Here’s
+              why StuGiG is the best choice for your career or hiring journey:
             </p>
             <div class="features">
               <div class="feature">
