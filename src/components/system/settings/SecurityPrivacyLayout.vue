@@ -60,7 +60,7 @@ const securityGuidelines = ref([
     title: 'Your Privacy Matters',
     description:
       'We respect your privacy and follow strict protocols to ensure your data is protected. Detailed policies can be found in our Privacy Policy document.',
-    icon: 'mdi-privacy',
+    icon: 'mdi-shield-account',
   },
 ]);
 </script>
@@ -75,10 +75,10 @@ const securityGuidelines = ref([
         lg="3"
         class="mb-4"
       >
-        <v-card class="elevation-2 rounded-lg text-center pa-4" style="background-color: #f9fafb;">
+        <v-card class="elevation-2 rounded-lg text-center pa-4 card-fixed-size">
           <!-- Use mdi icon directly in the v-icon component -->
           <v-icon :icon="guideline.icon" size="48" color="#4caf50" class="mb-3" />
-          <div class="font-weight-bold text-h6" style="color: #4caf50;">
+          <div class="font-weight-bold text-h6">
             {{ guideline.title }}
           </div>
           <p class="text-body-2 text-secondary mt-2">{{ guideline.description }}</p>
@@ -89,29 +89,24 @@ const securityGuidelines = ref([
 </template>
 
 <style scoped>
-.container-with-gifs {
-  max-width: 1200px;
-  margin: 0 auto;
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*{
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.card-fixed-size {
+  height: 300px; /* Adjust height to ensure uniformity */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.title {
-  color: #4caf50; /* Primary color applied to the title */
-}
-
-.guideline-item:hover {
-  background-color: #e8f5e9; /* Light green hover effect */
-  transition: background-color 0.3s ease;
-}
-
-.gif-container img.gif {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.gif-container img.gif:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+.v-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  transition: all 0.3s ease-in-out;
 }
 </style>

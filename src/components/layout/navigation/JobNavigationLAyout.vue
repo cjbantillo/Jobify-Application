@@ -139,182 +139,161 @@ onMounted(() => {
 <template>
   <v-app class="d-flex fill-height">
     <v-app-bar
-      fixed
-      class="px-3 appbar"
-      scroll-behavior="hide"
-      scroll-threshold="100"
-      :dense="mobile"
-    >
-      <v-img
-        :src="logo"
-        alt="Logo"
-        max-height="80"
-        max-width="100"
-        class="mr-4"
-      />
-      <h3 v-if="!mobile">Jobify</h3>
-      <v-spacer></v-spacer>
-      <v-text-field
-        clearable
-        class="my-auto search-bar"
-        :loading="loading"
-        append-inner-icon="mdi-magnify"
-        density="compact"
-        label="Search"
-        variant="outlined"
-        hide-details
-        single-line
-        rounded
-        @click:append-inner="onClick"
-      />
-      <v-spacer></v-spacer>
+  fixed
+  class="px-3 appbar"
+  scroll-behavior="hide"
+  scroll-threshold="100"
+  :dense="mobile"
+>
+  <v-img
+    :src="logo"
+    alt="Logo"
+    :max-height="mobile ? '50' : '80'"
+    max-width="100"
+    class="mr-4"
+  />
+  <h3 v-if="!mobile" class="d-none d-sm-block">Jobify</h3> <!-- Show on desktop only -->
+  <v-spacer></v-spacer>
+  <v-text-field
+    clearable
+    class="my-auto search-bar"
+    :loading="loading"
+    append-inner-icon="mdi-magnify"
+    density="compact"
+    label="Search"
+    variant="outlined"
+    hide-details
+    single-line
+    rounded
+    @click:append-inner="onClick"
+    style="max-width: 300px;"
+  />
+  <v-spacer></v-spacer>
 
-      <!-- notification bell  -->
-
-      <v-menu open-on-click>
-        <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" icon>
-            <v-icon>mdi-bell-outline</v-icon>
-          </v-btn>
-        </template>
-
-        <v-list>
-          <v-list-item v-for="(item, index) in items" :key="index">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-app-bar>
-
-    <v-navigation-drawer
-      v-model="drawer"
-      :rail="rail"
-      permanent
-      rail-width="80"
-      width="250"
-      @click="rail = false"
-    >
-      <v-list-item
-        :subtitle="authStore.userData.email"
-        :title="
-          authStore.userData.first_name + ' ' + authStore.userData.last_name
-        "
-        nav
-      >
-        <template v-slot:prepend>
-          <v-avatar
-            v-if="authStore.userData.image_url"
-            :image="authStore.userData.image_url"
-            color="#4caf50"
-            :size="rail ? '24' : '40'"
-          ></v-avatar>
-          <v-avatar v-else color="#4caf50">
-            <span>{{
-              getAvatarText(
-                authStore.userData.first_name +
-                  ' ' +
-                  authStore.userData.last_name,
-              )
-            }}</span>
-          </v-avatar>
-        </template>
-        <template v-slot:append>
-          <v-btn
-            icon="mdi-chevron-left"
-            variant="text"
-            @click.stop="rail = !rail"
-          ></v-btn>
-        </template>
+  <!-- Notification Bell -->
+  <v-menu open-on-click>
+    <template v-slot:activator="{ props }">
+      <v-btn v-bind="props" icon>
+        <v-icon>mdi-bell-outline</v-icon>
+      </v-btn>
+    </template>
+    <v-list>
+      <v-list-item v-for="(item, index) in items" :key="index">
+        <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
+    </v-list>
+  </v-menu>
+</v-app-bar>
 
-      <v-divider></v-divider>
 
-      <v-list density="compact" nav>
-        <v-list-item
-          prepend-icon="mdi-home-city"
-          title="Dashboard"
-          value="home"
-          to="/jobdashboard"
-        ></v-list-item>
-        <v-list-item
-          prepend-icon="mdi-file-document-outline"
-          title="Resume"
-          value="applications"
-          to="/resume"
-        ></v-list-item>
-        <v-list-item
+<v-navigation-drawer
+  v-model="drawer"
+  :rail="rail"
+  permanent
+  :width="mobile ? '200' : '250'"
+  @click="rail = false"
+>
+  <v-list-item
+    :subtitle="authStore.userData.email"
+    :title="authStore.userData.first_name + ' ' + authStore.userData.last_name"
+    nav
+  >
+    <template v-slot:prepend>
+      <v-avatar
+        v-if="authStore.userData.image_url"
+        :image="authStore.userData.image_url"
+        color="#4caf50"
+        :size="rail ? '24' : '40'"
+      ></v-avatar>
+      <v-avatar v-else color="#4caf50">
+        <span>{{ getAvatarText(authStore.userData.first_name + ' ' + authStore.userData.last_name) }}</span>
+      </v-avatar>
+    </template>
+    <template v-slot:append>
+      <v-btn
+        icon="mdi-chevron-left"
+        variant="text"
+        @click.stop="rail = !rail"
+        v-if="mobile"
+      ></v-btn>
+    </template>
+  </v-list-item>
+
+  <v-divider></v-divider>
+
+  <v-list density="compact" nav>
+    <v-list-item prepend-icon="mdi-home-city" title="Dashboard" value="home" to="/jobdashboard"></v-list-item>
+    <v-list-item prepend-icon="mdi-file-document-outline" title="Resume" value="applications" to="/resume"></v-list-item>
+    <v-list-item prepend-icon="mdi-upload" title="Upload Schedule" value="upload" @click="showUploadDialog = true"></v-list-item>
+
+    <v-list-group
+      prepend-icon="mdi-cog-outline"
+      title="Settings"
+      :value="settingsHover"
+      no-action
+      @mouseenter="settingsHover = true"
+      @mouseleave="settingsHover = false"
+    >
+      <template v-slot:activator="{ props }">
+        <v-list-item v-bind="props"></v-list-item>
+      </template>
+      <v-list-item
+        v-for="item in settingsOptions"
+        :key="item.title"
+        :title="item.title"
+        :to="item.to"
+        class="pl-4"
+      ></v-list-item>
+    </v-list-group>
+
+    <v-list-item
+      prepend-icon="mdi-logout"
+      title="Logout"
+      value="logout"
+      :style="{ marginTop: 'auto' }"
+      @click="Logout"
+    ></v-list-item>
+  </v-list>
+</v-navigation-drawer>
+
+
+<v-dialog v-model="showUploadDialog" max-width="600px">
+  <v-card class="p-5" :style="{ backgroundColor: '#f7f9f7' }">
+    <v-card-title class="text-h6 text-center" :style="{ color: '#4caf50' }">
+      Upload Schedule
+    </v-card-title>
+    <v-card-text>
+      <div class="d-flex justify-center align-center flex-column">
+        <v-btn
+          color="success"
+          @click="$refs.fileInput.click()"
+          :style="{ backgroundColor: '#4caf50', color: 'white' }"
           prepend-icon="mdi-upload"
-          title="Upload Schedule"
-          value="upload"
-          @click="showUploadDialog = true"
-        ></v-list-item>
-
-        <v-list-group
-          prepend-icon="mdi-cog-outline"
-          title="Settings"
-          :value="settingsHover"
-          no-action
-          @mouseenter="settingsHover = true"
-          @mouseleave="settingsHover = false"
         >
-          <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props"></v-list-item>
-          </template>
-          <v-list-item
-            v-for="item in settingsOptions"
-            :key="item.title"
-            :title="item.title"
-            :to="item.to"
-            class="pl-4"
-          ></v-list-item>
-        </v-list-group>
-
-        <v-list-item
-          prepend-icon="mdi-logout"
-          title="Logout"
-          value="logout"
-          :style="{ marginTop: 'auto' }"
-          @click="Logout"
-        ></v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-dialog v-model="showUploadDialog" max-width="600px">
-      <v-card class="p-5" :style="{ backgroundColor: '#f7f9f7' }">
-        <v-card-title class="text-h6 text-center" :style="{ color: '#4caf50' }">
           Upload Schedule
-        </v-card-title>
-        <v-card-text>
-          <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-            <v-btn
-              color="success"
-              @click="$refs.fileInput.click()"
-              :style="{ backgroundColor: '#4caf50', color: 'white' }"
-              prepend-icon="mdi-upload"
-            >
-              Upload Schedule
-            </v-btn>
-            <input
-              type="file"
-              ref="fileInput"
-              @change="handleFileChange"
-              style="display: none"
-            />
-            <span v-if="fileName" style="margin-top: 10px">{{ fileName }}</span>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            text
-            @click="showUploadDialog = false"
-            :style="{ color: '#4caf50' }"
-          >
-            Cancel
-          </v-btn>
-          <v-btn color="success" @click="uploadFile"> Submit </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+        </v-btn>
+        <input
+          type="file"
+          ref="fileInput"
+          @change="handleFileChange"
+          style="display: none"
+        />
+        <span v-if="fileName" style="margin-top: 10px">{{ fileName }}</span>
+      </div>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn
+        text
+        @click="showUploadDialog = false"
+        :style="{ color: '#4caf50' }"
+      >
+        Cancel
+      </v-btn>
+      <v-btn color="success" @click="uploadFile">Submit</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
 
     <v-main :class="{ 'pt-2': mobile, 'pt-8': !mobile }">
       <v-container :fluid="mobile">
