@@ -1,10 +1,21 @@
+<script setup>
+  import logo from '@/assets/logo-removebg-preview.png'
+</script>
+
 <template>
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-about">
-        <h3>About Jobify</h3>
+        <h3 class=" inline-flex">About <v-img
+                    :src="logo"
+                    alt="Logo"
+                    max-height="80"
+                    max-width="100"
+                    class="mr-4"
+                  />
+        </h3>
         <p>
-          Jobify connects talent with opportunity. Whether you're looking for
+          StuGiG connects talent with opportunity. Whether you're looking for
           your dream job or the perfect candidate, we've got you covered. Join
           our platform and explore a world of opportunities!
         </p>
@@ -39,7 +50,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; 2024 Jobify. All rights reserved.</p>
+      <p>&copy; 2024 StuGiG. All rights reserved.</p>
     </div>
   </footer>
 </template>
