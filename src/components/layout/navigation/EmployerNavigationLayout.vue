@@ -6,7 +6,7 @@ import { useAuthUserStore } from '@/stores/authUser'
 import { useWindowSize } from '@vueuse/core'
 import { getAvatarText } from '@/utils/helpers';
 import { ref, computed, onMounted } from 'vue';
-import logo from "@/assets/jobify1_Logo.png";
+import logo from '@/assets/logo.png'
 
 // this item is for the notification bell for further update
 const items = [
@@ -246,7 +246,7 @@ onMounted(() => {
         <v-spacer></v-spacer>
 
         <!-- // Notification Bell -->
-         
+
       <v-menu open-on-click>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" icon>

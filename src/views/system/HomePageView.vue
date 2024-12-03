@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import { useWindowSize } from '@vueuse/core'
-import hero from '@/assets/bg2.jpg'
+import hero from '@/assets/hero.gif'
 
 const { width } = useWindowSize()
 
@@ -25,19 +25,19 @@ const mobile = computed(() => width.value <= 768)
           }"
         >
           <v-col
-            :cols="12"
+            :cols="10"
             :md="mobile ? 12 : 8"
-            class="hero-text text-left justify-center align-center"
+            class="hero-text text-left justify-center align-center pa-8 ma-8"
           >
             <h1 class="display-2 text-white mb-4 animated-title">
-              Connecting Students with Local Opportunities
+              Connecting Students with Local Opportunities Near The Campus!
             </h1>
             <p class="subtitle-1 text-white mb-6 animated-text">
               A platform where employers and students meet to unlock <br />
               potential and create meaningful work experiences.
             </p>
             <v-btn
-                  class="btn w-50 rounded-pill center"
+                  class="btn w-25 rounded-pill center"
                   depressed
                   to="register"
                 >
@@ -125,10 +125,10 @@ const mobile = computed(() => width.value <= 768)
         <!-- Fourth Section: Why Choose Us -->
         <section class="why-jobify">
           <div class="container">
-            <h2 class="section-title">Why Choose Jobify?</h2>
+            <h2 class="section-title">Why Choose StuGiG?</h2>
             <p class="section-description">
-              At Jobify, we’re redefining how talent meets opportunity. Here’s
-              why Jobify is the best choice for your career or hiring journey:
+              At StuGiG, we’re redefining how talent meets opportunity. Here’s
+              why StuGiG is the best choice for your career or hiring journey:
             </p>
             <div class="features">
               <div class="feature">
@@ -200,9 +200,14 @@ v-btn {
 /* .hero-section:hover {
   background-color: rgba(0, 0, 0, 0.5);
 } */
-
+.hero-text{
+  background-color:rgba(76, 175, 80, 0);
+  backdrop-filter: blur(12px) brightness(1.05);
+  border-radius: 20px;
+  overflow: hidden;
+}
 .hero-text h1 {
-  font-size: 4rem;
+  font-size: 2rem;
   width: 80%;
 }
 
@@ -320,8 +325,8 @@ v-btn {
   text-transform: none;
   justify-self: center;
   align-self: center;
-  background-color: #4caf50;
-  color: #fff;
+  background-color: #fff;
+  color: #4caf50;
 }
 .custom-card h3,
 p,
