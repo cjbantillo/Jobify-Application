@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import BottomNavigationLayout from './navigation/BottomNavigationLayout.vue'
-import Logo from '@/assets/jobify1_Logo.png'
+import Logo from '@/assets/logo.png'
 import { useWindowSize } from '@vueuse/core'
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -37,7 +37,7 @@ function onClick() {
           :src="Logo"
           alt="Logo"
           class="mr-4"
-          :height="mobile ? '40px' : '50px'"
+          height="100px"
         />
 
         <!-- Navigation Links -->
