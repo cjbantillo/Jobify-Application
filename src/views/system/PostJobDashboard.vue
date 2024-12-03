@@ -121,6 +121,8 @@ const addJobPost = async () => {
   } catch (err) {
     console.error('Unexpected error adding job post:', err);
   }
+
+
 };
 
 
@@ -135,20 +137,24 @@ onMounted(fetchJobPosts);
         <v-main class="pt-8">
           <v-container>
             <v-row>
-              <v-col cols="12">
+              <v-col>
                 <!-- Display existing job posts if any -->
                 <div v-if="jobPosts.length > 0">
                   <v-btn @click="showPostPopup = true" class="mb-4">Post a New Job</v-btn>
-                  <v-card v-for="(job, index) in jobPosts" :key="index" class="job-card mb-4">
-                    <v-card-title class="job-title">{{ job.job_title }}</v-card-title>
-                    <v-card-subtitle class="salary-category">
-                      <span class="salary">Salary: {{ job.salary }}</span>
-                      <span class="category">Category: {{ job.category }}</span>
-                    </v-card-subtitle>
-                    <v-card-text class="location">{{ job.location }}</v-card-text>
-                    <v-card-text class="job-description">{{ job.job_description }}</v-card-text>
-                  </v-card>
+
+                    <v-card v-for="(job, index) in jobPosts" :key="index" class="job-card mb-4"
+                      >
+                      <v-card-title class="job-title">{{ job.job_title }}</v-card-title>
+                      <v-card-subtitle class="salary-category">
+                        <span class="salary">Salary: <i class="mdi mdi-currency-php"></i> {{ job.salary_range }}</span>
+                        <span class="category">Category: {{ job.category }}</span>
+                      </v-card-subtitle>
+                      <v-card-text class="location">{{ job.location }}</v-card-text>
+                      <v-card-text class="job-description">{{ job.job_description }}</v-card-text>
+                    </v-card>
+
                 </div>
+
 
                 <!-- If no job posts, automatically show popup -->
                 <v-dialog v-model="showPostPopup" persistent max-width="500">
@@ -164,8 +170,10 @@ onMounted(fetchJobPosts);
                           label="Job Title"
                           required></v-text-field>
                         <v-text-field
+                          prepend-inner-icon="mdi-currency-php"
                           density="compact"
                           rounded
+                          type="number"
                           variant="outlined"
                           v-model="newJobPost.salary"
                           label="Salary"
@@ -259,7 +267,7 @@ onMounted(fetchJobPosts);
 
 .category-label {
   color: #fff;
-  background-color: #375838;
+  background-color: #4caf50;
   padding: 2px 4px; /* Smaller padding */
   border-radius: 4px;
   display: inline-block;
@@ -272,7 +280,7 @@ onMounted(fetchJobPosts);
 }
 
 .apply-button {
-  background-color: green;
+  background-color: #4caf50;
   color: white;
   padding: 6px 10px; /* Smaller padding for better appearance */
   font-weight: bold;
@@ -332,7 +340,7 @@ onMounted(fetchJobPosts);
 }
 
 .category {
-  background-color: #375838; /* Green background for category */
+  background-color: #4caf50; /* Green background for category */
   color: #fff;
   padding: 2px 6px;
   border-radius: 4px;
@@ -352,7 +360,7 @@ onMounted(fetchJobPosts);
 
 /* Button Style */
 .v-btn {
-  background-color: #375838; /* Green button */
+  background-color: #4caf50; /* Green button */
   color: white;
   font-weight: bold;
   padding: 10px 20px;
@@ -360,7 +368,6 @@ onMounted(fetchJobPosts);
 }
 
 .v-btn:hover {
-  background-color: #2d4731; /* Darker green on hover */
+  background-color: rgb(89, 145, 97); /* Darker green on hover */
 }
-
 </style>
