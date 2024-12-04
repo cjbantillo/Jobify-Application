@@ -4,17 +4,17 @@ import { useAuthUserStore } from '@/stores/authUser' // Assuming you use Pinia f
 import HomePageView from '@/views/system/HomePageView.vue'
 import LoginView from '@/views/auth/LoginStudentView.vue'
 import RegisterView from '@/views/auth/RegisterStudentView.vue'
-import JobDashboardView from '@/views/system/JobsDashboardView.vue'
-import EmployerDashboardView from '@/views/system/EmployerDashboard.vue'
-import PostedJobView from '@/views/system/PostJobDashboard.vue'
-import ResumeDashboard from '@/views/system/ResumeDashboard.vue'
+import JobDashboardView from '@/views/system/JobsDashboardView.vue' // sttudent job dashboard
+import EmployerDashboardView from '@/views/system/EmployerDashboard.vue' // employer dashboard
+import PostedJobView from '@/views/system/PostJobDashboard.vue' //employer posted jobs
+import ResumeDashboard from '@/views/system/ResumeDashboard.vue' //student resume dashboard
+import ApplicationListView from '@/views/system/ApplicationListView.vue'
+//settings pages
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
-//must be updated
 import AccountSettingsChangePassword from '@/views/system/settings/ChangePasswordView.vue'
 import AccountSettingsPersonalization from '@/views/system/settings/PersonalizationView.vue'
 import AccountSettingsSecurityPrivacy from '@/views/system/settings/SecurityPrivacyView.vue'
 import EmployerInformationView from '@/views/system/EmployerInformationView.vue'
-
 
 const routes = [
   // Auth Pages
@@ -63,6 +63,13 @@ const routes = [
     meta: { requiresAuth: true, isDefault: true },
   },
   {
+    // application list view
+    path: '/application-list',
+    name: 'application=list',
+    component: ApplicationListView,
+    meta: { requiresAuth: true, isDefault: true },
+  },
+  {
     path: '/employerinformation',
     name: 'employerinformation',
     component: EmployerInformationView,
@@ -95,7 +102,6 @@ const routes = [
     component: AccountSettingsSecurityPrivacy,
     meta: { requiresAuth: true, isDefault: true },
   },
-
 ]
 
 const router = createRouter({

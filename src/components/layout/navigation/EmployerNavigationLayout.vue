@@ -354,6 +354,12 @@ onMounted(() => {
           value="postedjobs"
           to="/postedjobs"
         ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-application"
+          title="Applications List"
+          value="application-list"
+          to="/application-list"
+        ></v-list-item>
 
         <v-list-group
           prepend-icon="mdi-cog-outline"
