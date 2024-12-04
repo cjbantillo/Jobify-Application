@@ -5,7 +5,7 @@ import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { useAuthUserStore } from '@/stores/authUser'
 import { useWindowSize } from '@vueuse/core'
 import { getAvatarText } from '@/utils/helpers'
-import logo from '@/assets/logo.png'
+import logo from '@/assets/logo-removebg-preview.png'
 
 // this item is for the notification bell for further update
 const items = [
@@ -152,7 +152,7 @@ onMounted(() => {
         max-width="100"
         class="mr-4"
       />
-      <h3 v-if="!mobile">Jobify</h3>
+      <h3 v-if="!mobile">&middot; {{ authStore.userData.first_name + ' ' + authStore.userData.last_name || 'Loading' }}</h3>
       <v-spacer></v-spacer>
       <v-text-field
         clearable

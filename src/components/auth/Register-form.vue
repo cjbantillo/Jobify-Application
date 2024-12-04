@@ -12,6 +12,26 @@ import { useRouter } from 'vue-router'
 // Utilize pre-defined vue functions
 const router = useRouter()
 
+// Dialog visibility state
+const dialogVisible = ref(false);
+
+// Form data for user type
+const isEmployer = ref(false);
+
+// Function to show the employer confirmation dialog
+const openEmployerDialog = () => {
+  dialogVisible.value = true;
+};
+
+// Function to set the user type and proceed to Google OAuth
+const setUserType = (isEmployerSelected) => {
+  isEmployer.value = isEmployerSelected;
+  dialogVisible.value = false; // Close the dialog
+
+  // Proceed to Google OAuth
+  handleGoogleSignIn();
+};
+
 const visible = ref(false) //toggle variable
 const visibleConfirm = ref(false)
 const termsAccepted = ref(false) //checkbox toggle
@@ -34,6 +54,8 @@ const formData = ref({
 const formAction = ref({
   ...formActionDefault,
 })
+
+
 
 const onSubmit = async () => {
   formAction.value = { ...formActionDefault, formProcess: true };
@@ -71,6 +93,32 @@ const onSubmit = async () => {
   }
 };
 
+// Handle Google Sign-In
+const handleGoogleSignIn = async () => {
+  try {
+    // Set user metadata before sign-in
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        data: {
+          is_employer: isEmployer.value, // Set user type based on dialog selection
+        },
+      },
+    });
+
+    if (error) {
+      console.error('Google Sign-In Error:', error.message);
+      alert('Google Sign-In failed. Please try again.');
+    } else if (data) {
+      // Redirect based on user type
+      const redirectRoute = isEmployer.value ? '/employerdashboard' : '/jobdashboard';
+      router.push(redirectRoute);
+    }
+  } catch (err) {
+    console.error('Unexpected Error during Google Sign-In:', err);
+    alert('Unexpected error occurred. Please try again.');
+  }
+};
 
 const toggleVisible = () => (visible.value = !visible.value) //eye icon
 const toggleVisibleConfirm = () =>
@@ -84,7 +132,7 @@ const onFormSubmit = () => {
   })
 }
 
-console.log(formDataDefault)
+//console.log(formDataDefault)
 </script>
 
 <template>
@@ -126,9 +174,6 @@ console.log(formDataDefault)
       rounded
       density="compact"
     ></v-text-field>
-
-    <v-row>
-      <v-col>
         <!-- enter password -->
         <v-text-field
           v-model="formData.password"
@@ -142,12 +187,7 @@ console.log(formDataDefault)
           rounded
           density="compact"
         ></v-text-field>
-      </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col>
-        <!-- confirming password  -->
         <v-text-field
           :append-inner-icon="visibleConfirm ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visibleConfirm ? 'text' : 'password'"
@@ -163,29 +203,20 @@ console.log(formDataDefault)
           rounded
           density="compact"
         ></v-text-field>
-      </v-col>
-    </v-row>
 
-    <v-radio-group
-      v-model="formData.is_employer"
-      :rules="[requiredValidator]"
-      label="I'm a/an:"
-      density="compact"
-      row
-      class="small-radio-group"
-    >
-      <v-radio label="Partimer" :value="false"></v-radio>
-      <v-radio label="Employer" :value="true"></v-radio>
-    </v-radio-group>
-
-
-    <!-- checkbox with toggle -->
-    <v-checkbox
-      v-model="termsAccepted"
-      :rules="[v => !!v || 'You must accept the terms and conditions']"
-      label="I agree to the terms and conditions"
-      color="primary"
-    ></v-checkbox>
+          <!-- Employer confirmation popup -->
+        <v-dialog v-model="dialogVisible" max-width="400px">
+          <v-card>
+            <v-card-title class="headline">Are you an Employer?</v-card-title>
+            <v-card-text>
+              <p>Do you want to register as an employer or a part-timer?</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn text @click="setUserType(false)">Part-Timer</v-btn>
+              <v-btn text @click="setUserType(true)">Employer</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
     <v-row class="button-row">
       <v-col>
@@ -199,6 +230,13 @@ console.log(formDataDefault)
         >
       </v-col>
     </v-row>
+    <!-- checkbox with toggle -->
+    <v-checkbox
+      v-model="termsAccepted"
+      :rules="[v => !!v || 'You must accept the terms and conditions']"
+      label="I agree to the terms and conditions"
+      color="primary"
+    ></v-checkbox>
 
 
 
@@ -208,14 +246,35 @@ console.log(formDataDefault)
         <router-link class="link" to="login"> click here </router-link>
       </h5>
     </v-col>
+
+          <v-divider class="my-4">Or</v-divider>
+            <div class="social-icons d-flex justify-center">
+              <v-btn
+                prepend-icon="mdi-google"
+                class="w-100 ma-10"
+                @click="openEmployerDialog"
+              >
+              Sign In with Google
+              </v-btn>
+            </div>
   </v-form>
 </template>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*,
+v-btn {
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+}
+.v-btn{
+  border-radius: 20px;
+}
 .button-row .register-button {
   background-color: #4caf50; /* Primary green color */
   color: #ffffff;
-  font-weight: 100;
-  font-size: 0.5rem;
   box-shadow: 0px 4px 10px rgba(76, 175, 80, 0.2); /* Soft shadow */
   transition: all 0.3s ease;
 }
@@ -243,10 +302,5 @@ console.log(formDataDefault)
   font-size: 0.75rem;
   font-weight: 400;
   color: #6c757d; /* Link color */
-}
-.small-radio-group v-radio {
-  font-size: 0.5rem; /* Adjust font size as needed */
-  gap: 8px; /* Add spacing between radio buttons */
-  display: block;
 }
 </style>

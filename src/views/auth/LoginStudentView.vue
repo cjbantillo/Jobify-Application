@@ -29,13 +29,6 @@ import Loginform from '@/components/auth/Login-form.vue'
             <!-- Login Form AUTH -->
             <Loginform />
 
-            <!-- Social Login -->
-            <v-divider class="my-4">Or</v-divider>
-            <div class="social-icons d-flex justify-center">
-              <v-icon color="blue" class="mx-2">mdi-facebook</v-icon>
-              <v-icon color="red" class="mx-2">mdi-google</v-icon>
-              <v-icon color="light-blue" class="mx-2">mdi-twitter</v-icon>
-            </div>
           </v-col>
         </v-row>
       </v-container>
