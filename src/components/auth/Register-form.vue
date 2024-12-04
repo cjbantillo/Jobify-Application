@@ -111,7 +111,6 @@ const handleGoogleSignIn = async () => {
       alert('Google Sign-In failed. Please try again.');
     } else if (data) {
       // Redirect based on user type
-      const { user } = data;
       const redirectRoute = isEmployer.value ? '/employerdashboard' : '/jobdashboard';
       router.push(redirectRoute);
     }
