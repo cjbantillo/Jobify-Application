@@ -1,48 +1,98 @@
 <script setup>
-import EmployerNavigationLayout from '@/components/layout/navigation/EmployerNavigationLayout.vue';
-import { ref, onMounted } from 'vue';
-import { supabase } from '@/utils/supabase';
+import EmployerNavigationLayout from '@/components/layout/navigation/EmployerNavigationLayout.vue'
+import { ref, onMounted } from 'vue'
+import { supabase } from '@/utils/supabase'
 
-const companyName = ref('');
-const companySocial = ref('');
-const companyCategory = ref('');
-const companyAddress = ref('');
+const companyName = ref('')
+const companySocial = ref('')
+const companyCategory = ref('')
+const companyAddress = ref('')
+const loading = ref(false)
+const errorMessage = ref('')
 
 const fetchUserData = async () => {
   try {
-    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    loading.value = true
+    errorMessage.value = ''
+
+    const { data: currentUser, error: userError } =
+      await supabase.auth.getUser()
     if (userError || !currentUser?.user?.id) {
-      console.error('Error fetching current user:', userError || 'No user logged in');
-      return;
+      errorMessage.value =
+        userError?.message || 'No user is logged in'
+      return
     }
 
     const { data: employerProfile, error: employerError } = await supabase
       .from('employer_profiles')
       .select('*')
       .eq('user_id', currentUser.user.id)
-      .single();
+      .single()
 
     if (employerError) {
-      console.error('Error fetching employer profile:', employerError);
-      return;
+      errorMessage.value =
+        employerError.message || 'Error fetching employer profile'
+      return
     }
 
     if (employerProfile) {
-      companyName.value = employerProfile.company_name;
-      companySocial.value = employerProfile.company_social;
-      companyCategory.value = employerProfile.company_category;
-      companyAddress.value = employerProfile.address;
+      companyName.value = employerProfile.company_name
+      companySocial.value = employerProfile.company_social
+      companyCategory.value = employerProfile.company_category
+      companyAddress.value = employerProfile.address
     }
   } catch (err) {
-    console.error('Unexpected error fetching user data:', err);
+    errorMessage.value = 'Unexpected error occurred'
+    console.error('Unexpected error fetching user data:', err)
+  } finally {
+    loading.value = false
   }
-};
+}
+
+const editCompanyData = async () => {
+  try {
+    loading.value = true
+    errorMessage.value = ''
+
+    const { data: currentUser, error: userError } =
+      await supabase.auth.getUser()
+    if (userError || !currentUser?.user?.id) {
+      errorMessage.value =
+        userError?.message || 'No user is logged in'
+      return
+    }
+
+    const { error: updateError } = await supabase
+      .from('employer_profiles')
+      .update({
+        company_name: companyName.value,
+        company_social: companySocial.value,
+        company_category: companyCategory.value,
+        address: companyAddress.value,
+      })
+      .eq('user_id', currentUser.user.id)
+
+    if (updateError) {
+      errorMessage.value =
+        updateError.message || 'Error updating employer profile'
+      return
+    }
+
+    console.log('Company data updated successfully!')
+    // Optionally fetch the updated data
+    await fetchUserData()
+  } catch (err) {
+    errorMessage.value = 'Unexpected error occurred while updating data'
+    console.error('Unexpected error updating company data:', err)
+  } finally {
+    loading.value = false
+  }
+}
 
 onMounted(async () => {
-  await fetchUserData();
-});
+  await fetchUserData()
+})
 </script>
-
 <template>
   <EmployerNavigationLayout>
     <template #content>
@@ -53,70 +103,80 @@ onMounted(async () => {
             <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
             <v-card outlined class="py-8 cont" height="fill">
               <div v-if="!loading && !errorMessage">
-                <v-card-title class="title text-h5 ma-5">Business Information</v-card-title>
+                <v-card-title class="title text-h5 ma-5">
+                  Business Information
+                </v-card-title>
                 <v-row>
                   <v-col class="ma-auto" cols="10">
                     <div cols="10">
                       <v-row>
-                          <v-col cols="5" class="ma-auto">
-                            <v-text-field
-                              v-model="companyName"
-                              label="Company Name"
-                              prepend-inner-icon="mdi-briefcase"
-                              class="modern-input"
-                              variant="outlined"
-                              rounded
-                            >
-                            </v-text-field>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="5" class="ma-auto">
-                            <v-text-field
-                              v-model="companySocial"
-                              label="Company Social"
-                              prepend-inner-icon="mdi-facebook"
-                              class="modern-input"
-                              variant="outlined"
-                              rounded
-                            >
-                            </v-text-field>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="5" class="ma-auto">
-                            <v-text-field
-                              v-model="companyCategory"
-                              label="Company Category"
-                              prepend-inner-icon="mdi-shape-plus"
-                              class="modern-input"
-                              variant="outlined"
-                              rounded
-                            >
-                            </v-text-field>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="5" class="ma-auto">
-                            <v-text-field
-                              v-model="companyAddress"
-                              label="Company Address"
-                              prepend-inner-icon="mdi-earth"
-                              class="modern-input"
-                              variant="outlined"
-                              rounded
-                            >
-                            </v-text-field>
-                          </v-col>
-                        </v-row>
-                      </div>
+                        <v-col cols="5" class="ma-auto">
+                          <v-text-field
+                            v-model="companyName"
+                            label="Company Name"
+                            prepend-inner-icon="mdi-briefcase"
+                            class="modern-input"
+                            variant="outlined"
+                            rounded
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="5" class="ma-auto">
+                          <v-text-field
+                            v-model="companySocial"
+                            label="Company Social"
+                            prepend-inner-icon="mdi-facebook"
+                            class="modern-input"
+                            variant="outlined"
+                            rounded
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="5" class="ma-auto">
+                          <v-text-field
+                            v-model="companyCategory"
+                            label="Company Category"
+                            prepend-inner-icon="mdi-shape-plus"
+                            class="modern-input"
+                            variant="outlined"
+                            rounded
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="5" class="ma-auto">
+                          <v-text-field
+                            v-model="companyAddress"
+                            label="Company Address"
+                            prepend-inner-icon="mdi-earth"
+                            class="modern-input"
+                            variant="outlined"
+                            rounded
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="12" class="ma-auto text-center">
+                          <v-btn
+                            color="primary"
+                            @click="editCompanyData"
+                            :loading="loading"
+                            :disabled="loading"
+                          >
+                            Save Changes
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                    </div>
                   </v-col>
                 </v-row>
               </div>
             </v-card>
           </v-container>
         </v-main>
-    </v-app>
+      </v-app>
     </template>
   </EmployerNavigationLayout>
 </template>
@@ -124,7 +184,7 @@ onMounted(async () => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
 
-*{
+* {
   font-family: 'Varela Round', sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -134,10 +194,10 @@ onMounted(async () => {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
 }
-.user-card:hover{
-  -webkit-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.75);
+.user-card:hover {
+  -webkit-box-shadow: 0px 0px 20px -1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 20px -1px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 20px -1px rgba(0, 0, 0, 0.75);
 }
 
 /* Font hierarchy and color palette */
@@ -159,13 +219,13 @@ onMounted(async () => {
 }
 
 /* Padding adjustments */
-.v-card{
+.v-card {
   border-radius: 20px;
 }
-.v-card .v-card-title{
+.v-card .v-card-title {
   font-size: larger;
   font-weight: 700;
-  color:#4caf50;
+  color: #4caf50;
 }
 .v-card-title {
   margin-bottom: 0.5rem;
