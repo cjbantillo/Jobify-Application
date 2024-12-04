@@ -53,6 +53,33 @@ const onSubmit = async () => {
   refVForm.value?.reset()
   formAction.value.formProcess = false
 }
+
+// Google OAuth Login
+/*const loginWithGoogle = async () => {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
+
+    if (error) {
+      formAction.value.formErrorMessage = error.message
+    } else {
+      console.log('Google login successful', data)
+      formAction.value.formSuccessMessage = 'Logged in with Google successfully'
+
+      // Redirect based on user type
+      const { user } = data
+      if (user?.user_metadata?.is_employer) {
+        router.push('/employerdashboard')
+      } else {
+        router.push('/jobdashboard')
+      }
+    }
+  } catch (error) {
+    console.error('Google OAuth login error:', error)
+    formAction.value.formErrorMessage = 'Google login failed. Please try again.'
+  }
+}*/
 // Validate and submit the form
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
@@ -132,15 +159,16 @@ const onFormSubmit = () => {
       </h5>
     </v-col>
 
-    <v-divider class="my-4">Or</v-divider>
+    <!--<v-divider class="my-4">Or</v-divider>
       <div class="social-icons d-flex justify-center">
         <v-btn
           prepend-icon="mdi-google"
-            class="w-100 ma-10"
-              >
-              Sign In with Google
-              </v-btn>
-      </div>
+          class="w-100 ma-10"
+           @click="loginWithGoogle"
+          >
+            Sign In with Google
+          </v-btn>
+      </div>-->
   </v-form>
 </template>
 
