@@ -145,6 +145,18 @@ const onFormSubmit = () => {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*,
+v-btn {
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+}
+.v-btn{
+  border-radius: 20px;
+}
 .small-checkbox .v-label {
   font-size: 0.85rem;
   font-weight: 400;
