@@ -16,11 +16,36 @@ const fetchJobListings = async () => {
   if (fetchError) {
     error.value = fetchError.message;
   } else {
-    jobListings.value = data;
-    console.log(data);
+    jobListings.value = data.map(job => ({
+      ...job,
+      relativeTime: calculateRelativeTime(job.created_at),
+    }));
+    console.log(jobListings.value);
   }
   loading.value = false;
 };
+
+const calculateRelativeTime = (dateString) => {
+  const now = new Date();
+  const jobDate = new Date(dateString);
+  const diffInSeconds = Math.floor((now - jobDate) / 1000);
+
+  const minutes = Math.floor(diffInSeconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`;
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+  } else {
+    return 'Just now';
+  }
+};
+
+
 
 onMounted(fetchJobListings);
 </script>
@@ -47,17 +72,17 @@ onMounted(fetchJobListings);
                     <v-card-title class="title">{{ job.job_title }}</v-card-title>
                     <v-card-text>
                       <p class="budget">
-                        <span class="icon material-icons">attach_money</span>Est. Budget
-                        {{ job.salary_range }} / hr
+                        <i class="mdi mdi-currency-php"></i>
+                        {{ job.salary_range }}
                       </p>
                       <p class="location">
-                        <span class="icon material-icons">location_on</span>{{ job.location }}
+                        <span class="icon material-icons">Location</span>{{ job.location }}
                       </p>
                       <div class="category-label">
                         Category: {{ job.category }}
                       </div>
                       <div class="job-type-duration">
-                        Job Type: {{ job.job_type }} | Duration: {{ job.duration }}
+                        Posted: {{ job.relativeTime }}
                       </div>
                     </v-card-text>
                     <div class="button-container">
@@ -126,7 +151,7 @@ onMounted(fetchJobListings);
 }
 
 .apply-button {
-  background-color: green;
+  background-color: #4caf50;
   color: white;
   padding: 10px 15px; /* Add padding for better button appearance */
   font-weight: bold;

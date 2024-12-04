@@ -135,12 +135,12 @@ onMounted(fetchJobPosts);
     <template #content>
       <v-app class="d-flex fill-height">
         <v-main class="pt-8">
-          <v-container>
+          <v-container variant="outlined" class="pa-8">
             <v-row>
               <v-col>
                 <!-- Display existing job posts if any -->
                 <div v-if="jobPosts.length > 0">
-                  <v-btn @click="showPostPopup = true" class="mb-4">Post a New Job</v-btn>
+                  <v-btn @click="showPostPopup = true" class="mb-8">Post a New Job</v-btn>
 
                     <v-card v-for="(job, index) in jobPosts" :key="index" class="job-card mb-4"
                       >
