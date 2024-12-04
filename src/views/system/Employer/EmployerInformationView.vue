@@ -181,6 +181,4 @@ onMounted(async () => {
   </EmployerNavigationLayout>
 </template>
 
-<style scoped src="./style/EmployerInformationViewStyle.css">
-
-</style>
+<style scoped src="@/views/system/style/EmployerInformationViewStyle.css"></style>

@@ -4,17 +4,17 @@ import { useAuthUserStore } from '@/stores/authUser' // Assuming you use Pinia f
 import HomePageView from '@/views/system/HomePageView.vue'
 import LoginView from '@/views/auth/LoginStudentView.vue'
 import RegisterView from '@/views/auth/RegisterStudentView.vue'
-import JobDashboardView from '@/views/system/JobsDashboardView.vue' // sttudent job dashboard
-import EmployerDashboardView from '@/views/system/EmployerDashboard.vue' // employer dashboard
-import PostedJobView from '@/views/system/PostJobDashboard.vue' //employer posted jobs
-import ResumeDashboard from '@/views/system/ResumeDashboard.vue' //student resume dashboard
-import ApplicationListView from '@/views/system/ApplicationListView.vue'
+import JobDashboardView from '@/views/system/Student/JobsDashboardView.vue' // sttudent job dashboard
+import EmployerDashboardView from '@/views/system/Employer/EmployerDashboard.vue' // employer dashboard
+import PostedJobView from '@/views/system/Employer/PostJobDashboard.vue' //employer posted jobs
+import ResumeDashboard from '@/views/system/Student/ResumeDashboard.vue' //student resume dashboard
+import ApplicationListView from '@/views/system/Employer/ApplicationListView.vue'
 //settings pages
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
 import AccountSettingsChangePassword from '@/views/system/settings/ChangePasswordView.vue'
 import AccountSettingsPersonalization from '@/views/system/settings/PersonalizationView.vue'
 import AccountSettingsSecurityPrivacy from '@/views/system/settings/SecurityPrivacyView.vue'
-import EmployerInformationView from '@/views/system/EmployerInformationView.vue'
+import EmployerInformationView from '@/views/system/Employer/EmployerInformationView.vue'
 
 const routes = [
   // Auth Pages

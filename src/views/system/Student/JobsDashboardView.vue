@@ -99,5 +99,4 @@ onMounted(fetchJobListings);
   </JobNavigationLayout>
 </template>
 
-<style scoped src="./style/JobDashboardStyle.css">
-</style>
+<style scoped src="@/views/system/style/JobDashboardStyle.css"></style>

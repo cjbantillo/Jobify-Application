@@ -271,4 +271,4 @@ onMounted(fetchJobPosts)
   </EmployerNavigationLayout>
 </template>
 
-<style scoped src="./style/PostJobDashboardStyle.css"></style>
+<style scoped src="@/views/system/style/PostJobDashboardStyle.css"></style>
