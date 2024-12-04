@@ -126,9 +126,6 @@ console.log(formDataDefault)
       rounded
       density="compact"
     ></v-text-field>
-
-    <v-row>
-      <v-col>
         <!-- enter password -->
         <v-text-field
           v-model="formData.password"
@@ -142,12 +139,7 @@ console.log(formDataDefault)
           rounded
           density="compact"
         ></v-text-field>
-      </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col>
-        <!-- confirming password  -->
         <v-text-field
           :append-inner-icon="visibleConfirm ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visibleConfirm ? 'text' : 'password'"
@@ -163,29 +155,19 @@ console.log(formDataDefault)
           rounded
           density="compact"
         ></v-text-field>
-      </v-col>
-    </v-row>
 
-    <v-radio-group
-      v-model="formData.is_employer"
-      :rules="[requiredValidator]"
-      label="I'm a/an:"
-      density="compact"
-      row
-      class="small-radio-group"
-    >
-      <v-radio label="Partimer" :value="false"></v-radio>
-      <v-radio label="Employer" :value="true"></v-radio>
-    </v-radio-group>
-
-
-    <!-- checkbox with toggle -->
-    <v-checkbox
-      v-model="termsAccepted"
-      :rules="[v => !!v || 'You must accept the terms and conditions']"
-      label="I agree to the terms and conditions"
-      color="primary"
-    ></v-checkbox>
+        <v-radio-group
+          v-model="formData.is_employer"
+          :rules="[requiredValidator]"
+          density="compact"
+          justify-center
+          align-center
+        >
+          <v-row>
+            <v-radio label="Part Timer" :value="false" ></v-radio>
+            <v-radio label="Employer" :value="true"></v-radio>
+          </v-row>
+        </v-radio-group>
 
     <v-row class="button-row">
       <v-col>
@@ -199,6 +181,13 @@ console.log(formDataDefault)
         >
       </v-col>
     </v-row>
+    <!-- checkbox with toggle -->
+    <v-checkbox
+      v-model="termsAccepted"
+      :rules="[v => !!v || 'You must accept the terms and conditions']"
+      label="I agree to the terms and conditions"
+      color="primary"
+    ></v-checkbox>
 
 
 
@@ -208,14 +197,34 @@ console.log(formDataDefault)
         <router-link class="link" to="login"> click here </router-link>
       </h5>
     </v-col>
+
+          <v-divider class="my-4">Or</v-divider>
+            <div class="social-icons d-flex justify-center">
+              <v-btn
+                prepend-icon="mdi-google"
+                class="w-100 ma-10"
+              >
+              Sign In with Google
+              </v-btn>
+            </div>
   </v-form>
 </template>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*,
+v-btn {
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+}
+.v-btn{
+  border-radius: 20px;
+}
 .button-row .register-button {
   background-color: #4caf50; /* Primary green color */
   color: #ffffff;
-  font-weight: 100;
-  font-size: 0.5rem;
   box-shadow: 0px 4px 10px rgba(76, 175, 80, 0.2); /* Soft shadow */
   transition: all 0.3s ease;
 }
@@ -243,10 +252,5 @@ console.log(formDataDefault)
   font-size: 0.75rem;
   font-weight: 400;
   color: #6c757d; /* Link color */
-}
-.small-radio-group v-radio {
-  font-size: 0.5rem; /* Adjust font size as needed */
-  gap: 8px; /* Add spacing between radio buttons */
-  display: block;
 }
 </style>

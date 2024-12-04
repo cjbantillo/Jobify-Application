@@ -131,6 +131,16 @@ const onFormSubmit = () => {
         >
       </h5>
     </v-col>
+
+    <v-divider class="my-4">Or</v-divider>
+      <div class="social-icons d-flex justify-center">
+        <v-btn
+          prepend-icon="mdi-google"
+            class="w-100 ma-10"
+              >
+              Sign In with Google
+              </v-btn>
+      </div>
   </v-form>
 </template>
 
