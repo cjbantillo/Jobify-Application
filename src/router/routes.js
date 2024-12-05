@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthUserStore } from '@/stores/authUser' // Assuming you use Pinia for authentication state
 
+// footer 
+import AboutView from '@/views/system/Footer/AboutView.vue'
 import HomePageView from '@/views/system/HomePageView.vue'
 import LoginView from '@/views/auth/LoginStudentView.vue'
 import RegisterView from '@/views/auth/RegisterStudentView.vue'
@@ -102,6 +104,11 @@ const routes = [
     component: AccountSettingsSecurityPrivacy,
     meta: { requiresAuth: true, isDefault: true },
   },
+  {
+    path: '/about',
+    name: 'about',
+    component: AboutView
+  }
 ]
 
 const router = createRouter({
