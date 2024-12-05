@@ -1,3 +1,42 @@
+
+<script setup>
+import { ref } from 'vue';
+import { defineProps } from 'vue';
+
+// Importing your local image
+import meImage from '@/assets/me.png'; // Importing your image
+import profileCj from '@/assets/ProfileCj.png';
+
+const props = defineProps({
+  theme: {
+    type: String,
+    default: 'light',
+  },
+});
+
+const teamMembers = ref([
+  {
+    name: 'Nheron Cedro',
+    role: 'Developer', // Specify your role here
+    image: meImage, // Using the imported image
+  },
+  {
+    name: 'Luis Gwapo',
+    role: 'System Analyst',
+    image: 'https://via.placeholder.com/120', // Replace with actual image URL or import
+  },
+  {
+    name: 'Christian James Bantillo',
+    role: 'Developer',
+    image: profileCj , // Replace with actual image URL or import
+  },
+]);
+
+const goBack = () => {
+  window.history.back();
+};
+</script>
+
 <template>
     <v-btn class="back-btn" @click="goBack">
         <v-icon left>mdi-arrow-left</v-icon>
@@ -73,46 +112,6 @@
       </v-row>
     </v-container>
   </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { defineProps } from 'vue';
-  
-  // Importing your local image
-  import meImage from '@/assets/me.png'; // Importing your image
-  
-  const props = defineProps({
-    theme: {
-      type: String,
-      default: 'light',
-    },
-  });
-  
-  const router = useRouter();
-  
-  const teamMembers = ref([
-    {
-      name: 'Nheron Cedro',
-      role: 'Developer', // Specify your role here
-      image: meImage, // Using the imported image
-    },
-    {
-      name: 'Luis Gwapo',
-      role: 'System Analyst',
-      image: 'https://via.placeholder.com/120', // Replace with actual image URL or import
-    },
-    {
-      name: 'CJ GTA',
-      role: 'Developer',
-      image: 'https://via.placeholder.com/120', // Replace with actual image URL or import
-    },
-  ]);
-  
-  const goBack = () => {
-    window.history.back();
-  };
-  </script>
   
   <style scoped>
   .about-us-container {
@@ -191,6 +190,18 @@
   .role {
     font-size: 1rem;
     color: #00796B; /* Subtle color for the role */
+  }
+  
+  /* Centering the images */
+  .v-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .v-avatar {
+    margin: auto;
   }
   </style>
   

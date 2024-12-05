@@ -1,7 +1,7 @@
 <script setup>
 import EmployerNavigationLayout from '@/components/layout/navigation/EmployerNavigationLayout.vue'
-import { ref, onMounted } from 'vue'
-import { supabase } from '@/utils/supabase'
+// import { ref, onMounted } from 'vue'
+// import { supabase } from '@/utils/supabase'
 
 
 </script>
