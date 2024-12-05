@@ -286,10 +286,16 @@ const hireApplicant = async (applicantId) => {
       await fetchJobApplicants(selectedJob.value.id) // Refresh applicants list
     }
   } catch (err) {
-    console.error('Unexpected error during hiring:', err)
-    alert('An unexpected error occurred.')
+    console.error('Unexpected error while hiring applicant:', err)
   }
 }
+
+const openApplicantsDialog = (job) => {
+  selectedJob.value = job; // Set the selected job
+  fetchJobApplicants(job.id); // Fetch the applicants for the selected job
+  applicantDialog.value = true; // Open the dialog
+}
+
 
 // Fetch user info on component mount
 onMounted(async () => {
@@ -305,39 +311,35 @@ onMounted(async () => {
         <v-main class="pt-8">
           <v-container>
             <v-card outlined class="pa-8 cont" height="fill">
-              <div v-if="!loading && !errorMessage">
-                <v-card-title class="title text-h5 mb-6"
-                  >Dashboard</v-card-title
-                >
-                <v-row>
-                  <v-col
-                    v-for="(user, index) in users"
-                    :key="index"
-                    cols="12"
-                    sm="6"
-                    md="5"
-                    lg="4"
-                  >
-                    <!-- Updated user card -->
-                    <v-card class="user-card" outlined>
-                      <v-card-title class="text-h6"
-                        >{{ user.user_metadata.first_name }}
-                        {{ user.user_metadata.last_name }}</v-card-title
-                      >
-                      <v-card-subtitle class="text-body-2 mb-4">{{
-                        user.email || 'Email Unavailable'
-                      }}</v-card-subtitle>
-                      <v-card-subtitle class="text-body-2 mb-4">{{
-                        user.bio || 'Bio Unavailable'
-                      }}</v-card-subtitle>
-                      <v-card-actions>
-                        <v-btn rounded @click="hireUser(user)">Hire</v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                </v-row>
-              </div>
-            </v-card>
+
+  <v-card-title class="title text-h5 mb-6">Dashboard</v-card-title>
+
+  <div v-if="!loading && jobPosts.length === 0" class="text-center">
+    No job posts found.
+  </div>
+
+  <v-container v-else>
+    <v-row>
+      <v-col v-for="job in jobPosts" :key="job.id" cols="12" md="6" lg="4">
+        <v-card outlined class="pa-8 ma-3" rounded>
+          <v-card-title>{{ job.job_title }}</v-card-title>
+          <v-card-subtitle>
+            {{ job.job_description }}
+          </v-card-subtitle>
+          <v-card-text>
+            <strong>Posted:</strong> {{ job.relativeTime }}
+            <br />
+            <strong>Applicants:</strong> {{ job.applicant_count }}
+          </v-card-text>
+          <v-card-actions>
+            <v-btn text @click="openApplicantsDialog(job)">View Details</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</v-card>
+
           </v-container>
         </v-main>
         <template>
