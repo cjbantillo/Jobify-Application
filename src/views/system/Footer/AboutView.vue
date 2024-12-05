@@ -81,6 +81,7 @@
   
   // Importing your local image
   import meImage from '@/assets/me.png'; // Importing your image
+  import profileCj from '@/assets/ProfileCj.png';
   
   const props = defineProps({
     theme: {
@@ -103,9 +104,9 @@
       image: 'https://via.placeholder.com/120', // Replace with actual image URL or import
     },
     {
-      name: 'CJ GTA',
+      name: 'Christian James Bantillo',
       role: 'Developer',
-      image: 'https://via.placeholder.com/120', // Replace with actual image URL or import
+      image: profileCj , // Replace with actual image URL or import
     },
   ]);
   
@@ -191,6 +192,18 @@
   .role {
     font-size: 1rem;
     color: #00796B; /* Subtle color for the role */
+  }
+  
+  /* Centering the images */
+  .v-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .v-avatar {
+    margin: auto;
   }
   </style>
   
