@@ -103,10 +103,20 @@ const router = createRouter({
   routes,
 })
 
-// Navigation guard to handle authentication and redirection
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthUserStore()
   const isAuthenticated = authStore.isAuthenticated
+  const is_employer = authStore.is_employer // Assuming you have a `userRole` field in your auth store to determine if they are a student or employer
+
+  // If the user is already authenticated and tries to access the login or register page, redirect to their dashboard
+  if (isAuthenticated && (to.name === 'login' || to.name === 'register')) {
+    // Redirect to the correct dashboard based on the role
+    if (is_employer === true) {
+      return next('/employerdashboard')
+    } else {
+      return next('/jobdashboard')
+    }
+  }
 
   // Redirect to login if the route requires authentication and user is not authenticated
   if (to.meta.requiresAuth && !isAuthenticated) {

@@ -101,6 +101,7 @@ const onFormSubmit = () => {
       :rules="[requiredValidator, emailValidator]"
       class="modern-input"
       variant="outlined"
+      density="compact"
       rounded
     ></v-text-field>
     <!-- password  -->
@@ -114,6 +115,7 @@ const onFormSubmit = () => {
       :rules="[requiredValidator]"
       class="modern-input"
       variant="outlined"
+      density="compact"
       rounded
     ></v-text-field>
     <!-- checkbox  -->
