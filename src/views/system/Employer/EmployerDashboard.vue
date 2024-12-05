@@ -218,7 +218,7 @@ const fetchJobPosts = async () => {
 
     // For each job, calculate relative time and fetch the number of applicants
     for (const job of jobListings) {
-      job.relativeTime = calculateRelativeTime(job.created_at) // Calculate relative time
+      // Calculate relative time
       const { data: applications, error: appError } = await supabase
         .from('applications')
         .select('*')
@@ -228,6 +228,11 @@ const fetchJobPosts = async () => {
         console.error('Error fetching applications for job:', appError)
         continue
       }
+
+      applications.value = applications.map(application => ({
+      ...applications,
+      relativeTime: calculateRelativeTime(application.created_at),
+    }))
 
       job.applicant_count = applications.length
       jobPosts.value.push(job)

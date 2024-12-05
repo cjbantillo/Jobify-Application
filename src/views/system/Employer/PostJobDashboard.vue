@@ -33,6 +33,7 @@ const newJobPost = ref({
   category: '',
   job_description: '',
   location: '',
+
 })
 
 const jobPosts = ref([]) // To store job posts
@@ -188,7 +189,7 @@ onMounted(fetchJobPosts)
                       >Description: {{ job.job_description }}</v-card-text
                     >
                     <v-card-actions>
-                      <v-btn color="error" @click="deleteJobPost(job.id)">
+                      <v-btn @click="deleteJobPost(job.id)">
                         Delete
                       </v-btn>
                     </v-card-actions>
@@ -236,14 +237,14 @@ onMounted(fetchJobPosts)
                           label="Location"
                           required
                         ></v-text-field>
-                        <v-text-field
+                        <v-textarea
                           density="compact"
                           rounded
                           variant="outlined"
                           v-model="newJobPost.job_description"
                           label="Job Description"
                           required
-                        ></v-text-field>
+                        ></v-textarea>
                         <div class="button-container mt-4">
                           <v-btn
                             rounded

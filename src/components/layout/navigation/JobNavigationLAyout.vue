@@ -7,13 +7,103 @@ import { useWindowSize } from '@vueuse/core'
 import { getAvatarText } from '@/utils/helpers'
 import logo from '@/assets/logo-removebg-preview.png'
 
-// this item is for the notification bell for further update
-const items = [
-  { title: 'Click Me' },
-  { title: 'Click Me' },
-  { title: 'Click Me' },
-  { title: 'Click Me 2' },
-]
+// Notification items
+const notifications = ref([])
+const fetchNotifications = async () => {
+  try {
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !currentUser?.user?.id) {
+      console.error('Error fetching current user:', userError || 'No user logged in');
+      return;
+    }
+
+    const userId = currentUser.user.id;
+
+    console.log(userId)
+
+    // Fetch notifications only for the current user based on applicant_id
+    const { data, error } = await supabase
+      .from('applications')
+      .select(`
+        *,
+        job_listings(job_title)
+      `)
+      .eq('status', 'hired')
+      .eq('applicant_id', userId)  // Filter notifications by current user's applicant_id
+      .order('updated_at', { ascending: false })// Sort by latest updates
+      .limit(10);
+
+    if (error) {
+      console.error('Error fetching notifications:', error);
+      return;
+    }
+
+    // Sort notifications by updated_at in descending order, just in case
+    notifications.value = data ? data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)) : []
+  } catch (err) {
+    console.error('Unexpected error fetching notifications:', err);
+  }
+};
+
+const subscribeToNotifications = async () => {
+  try {
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !currentUser?.user?.id) {
+      console.error('Error fetching current user:', userError || 'No user logged in');
+      return;
+    }
+
+    const userId = currentUser.user.id;
+
+    supabase
+      .channel('public:applications')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'applications' },
+        async payload => {
+          if (payload.new.status === 'hired' && payload.new.applicant_id === userId) {
+            // Fetch the job_title for the new notification
+            const { data: jobData, error: jobError } = await supabase
+              .from('job_listings')
+              .select('job_title')
+              .eq('id', payload.new.job_id)
+              .single();
+
+            if (!jobError) {
+              payload.new.job_listings = jobData;
+              notifications.value.unshift(payload.new); // Add new notification for the user
+            }
+          }
+        }
+      )
+      .subscribe();
+  } catch (err) {
+    console.error('Unexpected error subscribing to notifications:', err);
+  }
+};
+
+const calculateRelativeTime = dateString => {
+  const now = new Date()
+  const jobDate = new Date(dateString)
+  const diffInSeconds = Math.floor((now - jobDate) / 1000)
+
+  const minutes = Math.floor(diffInSeconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else {
+    return 'Just now'
+  }
+}
+
 
 // Reactive screen dimensions
 const { width } = useWindowSize()
@@ -133,6 +223,9 @@ const processFile = file => {
 // Lifecycle hook
 onMounted(() => {
   fetchUserData()
+  fetchNotifications()
+  subscribeToNotifications()
+  supabase.removeAllChannels()
 })
 </script>
 
@@ -173,16 +266,43 @@ onMounted(() => {
 
       <v-menu open-on-click>
         <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" icon>
-            <v-icon>mdi-bell-outline</v-icon>
-          </v-btn>
-        </template>
+    <v-btn v-bind="props" icon>
+      <v-icon>mdi-bell-outline</v-icon>
+      <v-badge
+        v-if="notifications.length"
+        :key="index"
+        color="error"
+        content="{{ notifications.length }}"
+        overlap
+      >
+      </v-badge>
+    </v-btn>
+  </template>
+  <v-list dense rounded>
+  <v-list-item
+    v-for="(notification, index) in notifications"
+    :key="index"
+    class="notification-item ma-5 pa-8"
+  >
+    <v-list-item-content>
+      <v-list-item-title>
+        You are hired for <span class="fon-weight-bold">{{ notification.job_listings?.job_title || 'Unknown Job' }}</span>
+      </v-list-item-title>
 
-        <v-list>
-          <v-list-item v-for="(item, index) in items" :key="index">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
+      <v-list-item-subtitle class="text-caption">
+        {{ calculateRelativeTime(notification.updated_at) }}
+      </v-list-item-subtitle>
+    </v-list-item-content>
+
+    <v-spacer></v-spacer>
+
+  </v-list-item>
+
+  <v-list-item v-if="!notifications.length">
+    <v-list-item-title class="text-center">No new notifications</v-list-item-title>
+  </v-list-item>
+</v-list>
+
       </v-menu>
     </v-app-bar>
 

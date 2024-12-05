@@ -11,13 +11,29 @@ const activePopupJobId = ref(null) // Track which job's popup is open
 const userApplications = ref([]) // Track applications by the user
 const newApplication = reactive({
   application_letter: '',
+  facebook_link: '',
+  available_time:'',
 })
 
 const clearDialog = () => {
   activePopupJobId.value = null
   newApplication.letter = ''
+  newApplication.facebook_link = ''
+  newApplication.available_time = ''
 }
 
+// Snack bar state
+const snackBar = reactive({
+  show: false,
+  color: '',
+  message: '',
+})
+
+const showSnackBar = (message, color = 'success') => {
+  snackBar.message = message
+  snackBar.color = color
+  snackBar.show = true
+}
 
 // Function to fetch job listings
 const fetchJobListings = async () => {
@@ -123,6 +139,8 @@ const sendApplication = async () => {
         )?.employer_id,
       applicant_id: currentUser.user.id,
       application_letter: newApplication.application_letter,
+      facebook_link: newApplication.facebook_link,
+      available_time: newApplication.available_time,
       created_at: new Date().toISOString(),
     }
 
@@ -134,14 +152,22 @@ const sendApplication = async () => {
       console.error('Supabase Error:', insertError.message)
       throw new Error(`Error submitting application: ${insertError.message}`)
     }
-
-    alert('Your application has been successfully submitted!')
+    await fetchJobListings()
     clearDialog()
+    showSnackBar('Your application has been successfully submitted!', 'success')
   } catch (error) {
     console.error('Application Error:', error.message)
-    alert(error.message)
+    showSnackBar(`Application failed to submit: ${error.message}`, 'error')
+
   }
 }
+
+const timeAvailable = ref([
+  'Today',
+  'Tomorrow',
+  'This Week',
+  'Next Week'
+])
 
 // Fetch job listings when component is mounted
 onMounted(() => {
@@ -169,7 +195,7 @@ onMounted(() => {
                   v-for="job in jobListings"
                   :key="job.id"
                 >
-                  <v-card class="pa-6 hover-card" height="250px">
+                  <v-card class="pa-6 hover-card" >
                     <v-card-title class="title">{{
                       job.job_title
                     }}</v-card-title>
@@ -188,6 +214,12 @@ onMounted(() => {
                       <div class="job-type-duration">
                         Posted: {{ job.relativeTime }}
                       </div>
+                      <v-textarea
+                        v-model="job.job_description"
+                        readonly
+                        variant="outlined"
+                        rounded
+                      ></v-textarea>
                     </v-card-text>
                     <div class="button-container">
                       <v-btn
@@ -210,7 +242,26 @@ onMounted(() => {
                       <v-card-title>Send an Application letter</v-card-title>
                       <v-card-text>
                         <v-form @submit.prevent="sendApplication">
+                          <v-text-field
+                          prepend-inner-icon="mdi-facebook"
+                            density="compact"
+                            rounded
+                            variant="outlined"
+                            v-model="newApplication.facebook_link"
+                            label="Facebook Link (Please don't use dump accounts)"
+                            required
+                          ></v-text-field>
+                          <v-select
+                          density="compact"
+                          rounded
+                          variant="outlined"
+                          v-model="newApplication.available_time"
+                          :items="timeAvailable"
+                          label="Available Time"
+                          required
+                        ></v-select>
                           <v-textarea
+                            prepend-inner-icon="mdi-email-open-outline"
                             density="compact"
                             rounded
                             variant="outlined"
@@ -242,6 +293,16 @@ onMounted(() => {
               </v-row>
             </v-card>
           </v-container>
+
+          <!-- Snack Bar -->
+        <v-snackbar
+          v-model="snackBar.show"
+          :color="snackBar.color"
+          timeout="3000"
+        >
+          {{ snackBar.message }}
+        </v-snackbar>
+
         </v-main>
       </v-app>
     </template>
