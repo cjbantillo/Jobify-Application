@@ -15,7 +15,7 @@ import JobDashboardView from '@/views/system/Student/JobsDashboardView.vue' // s
 import EmployerDashboardView from '@/views/system/Employer/EmployerDashboard.vue' // employer dashboard
 import PostedJobView from '@/views/system/Employer/PostJobDashboard.vue' //employer posted jobs
 import ResumeDashboard from '@/views/system/Student/ResumeDashboard.vue' //student resume dashboard
-import ApplicationListView from '@/views/system/Employer/ApplicationListView.vue'
+// import ApplicationListView from '@/views/system/Employer/ApplicationListView.vue'
 //settings pages
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
 import AccountSettingsChangePassword from '@/views/system/settings/ChangePasswordView.vue'
@@ -69,13 +69,13 @@ const routes = [
     component: ResumeDashboard,
     meta: { requiresAuth: true, isDefault: true },
   },
-  {
-    // application list view
-    path: '/application-list',
-    name: 'application=list',
-    component: ApplicationListView,
-    meta: { requiresAuth: true, isDefault: true },
-  },
+      // application list view
+  // {
+  //   path: '/application-list',
+  //   name: 'application=list',
+  //   component: ApplicationListView,
+  //   meta: { requiresAuth: true, isDefault: true },
+  // },
   {
     path: '/employerinformation',
     name: 'employerinformation',

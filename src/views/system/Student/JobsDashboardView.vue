@@ -15,13 +15,18 @@ const newApplication = reactive({
   letter: '',
 })
 
+const clearDialog = () => {
+  activePopupJobId.value = null
+  newApplication.letter = ''
+}
+
 // Function to fetch job listings
 const fetchJobListings = async () => {
   loading.value = true
   const { data, error: fetchError } = await supabase
     .from('job_listings')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
 
   if (fetchError) {
     error.value = fetchError.message
@@ -75,46 +80,41 @@ const fetchUserData = async () => {
 const sendApplication = async () => {
   try {
     // Validate input
-    if (!activePopupJobId.value) {
-      throw new Error("Job ID is missing");
-    }
 
-    if (!newApplication.letter.trim()) {
-      throw new Error("Application letter cannot be empty");
-    }
-
-    // Check and log user ID
-    const userId = authStore.userData.id.toString();
-    if (!userId) {
-      throw new Error("User ID is missing or invalid.");
-    }
-
-    console.log("User ID:", userId);
-
-    // Insert application into the database
-    const { error: insertError } = await supabase.from('applications').insert({
-      data:{
-      user_id: userId, // Ensure this is a UUID
+    console.log({
+      user_id: authStore.userData.id,
       job_id: activePopupJobId.value,
+      employer_id: jobListings.value.find(
+        job => job.id === activePopupJobId.value,
+      )?.employer_id,
       cover_letter: newApplication.letter,
-    }});
+      created_at: new Date().toISOString(),
+    })
+
+    const { error: insertError } = supabase.from('applications').insert([
+      {
+        user_id: authStore.userData.id,
+        job_id: activePopupJobId.value,
+        employer_id: jobListings.value.find(
+          job => job.id === activePopupJobId.value,
+        )?.employer_id,
+        cover_letter: newApplication.letter,
+        created_at: new Date().toISOString(),
+      },
+    ])
 
     if (insertError) {
-      console.error("Insert Error:", insertError);
-      throw new Error("Failed to submit the application. Please try again.");
+      console.error('Supabase Error:', insertError.message)
+      throw new Error(`Error submitting application: ${insertError.message}`)
     }
 
-    // Reset the form and close the popup
-    newApplication.letter = '';
-    activePopupJobId.value = null;
-    alert("Your application has been successfully submitted!");
+    alert('Your application has been successfully submitted!')
+    clearDialog()
   } catch (error) {
-    console.error("Application Error:", error.message);
-    alert(error.message);
+    console.error('Application Error:', error.message)
+    alert(error.message)
   }
-};
-
-
+}
 
 // Fetch job listings when component is mounted
 onMounted(fetchJobListings)
@@ -193,6 +193,7 @@ onMounted(fetchUserData)
                               type="submit"
                               :event="sendApplication"
                               class="apply-button"
+                              @click="activePopupJobId = null"
                               >Submit</v-btn
                             >
                             <v-btn
