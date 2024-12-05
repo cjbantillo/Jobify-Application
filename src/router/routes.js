@@ -3,6 +3,11 @@ import { useAuthUserStore } from '@/stores/authUser' // Assuming you use Pinia f
 
 // footer 
 import AboutView from '@/views/system/Footer/AboutView.vue'
+import ContactView from '@/views/system/Footer/ContactView.vue'
+import FAQsView from '@/views/system/Footer/FAQsView.vue'
+import PrivacyPolicyView from '@/views/system/Footer/PrivacyPolicyView.vue'
+import TermsOfServiceView from '@/views/system/Footer/TermsOfServiceView.vue'
+
 import HomePageView from '@/views/system/HomePageView.vue'
 import LoginView from '@/views/auth/LoginStudentView.vue'
 import RegisterView from '@/views/auth/RegisterStudentView.vue'
@@ -108,7 +113,27 @@ const routes = [
     path: '/about',
     name: 'about',
     component: AboutView
-  }
+  },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: ContactView
+  },
+  {
+    path: '/privacy-policy',
+    name: 'privacy-policy',
+    component: PrivacyPolicyView
+  },
+  {
+    path: '/terms',
+    name: 'terms-of-service',
+    component: TermsOfServiceView
+  },
+  {
+    path: '/faq',
+    name: 'faqs',
+    component: FAQsView
+  },
 ]
 
 const router = createRouter({
