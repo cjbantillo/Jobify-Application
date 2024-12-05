@@ -2,23 +2,22 @@
 import JobNavigationLayout from '@/components/layout/navigation/JobNavigationLAyout.vue'
 import { ref, onMounted, reactive } from 'vue'
 import { supabase } from '@/utils/supabase'
-import { useAuthUserStore } from '@/stores/authUser'
-
-const authStore = useAuthUserStore()
 
 // Data and functions
 const jobListings = ref([])
 const loading = ref(true)
 const error = ref(null)
 const activePopupJobId = ref(null) // Track which job's popup is open
+const userApplications = ref([]) // Track applications by the user
 const newApplication = reactive({
-  letter: '',
+  application_letter: '',
 })
 
 const clearDialog = () => {
   activePopupJobId.value = null
   newApplication.letter = ''
 }
+
 
 // Function to fetch job listings
 const fetchJobListings = async () => {
@@ -39,6 +38,35 @@ const fetchJobListings = async () => {
   }
   loading.value = false
 }
+
+
+// Fetch applications of the current user
+const fetchUserApplications = async () => {
+  try {
+    const { data: currentUser, error: userError } =
+      await supabase.auth.getUser()
+    if (userError || !currentUser?.user?.id) {
+      console.error('Error fetching current user:', userError || 'No user logged in')
+      return
+    }
+
+    const { data: applications, error: applicationsError } = await supabase
+      .from('applications')
+      .select('*')
+      .eq('applicant_id', currentUser.user.id)
+
+    if (applicationsError) {
+      throw applicationsError
+    }
+
+    userApplications.value = applications.map(app => app.job_id)
+  } catch (err) {
+    console.error('Error fetching user applications:', err)
+  }
+}
+
+// Check if the user has applied for a job
+const hasApplied = jobId => userApplications.value.includes(jobId)
 
 // Function to calculate relative time
 const calculateRelativeTime = dateString => {
@@ -77,31 +105,30 @@ const fetchUserData = async () => {
   }
 }
 
+
 const sendApplication = async () => {
   try {
     // Validate input
+    const { data: currentUser, error } = await supabase.auth.getUser()
 
-    console.log({
-      user_id: authStore.userData.id,
+    if (error || !currentUser || !currentUser.user) {
+      console.error('Error fetching user:', error)
+      return
+    }
+
+    const applicationDetails = {
       job_id: activePopupJobId.value,
-      employer_id: jobListings.value.find(
-        job => job.id === activePopupJobId.value,
-      )?.employer_id,
-      cover_letter: newApplication.letter,
-      created_at: new Date().toISOString(),
-    })
-
-    const { error: insertError } = supabase.from('applications').insert([
-      {
-        user_id: authStore.userData.id,
-        job_id: activePopupJobId.value,
         employer_id: jobListings.value.find(
           job => job.id === activePopupJobId.value,
         )?.employer_id,
-        cover_letter: newApplication.letter,
-        created_at: new Date().toISOString(),
-      },
-    ])
+      applicant_id: currentUser.user.id,
+      application_letter: newApplication.application_letter,
+      created_at: new Date().toISOString(),
+    }
+
+    const { error: insertError } = await supabase
+    .from('applications')
+    .insert([applicationDetails]);
 
     if (insertError) {
       console.error('Supabase Error:', insertError.message)
@@ -117,8 +144,11 @@ const sendApplication = async () => {
 }
 
 // Fetch job listings when component is mounted
-onMounted(fetchJobListings)
-onMounted(fetchUserData)
+onMounted(() => {
+  fetchJobListings()
+  fetchUserApplications()
+  fetchUserData()
+})
 </script>
 
 <template>
@@ -162,9 +192,11 @@ onMounted(fetchUserData)
                     <div class="button-container">
                       <v-btn
                         class="apply-button mt-4"
-                        @click="activePopupJobId = job.id"
-                        >Apply</v-btn
+                        :disabled="hasApplied(job.id)"
+                        @click="!hasApplied(job.id) && (activePopupJobId = job.id)"
                       >
+                        {{ hasApplied(job.id) ? 'Applied' : 'Apply' }}
+                      </v-btn>
                     </div>
                   </v-card>
 
@@ -182,7 +214,7 @@ onMounted(fetchUserData)
                             density="compact"
                             rounded
                             variant="outlined"
-                            v-model="newApplication.letter"
+                            v-model="newApplication.application_letter"
                             label="Application Letter"
                             required
                           >
@@ -193,7 +225,6 @@ onMounted(fetchUserData)
                               type="submit"
                               :event="sendApplication"
                               class="apply-button"
-                              @click="activePopupJobId = null"
                               >Submit</v-btn
                             >
                             <v-btn
