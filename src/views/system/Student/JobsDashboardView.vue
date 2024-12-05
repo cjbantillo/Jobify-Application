@@ -21,7 +21,6 @@ const fetchJobListings = async () => {
   const { data, error: fetchError } = await supabase
     .from('job_listings')
     .select('*')
-    .select('*')
     .order('created_at', { ascending: false });
 
   if (fetchError) {
@@ -66,39 +65,56 @@ const fetchUserData = async () => {
         'Error fetching current user:',
         userError || 'No user logged in',
       )
+      return
     }
   } catch (err) {
     console.error('Unexpected error fetching user data:', err)
   }
 }
 
-// Function for applying to job
 const sendApplication = async () => {
   try {
-    const { error: applicationError } = await supabase
-      .from('applications')
-      .insert([
-        {
-          employer_id: jobListings.value.find(
-            job => job.id === activePopupJobId.value,
-          ).employer_id,
-          job_id: activePopupJobId.value,
-          user_id: authStore.currentUser.id,
-          cover_letter: newApplication.letter,
-        },
-      ])
-
-    if (applicationError) {
-      alert('Failed to submit application: ' + applicationError.message)
-    } else {
-      alert('Application submitted successfully!')
-      newApplication.letter = ''
-      activePopupJobId.value = null
+    // Validate input
+    if (!activePopupJobId.value) {
+      throw new Error("Job ID is missing");
     }
-  } catch (err) {
-    console.error('Unexpected error submitting application:', err)
+
+    if (!newApplication.letter.trim()) {
+      throw new Error("Application letter cannot be empty");
+    }
+
+    // Check and log user ID
+    const userId = authStore.userData.id.toString();
+    if (!userId) {
+      throw new Error("User ID is missing or invalid.");
+    }
+
+    console.log("User ID:", userId);
+
+    // Insert application into the database
+    const { error: insertError } = await supabase.from('applications').insert({
+      data:{
+      user_id: userId, // Ensure this is a UUID
+      job_id: activePopupJobId.value,
+      cover_letter: newApplication.letter,
+    }});
+
+    if (insertError) {
+      console.error("Insert Error:", insertError);
+      throw new Error("Failed to submit the application. Please try again.");
+    }
+
+    // Reset the form and close the popup
+    newApplication.letter = '';
+    activePopupJobId.value = null;
+    alert("Your application has been successfully submitted!");
+  } catch (error) {
+    console.error("Application Error:", error.message);
+    alert(error.message);
   }
-}
+};
+
+
 
 // Fetch job listings when component is mounted
 onMounted(fetchJobListings)
