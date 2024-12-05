@@ -24,6 +24,7 @@ const categories = ref([
   'Pet Care',
   'Delivery or Courier Service',
   'Website Development/Design',
+  'Others',
 ])
 
 const newJobPost = ref({

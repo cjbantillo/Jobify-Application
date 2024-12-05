@@ -222,8 +222,8 @@ const onFormSubmit = () => {
               <p>Do you want to register as an employer or a part-timer?</p>
             </v-card-text>
             <v-card-actions>
-              <v-btn class="rounded-pill register-button" @click="setUserType(false)">Part-Timer</v-btn>
-              <v-btn class="rounded-pill register-button" @click="setUserType(true)">Employer</v-btn>
+              <v-btn class="register-button" @click="setUserType(false)">Part-Timer</v-btn>
+              <v-btn class="register-button" @click="setUserType(true)">Employer</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>

@@ -11,7 +11,8 @@ const fetchJobListings = async () => {
   loading.value = true;
   const { data, error: fetchError } = await supabase
     .from('job_listings')
-    .select('*');
+    .select('*')
+    .order('created_at', { ascending: false });
 
   if (fetchError) {
     error.value = fetchError.message;

@@ -252,6 +252,7 @@ onMounted(async () => {
               <v-form @submit.prevent="submitEmployerDetails" ref="form">
                 <v-text-field
                   v-model="employerForm.company_name"
+                  prepend-inner-icon="mdi-briefcase"
                   label="Company Name"
                   variant="outlined"
                   density="compact"
@@ -260,6 +261,7 @@ onMounted(async () => {
                 ></v-text-field>
                 <v-text-field
                   v-model="employerForm.company_social"
+                  prepend-inner-icon="mdi-facebook"
                   label="Social Media"
                   variant="outlined"
                   density="compact"
@@ -268,6 +270,7 @@ onMounted(async () => {
                 ></v-text-field>
                 <v-text-field
                   v-model="employerForm.address"
+                  prepend-inner-icon="mdi-earth"
                   label="Address"
                   variant="outlined"
                   density="compact"
@@ -276,6 +279,7 @@ onMounted(async () => {
                 ></v-text-field>
                 <v-select
                   v-model="employerForm.company_category"
+                  prepend-inner-icon="mdi-shape-plus"
                   :items="categories"
                   label="Category"
                   variant="outlined"
