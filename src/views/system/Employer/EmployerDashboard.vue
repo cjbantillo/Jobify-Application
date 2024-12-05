@@ -201,6 +201,27 @@ const hireUser = async user => {
     alert('An unexpected error occurred.')
   }
 }
+//to be apporve not yet final function
+const deleteUser = async user => {
+  try {
+    const { error } = await supabase
+      .from('hires') // Replace with the actual table name
+      .delete()
+      .match({ employer_id: userInfo.value.id, user_id: user.id })
+
+    if (error) {
+      console.error('Error deleting user:', error)
+      alert('Failed to delete user. Please try again.')
+    } else {
+      alert(
+        `${user.user_metadata.first_name} ${user.user_metadata.last_name} has been successfully deleted.`,
+      )
+    }
+  } catch (err) {
+    console.error('Unexpected error during deletion:', err)
+    alert('An unexpected error occurred.')
+  }
+}
 
 // Fetch user info on component mount
 onMounted(async () => {
@@ -245,6 +266,8 @@ onMounted(async () => {
                       }}</v-card-subtitle>
                       <v-card-actions>
                         <v-btn rounded @click="hireUser(user)">Hire</v-btn>
+                        <v-btn rounded @click="deleteUser(user)">Delete</v-btn>
+                        <!-- // to be implemented -->
                       </v-card-actions>
                     </v-card>
                   </v-col>
