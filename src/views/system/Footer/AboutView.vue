@@ -1,7 +1,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { defineProps } from 'vue';
+// import { defineProps } from 'vue';
 
 // Importing your local image
 import meImage from '@/assets/me.png'; // Importing your image
