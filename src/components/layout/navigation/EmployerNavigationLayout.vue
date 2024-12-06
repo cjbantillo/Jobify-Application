@@ -8,14 +8,86 @@ import { getAvatarText } from '@/utils/helpers';
 import { ref, computed, onMounted } from 'vue';
 import logo from '@/assets/logo-removebg-preview.png'
 
-// this item is for the notification bell for further update
-const items = ref([
-  { title: 'notification 1' },
-  { title: 'notification 2' },
-  { title: 'notification 3' },
-  { title: 'notification 4' },
-])
-const itemCount = computed(() => items.value.length);
+// Reactive variables
+const notifications = ref([]);
+
+// Declare employerId to store the employer ID from the profile
+const employerId = ref(null);
+
+// Fetch employer ID from the profile
+const fetchEmployerId = async () => {
+  try {
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+    if (userError || !currentUser?.user?.id) {
+      console.error('Error fetching current user:', userError || 'No user logged in');
+      return;
+    }
+
+    // Fetch the employer profile to get employer_id
+    const { data: employerProfile, error: employerError } = await supabase
+      .from('employer_profiles')
+      .select('id')
+      .eq('user_id', currentUser.user.id)
+      .single();
+
+    if (employerError) {
+      console.error('Error fetching employer profile:', employerError);
+      return;
+    }
+
+    // Set the employer ID
+    if (employerProfile) {
+      employerId.value = employerProfile.id;
+    }
+  } catch (err) {
+    console.error('Unexpected error fetching employer ID:', err);
+  }
+};
+
+// Fetch notifications from the database
+const fetchNotifications = async () => {
+  try {
+
+    // Fetch applications where status is 'confirmed'
+    const { data, error } = await supabase
+      .from('applications') // Assuming your table name is 'applications'
+      .select(`
+        *,
+        job_listings(job_title)
+      `)
+      .eq('status', 'confirmed') // Only fetch confirmed notifications
+      .eq('employer_id', )
+
+    if (error) {
+      console.error('Error fetching notifications:', error);
+      return;
+    }
+
+    notifications.value = data;
+  } catch (err) {
+    console.error('Error fetching notifications:', err);
+  }
+};
+// Real-time listener for confirmed notifications
+const listenForConfirmedNotifications = () => {
+  if (!employerId.value) return;
+
+  supabase
+    .from('applications')
+    .on('UPDATE', (payload) => {
+      // Ensure the status is 'confirmed' and the employer_id matches the fetched employerId
+      if (payload.new.status === 'confirmed' && payload.new.employer_id === employerId.value) {
+        notifications.value.push({
+          job_listings: { job_title: payload.new.job_listings.job_title },
+          updated_at: payload.new.updated_at,
+          message: payload.new.message,
+          status: payload.new.status,
+        });
+      }
+    })
+    .subscribe();
+};
+
 
 // Reactive screen dimensions
 const { width } = useWindowSize();
@@ -231,6 +303,11 @@ const submitEmployerDetails = async () => {
 // Lifecycle hook
 onMounted(() => {
   fetchUserData();
+  // Fetch initial notifications
+  fetchNotifications();
+  // Start listening for real-time updates
+  listenForConfirmedNotifications();
+  fetchEmployerId()
 });
 </script>
 
@@ -266,20 +343,27 @@ onMounted(() => {
         <!-- // Notification Bell -->
 
         <v-menu open-on-click>
-        <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" icon>
-            <v-badge :color="'error'" :content="itemCount">
-              <v-icon>mdi-bell-outline</v-icon>
-            </v-badge>
-            
-          </v-btn>
-        </template>
+          <template v-slot:activator="{ props }">
+      <v-btn v-bind="props" icon>
+        <v-badge :color="'error'" :content="notifications.length">
+          <v-icon>mdi-bell-outline</v-icon>
+        </v-badge>
+      </v-btn>
+    </template>
 
-        <v-list>
-          <v-list-item v-for="(item, index) in items" :key="index">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
+    <v-list>
+      <v-list-item v-for="(notification, index) in notifications" :key="index">
+        <v-list-item-title>
+          You are hired for <span class="font-weight-bold">{{ notification.job_listings?.job_title || 'Unknown Job' }}</span>
+        </v-list-item-title>
+        <v-list-item-subtitle class="text-caption">
+          {{ calculateRelativeTime(notification.updated_at) }}
+        </v-list-item-subtitle>
+        <v-list-item-subtitle class="text-caption">
+          {{ notification.message }}
+        </v-list-item-subtitle>
+      </v-list-item>
+    </v-list>
       </v-menu>
     </v-app-bar>
 
@@ -354,7 +438,7 @@ onMounted(() => {
           value="postedjobs"
           to="/postedjobs"
         ></v-list-item>
-<!--         
+<!--
         <v-list-item
           prepend-icon="mdi-application"
           title="Applications List"
