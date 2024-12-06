@@ -272,6 +272,7 @@ const confirmHiring = async notificationId => {
           : notification,
       )
       showSnackBar('Application has been confirmed!', 'success')
+      await fetchUserData()
     }
   } catch (err) {
     console.error('Unexpected error while confirming the application:', err)
@@ -408,7 +409,7 @@ onMounted(() => {
             >
               {{
                 notification.confirmation === 'confirmed'
-                  ? 'Confirmed Hiring'
+                  ? 'Confirmed'
                   : 'Confirm'
               }}
             </v-btn>

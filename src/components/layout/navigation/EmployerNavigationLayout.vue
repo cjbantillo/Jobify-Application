@@ -12,7 +12,7 @@ import logo from '@/assets/logo-removebg-preview.png'
 const notifications = ref([])
 
 // Declare employerId to store the employer ID from the profile
-const employerId = ref(null)
+const employerId = ref()
 
 // Fetch employer ID from the profile
 const fetchEmployerId = async () => {
@@ -30,59 +30,80 @@ const fetchEmployerId = async () => {
       return
     }
 
-    // Set the employer ID
-    if (employerProfile) {
       employerId.value = employerProfile.id
-    }
   } catch (err) {
     console.error('Unexpected error fetching employer ID:', err)
   }
 }
-
-// Fetch notifications from the database
 const fetchNotifications = async () => {
   try {
-    const { data, error } = await supabase
-      .from('applications')
-      .select('*')
-      .eq('confirmation', 'confirmed') // Only fetch confirmed applications
-      .eq('employer_id', employerId.value) // Filter by employer ID
 
-      console.log(data)
+
+    const { data, error } = await supabase
+      .from('view_applicant_who_are_confirmed')
+      .select('*')
+      .eq('confirmation', 'confirmed') // Filter by confirmation
+      .eq('employer_id', employerId.value); // Filter by employer ID
 
     if (error) {
-      console.error('Error fetching notifications:', error)
-      return
+      console.error('Error fetching notifications:', error);
+      return;
     }
 
     notifications.value = data
+      ? data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+      : [];
   } catch (err) {
-    console.error('Error fetching notifications:', err)
+    console.error('Error fetching notifications:', err);
   }
-}
+};
 
-// Real-time listener for confirmed notifications
-const listenForConfirmedNotifications = () => {
-  if (!employerId.value) return
 
-  supabase
-    .from('applications')
-    .on('UPDATE', payload => {
-      // Only listen to updates where status is 'confirmed' and employer_id matches
-      if (
-        payload.new.status === 'confirmed' &&
-        payload.new.employer_id === employerId.value
-      ) {
-        notifications.value.push({
-          job_listings: { job_title: payload.new.job_listings.job_title },
-          updated_at: payload.new.updated_at,
-          message: payload.new.message,
-          status: payload.new.status,
-        })
-      }
-    })
-    .subscribe()
-}
+const subscribeToNotifications = async () => {
+  try {
+    const { data: currentUser, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !currentUser?.user?.id) {
+      console.error(
+        'Error fetching current user:',
+        userError || 'No user logged in',
+      );
+      return;
+    }
+
+    // Subscribe to changes in the `applications` table
+    supabase
+      .channel('applications-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'applications' },
+        async (payload) => {
+          // Check if the change is relevant to the view
+          if (payload.new.confirmation === 'confirmed') {
+            // Fetch updated data from the view
+            const { data: updatedNotifications, error } = await supabase
+              .from('view_applicant_who_are_confirmed')
+              .select('*')
+              .eq('confirmation', 'confirmed');
+
+            if (error) {
+              console.error('Error fetching updated notifications:', error);
+              return;
+            }
+
+            // Update the notifications array
+            notifications.value = updatedNotifications
+              ? updatedNotifications.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+              : [];
+          }
+        },
+      )
+      .subscribe();
+  } catch (err) {
+    console.error('Unexpected error subscribing to notifications:', err);
+  }
+};
+
 
 // Reactive screen dimensions
 const { width } = useWindowSize()
@@ -295,14 +316,38 @@ const submitEmployerDetails = async () => {
   }
 }
 
+
+// Function to calculate relative time
+const calculateRelativeTime = dateString => {
+  const now = new Date()
+  const jobDate = new Date(dateString)
+  const diffInSeconds = Math.floor((now - jobDate) / 1000)
+
+  const minutes = Math.floor(diffInSeconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else {
+    return 'Just now'
+  }
+}
+
+
 // Lifecycle hook
 onMounted(() => {
   fetchUserData()
   // Fetch initial notifications
   fetchNotifications()
   // Start listening for real-time updates
-  listenForConfirmedNotifications()
+  subscribeToNotifications ()
   fetchEmployerId()
+  supabase.removeAllChannels()
 })
 </script>
 
@@ -352,23 +397,32 @@ onMounted(() => {
           </v-btn>
         </template>
 
-        <v-list>
-          <v-list-item
+        <v-list dense rounded>
+          <v-card
             v-for="(notification, index) in notifications"
             :key="index"
+            class="ma-5 pa-4"
+            rounded
+            @click="markAsViewed(notification.id)"
           >
-            <v-list-item-title>
-              You are hired for
+            <v-card-title>
               <span class="font-weight-bold">{{
-                notification.job_listings?.job_title || 'Unknown Job'
+                notification.job_title || 'Unknown Job'
               }}</span>
-            </v-list-item-title>
-            <v-list-item-subtitle class="text-caption">
+            </v-card-title>
+            <v-card-subtitle class="text-caption">
+              You have successfully hired {{ notification.full_name }}
+            </v-card-subtitle>
+
+            <v-card-subtitle class="text-caption">
               {{ calculateRelativeTime(notification.updated_at) }}
-            </v-list-item-subtitle>
-            <v-list-item-subtitle class="text-caption">
-              {{ notification.message }}
-            </v-list-item-subtitle>
+            </v-card-subtitle>
+          </v-card>
+
+          <v-list-item v-if="!notifications.length">
+            <v-list-item-title class="text-center"
+              >No new notifications</v-list-item-title
+            >
           </v-list-item>
         </v-list>
       </v-menu>
