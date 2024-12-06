@@ -2,10 +2,11 @@
 import EmployerNavigationLayout from '@/components/layout/navigation/EmployerNavigationLayout.vue'
 import { ref, onMounted } from 'vue'
 import { supabase } from '@/utils/supabase'
+import { requiredValidator } from '@/utils/validator'
 
 const categories = ref([
   'Customer Service Representative',
-  'Sales Associate',
+  'Sales Associate',  
   'Tutoring',
   'Freelance Writing/Content Creation',
   'Data Entry',
@@ -72,9 +73,6 @@ const fetchJobPosts = async () => {
     userId.value = employerProfile.id
     companyName.value = employerProfile.company_name // Assign the company name
 
-
-    const jobListings = ref([])
-
     // Fetch job listings using employer ID
     const { data, error: jobsError } = await supabase
       .from('job_listings')
@@ -87,17 +85,16 @@ const fetchJobPosts = async () => {
       return
     }
 
-    jobListings.value = data.map(job => ({
+    jobPosts.value = data.map(job => ({
       ...job,
-      relativeTime: calculateRelativeTime(job.created_at),
+      relativeTime: calculateRelativeTime(job.created_at), // Add relative time
     }))
-
-    jobPosts.value = data || []
     showPostPopup.value = jobPosts.value.length === 0 // Show popup if no posts exist
   } catch (error) {
     console.error('Unexpected error fetching job posts:', error)
   }
 }
+
 
 // Function to calculate relative time
 const calculateRelativeTime = dateString => {
@@ -234,14 +231,14 @@ onMounted(fetchJobPosts)
                   <v-card class="pa-8 pop-up">
                     <v-card-title>Post a Job</v-card-title>
                     <v-card-text>
-                      <v-form @submit.prevent="addJobPost">
+                      <v-form @submit.prevent="addJobPost" >
                         <v-text-field
                           density="compact"
                           rounded
                           variant="outlined"
                           v-model="newJobPost.title"
                           label="Job Title"
-                          required
+                          :rules="[requiredValidator]"
                         ></v-text-field>
                         <v-text-field
                           prepend-inner-icon="mdi-currency-php"
@@ -251,7 +248,7 @@ onMounted(fetchJobPosts)
                           variant="outlined"
                           v-model="newJobPost.salary"
                           label="Salary"
-                          required
+                         :rules="[requiredValidator]"
                         ></v-text-field>
                         <v-select
                           density="compact"
@@ -260,7 +257,7 @@ onMounted(fetchJobPosts)
                           v-model="newJobPost.category"
                           :items="categories"
                           label="Job Category"
-                          required
+                        :rules="[requiredValidator]"
                         ></v-select>
                         <v-text-field
                           density="compact"
@@ -268,7 +265,7 @@ onMounted(fetchJobPosts)
                           variant="outlined"
                           v-model="newJobPost.location"
                           label="Location"
-                          required
+                        :rules="[requiredValidator]"
                         ></v-text-field>
                         <v-textarea
                           density="compact"
@@ -276,7 +273,7 @@ onMounted(fetchJobPosts)
                           variant="outlined"
                           v-model="newJobPost.job_description"
                           label="Job Description"
-                          required
+                          :rules="[requiredValidator]"
                         ></v-textarea>
                         <div class="button-container mt-4">
                           <v-btn
