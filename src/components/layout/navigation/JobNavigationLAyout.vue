@@ -100,32 +100,31 @@ const subscribeToNotifications = async () => {
     console.error('Unexpected error subscribing to notifications:', err)
   }
 }
-const calculateRelativeTime = (dateString) => {
-  const now = new Date(); // Current time
-  const jobDate = new Date(dateString); // Parse the date string
+const calculateRelativeTime = dateString => {
+  const now = new Date() // Current time
+  const jobDate = new Date(dateString) // Parse the date string
 
   // If jobDate is invalid, return a fallback
   if (isNaN(jobDate.getTime())) {
-    return 'Invalid date';
+    return 'Invalid date'
   }
 
-  const diffInSeconds = Math.floor((now - jobDate) / 1000); // Difference in seconds
+  const diffInSeconds = Math.floor((now - jobDate) / 1000) // Difference in seconds
 
-  const minutes = Math.floor(diffInSeconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+  const minutes = Math.floor(diffInSeconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
 
   if (days > 0) {
-    return `${days} day${days > 1 ? 's' : ''} ago`;
+    return `${days} day${days > 1 ? 's' : ''} ago`
   } else if (hours > 0) {
-    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
   } else if (minutes > 0) {
-    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
   } else {
-    return 'Just now';
+    return 'Just now'
   }
-};
-
+}
 
 // Reactive screen dimensions
 const { width } = useWindowSize()
@@ -255,29 +254,54 @@ const showSnackBar = (message, color = 'success') => {
   snackBar.show = true
 }
 
-
-const confirmHiring = async (notificationId) => {
+const confirmHiring = async notificationId => {
   try {
     // Update the status to "confirmed"
     const { error } = await supabase
       .from('applications')
       .update({ confirmation: 'confirmed' })
-      .eq('id', notificationId);
+      .eq('id', notificationId)
 
     if (error) {
       showSnackBar(`Application failed to submit: ${error.message}`, 'error')
     } else {
       // Update the local notifications array
       notifications.value = notifications.value.map(notification =>
-        notification.id === notificationId ? { ...notification, status: 'confirmed' } : notification
-      );
+        notification.id === notificationId
+          ? { ...notification, status: 'confirmed' }
+          : notification,
+      )
       showSnackBar('Application has been confirmed!', 'success')
     }
   } catch (err) {
-    console.error('Unexpected error while confirming the application:', err);
+    console.error('Unexpected error while confirming the application:', err)
   }
-};
+}
 
+// Function to mark a notification as viewed
+const markAsViewed = async notificationId => {
+  try {
+    // Update notification in the database (if necessary)
+    const { error } = await supabase
+      .from('applications')
+      .update({ viewed: true }) // Add a 'viewed' column in your table
+      .eq('id', notificationId)
+
+    if (error) {
+      console.error('Error marking notification as viewed:', error)
+    } else {
+      // Update locally
+      const notificationIndex = notifications.value.findIndex(
+        notif => notif.id === notificationId,
+      )
+      if (notificationIndex > -1) {
+        notifications.value[notificationIndex].viewed = true
+      }
+    }
+  } catch (err) {
+    console.error('Unexpected error marking notification as viewed:', err)
+  }
+}
 // Lifecycle hook
 onMounted(() => {
   fetchUserData()
@@ -328,64 +352,74 @@ onMounted(() => {
 
       <!-- notification bell  -->
 
+      <!-- Notification Bell -->
       <v-menu open-on-click>
-  <template v-slot:activator="{ props }">
-    <v-btn v-bind="props" icon>
-      <v-icon>mdi-bell-outline</v-icon>
-      <v-badge
-        v-if="notifications.length"
-        :content="notificationCount"
-        color="error"
-        overlap
-      ></v-badge>
-    </v-btn>
-  </template>
-  <v-list dense rounded>
-    <v-card
-  v-for="(notification, index) in notifications"
-  :key="index"
-  class=" ma-5 pa-4"
-  rounded
->
-  <v-card-title>
-    You are hired for <span class="fon-weight-bold">{{ notification.job_listings?.job_title || 'Unknown Job' }}</span>
-  </v-card-title>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" icon>
+            <v-badge
+              v-if="
+                notifications.filter(notification => !notification.viewed)
+                  .length
+              "
+              :content="
+                notifications.filter(notification => !notification.viewed)
+                  .length
+              "
+              color="error"
+              overlap
+            >
+              <v-icon>mdi-bell-outline</v-icon>
+            </v-badge>
+          </v-btn>
+        </template>
+        <v-list dense rounded>
+          <v-card
+            v-for="(notification, index) in notifications"
+            :key="index"
+            class="ma-5 pa-4"
+            rounded
+            @click="markAsViewed(notification.id)"
+          >
+            <v-card-title>
+              You are hired for
+              <span class="font-weight-bold">{{
+                notification.job_listings?.job_title || 'Unknown Job'
+              }}</span>
+            </v-card-title>
 
-  <v-card-subtitle class="text-caption">
-    {{ calculateRelativeTime(notification.updated_at) }}
-  </v-card-subtitle>
+            <v-card-subtitle class="text-caption">
+              {{ calculateRelativeTime(notification.updated_at) }}
+            </v-card-subtitle>
 
-  <v-textarea
-    rounded
-    density="compact"
-    readonly
-    v-model="notification.message"
-    variant="outlined"
-    auto-grow
-    rows="2"
-    >
-  </v-textarea>
+            <v-textarea
+              rounded
+              density="compact"
+              readonly
+              v-model="notification.message"
+              variant="outlined"
+              auto-grow
+              rows="2"
+            ></v-textarea>
 
-  <!-- Confirm Button -->
-  <v-btn
-  :disabled="notification.confirmation === 'confirmed'"
-  color="#4caf50"
-  @click="confirmHiring(notification.id)"
->
-  {{ notification.confirmation === 'confirmed' ? 'Confirmed Hiring' : 'Confirm' }}
-</v-btn>
+            <v-btn
+              :disabled="notification.confirmation === 'confirmed'"
+              color="#4caf50"
+              @click="confirmHiring(notification.id)"
+            >
+              {{
+                notification.confirmation === 'confirmed'
+                  ? 'Confirmed Hiring'
+                  : 'Confirm'
+              }}
+            </v-btn>
+          </v-card>
 
-</v-card>
-
-        <v-list-item v-if="!notifications.length">
-          <v-list-item-title class="text-center">No new notifications</v-list-item-title>
-        </v-list-item>
-
-  <v-list-item v-if="!notifications.length">
-    <v-list-item-title class="text-center">No new notifications</v-list-item-title>
-  </v-list-item>
-</v-list>
-
+          <v-list-item v-if="!notifications.length">
+            <v-list-item-title class="text-center"
+              >No new notifications</v-list-item-title
+            >
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-app-bar>
 
@@ -526,13 +560,9 @@ onMounted(() => {
       </v-card>
     </v-dialog>
     <!-- Snack Bar -->
-    <v-snackbar
-          v-model="snackBar.show"
-          :color="snackBar.color"
-          timeout="3000"
-        >
-          {{ snackBar.message }}
-        </v-snackbar>
+    <v-snackbar v-model="snackBar.show" :color="snackBar.color" timeout="3000">
+      {{ snackBar.message }}
+    </v-snackbar>
 
     <v-main :class="{ 'pt-2': mobile, 'pt-8': !mobile }">
       <v-container :fluid="mobile">
