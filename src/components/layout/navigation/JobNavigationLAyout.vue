@@ -261,7 +261,7 @@ const confirmHiring = async (notificationId) => {
     // Update the status to "confirmed"
     const { error } = await supabase
       .from('applications')
-      .update({ status: 'confirmed' })
+      .update({ confirmation: 'confirmed' })
       .eq('id', notificationId);
 
     if (error) {
@@ -368,7 +368,7 @@ onMounted(() => {
   <v-btn
     color="#4caf50"
     @click="confirmHiring(notification.id)"
-    v-if="notification.status !== 'confirmed'"
+    v-if="notification.confirmation !== 'confirmed'"
   >
     Confirm
   </v-btn>
