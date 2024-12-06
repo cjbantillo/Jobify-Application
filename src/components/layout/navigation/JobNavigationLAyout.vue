@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { useAuthUserStore } from '@/stores/authUser'
@@ -220,6 +220,42 @@ const processFile = file => {
   filePath.value = `${authStore.userData.first_name || ''} ${authStore.userData.last_name || ''}/${file.name}` // Create a unique file path
 }
 
+// Snack bar state
+const snackBar = reactive({
+  show: false,
+  color: '',
+  message: '',
+})
+
+const showSnackBar = (message, color = 'success') => {
+  snackBar.message = message
+  snackBar.color = color
+  snackBar.show = true
+}
+
+
+const confirmHiring = async (notificationId) => {
+  try {
+    // Update the status to "confirmed"
+    const { error } = await supabase
+      .from('applications')
+      .update({ status: 'confirmed' })
+      .eq('id', notificationId);
+
+    if (error) {
+      showSnackBar(`Application failed to submit: ${error.message}`, 'error')
+    } else {
+      // Update the local notifications array
+      notifications.value = notifications.value.map(notification =>
+        notification.id === notificationId ? { ...notification, status: 'confirmed' } : notification
+      );
+      showSnackBar('Application has been confirmed!', 'success')
+    }
+  } catch (err) {
+    console.error('Unexpected error while confirming the application:', err);
+  }
+};
+
 // Lifecycle hook
 onMounted(() => {
   fetchUserData()
@@ -279,24 +315,42 @@ onMounted(() => {
     </v-btn>
   </template>
   <v-list dense rounded>
-  <v-list-item
-    v-for="(notification, index) in notifications"
-    :key="index"
-    class="notification-item ma-5 pa-8"
+    <v-card
+  v-for="(notification, index) in notifications"
+  :key="index"
+  class=" ma-5 pa-4"
+  rounded
+>
+  <v-card-title>
+    You are hired for <span class="fon-weight-bold">{{ notification.job_listings?.job_title || 'Unknown Job' }}</span>
+  </v-card-title>
+
+  <v-card-subtitle class="text-caption">
+    {{ calculateRelativeTime(notification.updated_at) }}
+  </v-card-subtitle>
+
+  <v-textarea
+    rounded
+    density="compact"
+    readonly
+    v-model="notification.message"
+    variant="outlined"
+    >
+  </v-textarea>
+
+  <!-- Confirm Button -->
+  <v-btn
+    color="#4caf50"
+    @click="confirmHiring(notification.id)"
+    v-if="notification.status !== 'confirmed'"
   >
-    <v-list-item-content>
-      <v-list-item-title>
-        You are hired for <span class="fon-weight-bold">{{ notification.job_listings?.job_title || 'Unknown Job' }}</span>
-      </v-list-item-title>
+    Confirm
+  </v-btn>
+</v-card>
 
-      <v-list-item-subtitle class="text-caption">
-        {{ calculateRelativeTime(notification.updated_at) }}
-      </v-list-item-subtitle>
-    </v-list-item-content>
-
-    <v-spacer></v-spacer>
-
-  </v-list-item>
+        <v-list-item v-if="!notifications.length">
+          <v-list-item-title class="text-center">No new notifications</v-list-item-title>
+        </v-list-item>
 
   <v-list-item v-if="!notifications.length">
     <v-list-item-title class="text-center">No new notifications</v-list-item-title>
@@ -435,6 +489,14 @@ onMounted(() => {
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <!-- Snack Bar -->
+    <v-snackbar
+          v-model="snackBar.show"
+          :color="snackBar.color"
+          timeout="3000"
+        >
+          {{ snackBar.message }}
+        </v-snackbar>
 
     <v-main :class="{ 'pt-2': mobile, 'pt-8': !mobile }">
       <v-container :fluid="mobile">

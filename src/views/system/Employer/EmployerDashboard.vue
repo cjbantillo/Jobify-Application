@@ -312,7 +312,9 @@ const hireApplicantWithMessage = async () => {
     const { error: hireError } = await supabase
       .from('applications')
       .update({ status: 'hired', message: messageInput.value, updated_at: new Date().toISOString(), })
-      .eq('applicant_id', selectedApplicant.value);
+      .eq('applicant_id', selectedApplicant.value)
+      .eq('job_id', selectedJob.value.id) // Use job_id
+
 
     if (hireError) {
       showSnackBar(`Application failed to submit: ${hireError.message}`, 'error')

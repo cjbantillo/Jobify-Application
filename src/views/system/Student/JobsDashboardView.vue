@@ -195,7 +195,7 @@ onMounted(() => {
                   v-for="job in jobListings"
                   :key="job.id"
                 >
-                  <v-card class="pa-6 hover-card" >
+                  <v-card class="pa-6 hover-card" min-height="500px" rounded >
                     <v-card-title class="title">{{
                       job.job_title
                     }}</v-card-title>

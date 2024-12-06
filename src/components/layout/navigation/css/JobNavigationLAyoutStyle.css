@@ -167,25 +167,3 @@
 .v-dialog .v-btn {
   margin: auto;
 }
-
-.notification-item {
-  transition: background-color 0.3s ease;
-  padding: 20px;
-}
-
-.notification-item .v-list-item-title {
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.notification-item .v-list-item-subtitle {
-  font-size: 14px;
-}
-
-.notification-item .v-chip {
-  margin-left: 10px;
-}
-
-.v-list-item-title .text-primary {
-  font-weight: bold;
-}
