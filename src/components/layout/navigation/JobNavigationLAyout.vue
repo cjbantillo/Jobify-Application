@@ -341,15 +341,6 @@ onMounted(() => {
     </v-btn>
   </template>
   <v-list dense rounded>
-    <v-list-item
-      v-for="(notification, index) in notifications"
-      :key="index"
-      class="notification-item ma-5 pa-8"
-    >
-      <v-list-item-content>
-        <v-list-item-title>
-          You are hired for <span class="font-weight-bold">{{ notification.job_listings?.job_title || 'Unknown Job' }}</span>
-        </v-list-item-title>
     <v-card
   v-for="(notification, index) in notifications"
   :key="index"
@@ -360,11 +351,6 @@ onMounted(() => {
     You are hired for <span class="fon-weight-bold">{{ notification.job_listings?.job_title || 'Unknown Job' }}</span>
   </v-card-title>
 
-        <v-list-item-subtitle class="text-caption">
-          {{ calculateRelativeTime(notification.updated_at) }}
-        </v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
   <v-card-subtitle class="text-caption">
     {{ calculateRelativeTime(notification.updated_at) }}
   </v-card-subtitle>
@@ -392,12 +378,12 @@ onMounted(() => {
           <v-list-item-title class="text-center">No new notifications</v-list-item-title>
         </v-list-item>
 
-    <v-list-item v-if="!notifications.length">
-      <v-list-item-title class="text-center">No new notifications</v-list-item-title>
-    </v-list-item>
-  </v-list>
-</v-menu>
+  <v-list-item v-if="!notifications.length">
+    <v-list-item-title class="text-center">No new notifications</v-list-item-title>
+  </v-list-item>
+</v-list>
 
+      </v-menu>
     </v-app-bar>
 
     <v-navigation-drawer
