@@ -6,13 +6,14 @@
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-about">
-        <h3 class=" inline-flex">About <v-img
-                    :src="logo"
-                    alt="Logo"
-                    max-height="80"
-                    max-width="100"
-                    class="mr-4"
-                  />
+        <h3 class=" inline-flex">About 
+          <v-img
+            :src="logo"
+            alt="Logo"
+            max-height="80"
+            max-width="100"
+            class="mr-4"
+          />
         </h3>
         <p>
           StuGiG connects talent with opportunity. Whether you're looking for
@@ -56,3 +57,4 @@
 </template>
 
 <style scoped src="./css/BottomNavigationLayoutStyle.css"></style>
+
