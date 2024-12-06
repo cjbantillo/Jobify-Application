@@ -72,9 +72,6 @@ const fetchJobPosts = async () => {
     userId.value = employerProfile.id
     companyName.value = employerProfile.company_name // Assign the company name
 
-
-    const jobListings = ref([])
-
     // Fetch job listings using employer ID
     const { data, error: jobsError } = await supabase
       .from('job_listings')
@@ -87,17 +84,16 @@ const fetchJobPosts = async () => {
       return
     }
 
-    jobListings.value = data.map(job => ({
+    jobPosts.value = data.map(job => ({
       ...job,
-      relativeTime: calculateRelativeTime(job.created_at),
+      relativeTime: calculateRelativeTime(job.created_at), // Add relative time
     }))
-
-    jobPosts.value = data || []
     showPostPopup.value = jobPosts.value.length === 0 // Show popup if no posts exist
   } catch (error) {
     console.error('Unexpected error fetching job posts:', error)
   }
 }
+
 
 // Function to calculate relative time
 const calculateRelativeTime = dateString => {
