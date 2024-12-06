@@ -1,13 +1,12 @@
 <script setup>
-import { ref } from 'vue'
-// import { defineProps } from 'vue'
+import { ref } from 'vue';
 
 const props = defineProps({
   theme: {
     type: String,
     default: 'light',
   },
-})
+});
 
 const faqs = ref([
   {
@@ -94,87 +93,62 @@ const faqs = ref([
       'For any support queries, you can contact us via email at support@stugig.com or call us at +63917-123-4567. Our support team is here to assist you with any issues or questions you may have.',
     isOpen: false,
   },
-])
+]);
 
-const toggleAnswer = index => {
-  faqs.value[index].isOpen = !faqs.value[index].isOpen
-}
+const toggleAnswer = (index) => {
+  faqs.value[index].isOpen = !faqs.value[index].isOpen;
+};
 
 const goBack = () => {
-  window.history.back()
-}
+  window.history.back();
+};
 </script>
 
 <template>
-  <v-btn class="back-btn" @click="goBack">
+  <v-btn class="go-back-btn" @click="goBack">
     <v-icon left>mdi-arrow-left</v-icon>
   </v-btn>
-  <v-container class="about-us-container">
-    <v-row>
-      <v-col cols="12" md="8" class="mx-auto">
-        <v-responsive class="border rounded">
-          <v-app :theme="props.theme" class="d-flex flex-column fill-height">
-            <v-main class="d-flex flex-column flex-grow-1 pt-8">
-              <v-container>
-                <!-- Content -->
-                <v-card class="pa-4 mb-6 enhanced-card">
-                  <v-card-title class="title">FAQs</v-card-title>
-                  <v-card-text>
-                    <!-- FAQs -->
-                    <v-divider class="my-4"></v-divider>
-                    <div class="description-section">
-                      <h3>Frequently Asked Questions</h3>
-                      <p>
-                        Here are some of the common questions we get at StuGiG.
-                        Click on the questions to see the answers.
-                      </p>
-                      <v-divider class="my-4"></v-divider>
-                      <v-list dense>
-                        <v-list-item-group>
-                          <v-list-item
-                            v-for="(faq, index) in faqs"
-                            :key="index"
-                            @click="toggleAnswer(index)"
-                            class="faq-item"
-                          >
-                            <v-list-item-content>
-                              <v-list-item-title>{{
-                                faq.question
-                              }}</v-list-item-title>
-                              <v-list-item-subtitle
-                                v-if="faq.isOpen"
-                                class="faq-answer"
-                              >
-                                {{ faq.answer }}
-                              </v-list-item-subtitle>
-                            </v-list-item-content>
-                            <v-list-item-action>
-                              <v-icon>{{
-                                faq.isOpen
-                                  ? 'mdi-chevron-up'
-                                  : 'mdi-chevron-down'
-                              }}</v-icon>
-                            </v-list-item-action>
-                          </v-list-item>
-                        </v-list-item-group>
-                      </v-list>
+  <v-container class="faqs-container">
+    <v-row justify="center">
+      <v-col cols="12" md="8">
+        <v-card class="pa-4 mb-4 enhanced-card">
+          <v-card-title class="title">Frequently Asked Questions</v-card-title>
+          <v-card-text>
+            <v-list dense>
+              <v-list-item-group>
+                <v-list-item
+                  v-for="(faq, index) in faqs"
+                  :key="index"
+                  @click="toggleAnswer(index)"
+                  class="faq-item"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title>{{
+                      faq.question
+                    }}</v-list-item-title>
+                    <div v-if="faq.isOpen" class="faq-answer">
+                      {{ faq.answer }}
                     </div>
-                    <!-- End of FAQs -->
-                  </v-card-text>
-                </v-card>
-              </v-container>
-            </v-main>
-          </v-app>
-        </v-responsive>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-icon>{{
+                      faq.isOpen ? 'mdi-chevron-up' : 'mdi-chevron-down'
+                    }}</v-icon>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <style scoped>
-.about-us-container {
+.faqs-container {
   padding: 24px;
-  background: #f5f5f5; /* Light grey background for a professional look */
+  background: #E0F7FA; /* Light cyan background */
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -190,7 +164,7 @@ const goBack = () => {
   color: #4caf50;
   border: none;
   box-shadow: none;
-  font-size: 30px;
+  font-size: 24px;
 }
 .go-back-btn:hover {
   background: none;
@@ -199,56 +173,38 @@ const goBack = () => {
 }
 
 .enhanced-card {
-  background: #ffffff; /* Pure white background for clarity */
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: bold;
-  color: #004d40; /* Dark teal color for the title */
+  color: #004D40; /* Dark teal color for the title */
   text-align: center;
-}
-
-.description-section {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #00796b; /* Subtle teal color for text */
-  margin-bottom: 20px;
-}
-
-.description-section h3 {
-  margin-top: 16px;
-  font-size: 1.8rem;
-  color: #004d40; /* Same color as the title */
 }
 
 .faq-item {
   cursor: pointer;
   transition: background-color 0.3s ease;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background-color: #e0f2f1; /* Light teal background for FAQ items */
 }
 
 .faq-item:hover {
-  background-color: #f0f0f0;
+  background-color: #b2dfdb; /* Darker teal background on hover */
 }
 
 .faq-answer {
   white-space: pre-wrap;
   margin-top: 10px;
-}
-
-.v-list-item-title {
-  font-size: 1.1rem;
-  font-weight: bold;
-}
-
-.v-list-item-subtitle {
-  font-size: 1rem;
-  color: #424242; /* Darker grey for readability */
-}
-
-.v-list-item-action {
-  justify-content: flex-end;
+  background-color: #e0f7fa; /* Light cyan background for answers */
+  padding: 12px;
+  border-radius: 8px;
+  color: #004d40; /* Darker teal text color for answers */
 }
 </style>
