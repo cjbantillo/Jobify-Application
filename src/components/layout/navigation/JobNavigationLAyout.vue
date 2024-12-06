@@ -368,12 +368,13 @@ onMounted(() => {
 
   <!-- Confirm Button -->
   <v-btn
-    color="#4caf50"
-    @click="confirmHiring(notification.id)"
-    v-if="notification.confirmation !== 'confirmed'"
-  >
-    Confirm
-  </v-btn>
+  :disabled="notification.confirmation === 'confirmed'"
+  color="#4caf50"
+  @click="confirmHiring(notification.id)"
+>
+  {{ notification.confirmation === 'confirmed' ? 'Confirmed Hiring' : 'Confirm' }}
+</v-btn>
+
 </v-card>
 
         <v-list-item v-if="!notifications.length">
