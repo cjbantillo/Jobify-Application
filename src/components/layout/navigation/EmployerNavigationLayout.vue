@@ -43,7 +43,7 @@ const fetchNotifications = async () => {
       .from('view_applicant_who_are_confirmed')
       .select('*')
       .eq('confirmation', 'confirmed') // Filter by confirmation
-      .eq('employer_id', employerId.value); // Filter by employer ID
+      //.eq('employer_id', employerId.value); // Filter by employer ID
 
     if (error) {
       console.error('Error fetching notifications:', error);
