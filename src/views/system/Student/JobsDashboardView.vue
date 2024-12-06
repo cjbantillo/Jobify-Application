@@ -219,6 +219,8 @@ onMounted(() => {
                         readonly
                         variant="outlined"
                         rounded
+                        auto-grow
+                        rows="2"
                       ></v-textarea>
                     </v-card-text>
                     <div class="button-container">

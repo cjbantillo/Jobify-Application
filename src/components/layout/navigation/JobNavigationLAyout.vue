@@ -361,6 +361,8 @@ onMounted(() => {
     readonly
     v-model="notification.message"
     variant="outlined"
+    auto-grow
+    rows="2"
     >
   </v-textarea>
 
