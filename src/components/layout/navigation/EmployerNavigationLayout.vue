@@ -17,21 +17,12 @@ const employerId = ref(null)
 // Fetch employer ID from the profile
 const fetchEmployerId = async () => {
   try {
-    const { data: currentUser, error: userError } =
-      await supabase.auth.getUser()
-    if (userError || !currentUser?.user?.id) {
-      console.error(
-        'Error fetching current user:',
-        userError || 'No user logged in',
-      )
-      return
-    }
 
     // Fetch the employer profile to get employer_id
     const { data: employerProfile, error: employerError } = await supabase
       .from('employer_profiles')
-      .select('id')
-      .eq('user_id', currentUser.user.id)
+      .select('*')
+      .eq('user_id', authStore.userData.id)
       .single()
 
     if (employerError) {
@@ -53,14 +44,11 @@ const fetchNotifications = async () => {
   try {
     const { data, error } = await supabase
       .from('applications')
-      .select(
-        `
-        *,
-        job_listings(job_title)
-      `,
-      )
-      .eq('status', 'confirmed') // Only fetch confirmed applications
+      .select('*')
+      .eq('confirmation', 'confirmed') // Only fetch confirmed applications
       .eq('employer_id', employerId.value) // Filter by employer ID
+
+      console.log(data)
 
     if (error) {
       console.error('Error fetching notifications:', error)

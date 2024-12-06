@@ -33,7 +33,6 @@ const newJobPost = ref({
   category: '',
   job_description: '',
   location: '',
-
 })
 
 const jobPosts = ref([]) // To store job posts
@@ -73,21 +72,51 @@ const fetchJobPosts = async () => {
     userId.value = employerProfile.id
     companyName.value = employerProfile.company_name // Assign the company name
 
+
+    const jobListings = ref([])
+
     // Fetch job listings using employer ID
-    const { data: jobListings, error: jobsError } = await supabase
+    const { data, error: jobsError } = await supabase
       .from('job_listings')
       .select('*')
       .eq('employer_id', userId.value)
+      .order('created_at', { ascending: false })
 
     if (jobsError) {
       console.error('Error fetching job posts:', jobsError)
       return
     }
 
-    jobPosts.value = jobListings || []
+    jobListings.value = data.map(job => ({
+      ...job,
+      relativeTime: calculateRelativeTime(job.created_at),
+    }))
+
+    jobPosts.value = data || []
     showPostPopup.value = jobPosts.value.length === 0 // Show popup if no posts exist
   } catch (error) {
     console.error('Unexpected error fetching job posts:', error)
+  }
+}
+
+// Function to calculate relative time
+const calculateRelativeTime = dateString => {
+  const now = new Date()
+  const jobDate = new Date(dateString)
+  const diffInSeconds = Math.floor((now - jobDate) / 1000)
+
+  const minutes = Math.floor(diffInSeconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else {
+    return 'Just now'
   }
 }
 
@@ -96,6 +125,7 @@ const addJobPost = async () => {
   try {
     const { data, error } = await supabase.from('job_listings').insert([
       {
+        created_at: new Date().toISOString(),
         job_title: newJobPost.value.title, // Job title
         salary_range: newJobPost.value.salary, // Salary range
         category: newJobPost.value.category, // Job category
@@ -187,6 +217,9 @@ onMounted(fetchJobPosts)
                     >
                     <v-card-text class="job-description"
                       >Description: {{ job.job_description }}</v-card-text
+                    >
+                    <v-card-text
+                      >Posted: {{ job.relativeTime }}</v-card-text
                     >
                     <v-card-actions>
                       <v-btn @click="deleteJobPost(job.id)">
