@@ -356,6 +356,7 @@ onMounted(() => {
       <v-menu open-on-click>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" icon>
+            <v-icon>mdi-bell-outline</v-icon>
             <v-badge
               v-if="
                 notifications.filter(notification => !notification.viewed)
@@ -368,7 +369,7 @@ onMounted(() => {
               color="error"
               overlap
             >
-              <v-icon>mdi-bell-outline</v-icon>
+              
             </v-badge>
           </v-btn>
         </template>
@@ -418,7 +419,9 @@ onMounted(() => {
             <v-list-item-title class="text-center"
               >No new notifications</v-list-item-title
             >
+            
           </v-list-item>
+  
         </v-list>
       </v-menu>
     </v-app-bar>
