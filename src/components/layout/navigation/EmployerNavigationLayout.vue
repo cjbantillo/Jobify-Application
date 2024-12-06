@@ -9,13 +9,13 @@ import { ref, computed, onMounted } from 'vue';
 import logo from '@/assets/logo-removebg-preview.png'
 
 // this item is for the notification bell for further update
-const items = ref([
-  { title: 'notification 1' },
-  { title: 'notification 2' },
-  { title: 'notification 3' },
-  { title: 'notification 4' },
-])
-const itemCount = computed(() => items.value.length);
+// const items = ref([
+//   { title: 'notification 1' },
+//   { title: 'notification 2' },
+//   { title: 'notification 3' },
+//   { title: 'notification 4' },
+// ])
+// const itemCount = computed(() => items.value.length);
 
 // Reactive screen dimensions
 const { width } = useWindowSize();
@@ -265,7 +265,7 @@ onMounted(() => {
 
         <!-- // Notification Bell -->
 
-        <v-menu open-on-click>
+        <!-- <v-menu open-on-click>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" icon>
             <v-badge :color="'error'" :content="itemCount">
@@ -280,7 +280,7 @@ onMounted(() => {
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
-      </v-menu>
+      </v-menu> -->
     </v-app-bar>
 
 
