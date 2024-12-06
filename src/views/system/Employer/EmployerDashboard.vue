@@ -1,6 +1,6 @@
 <script setup>
 import EmployerNavigationLayout from '@/components/layout/navigation/EmployerNavigationLayout.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import { supabase } from '@/utils/supabase'
 
 const showPopup = ref(false)
@@ -208,11 +208,18 @@ const fetchJobPosts = async () => {
       .from('job_listings')
       .select('*')
       .eq('employer_id', userId.value)
+      .order('created_at', { ascending: false })
 
     if (jobsError) {
       console.error('Error fetching job posts:', jobsError)
       return
     }
+
+    jobPosts.value = jobListings.map(job => {
+  // Calculate relative time for each job
+      job.relativeTime = calculateRelativeTime(job.created_at);
+      return job;
+    });
 
     jobPosts.value = []
 
@@ -230,7 +237,7 @@ const fetchJobPosts = async () => {
       }
 
       applications.value = applications.map(application => ({
-      ...applications,
+      ...application,
       relativeTime: calculateRelativeTime(application.created_at),
     }))
 
@@ -269,31 +276,56 @@ const fetchJobApplicants = async (job_id) => {
   }
 }
 
+// Snack bar state
+const snackBar = reactive({
+  show: false,
+  color: '',
+  message: '',
+})
 
-const hireApplicant = async (applicantId) => {
+const showSnackBar = (message, color = 'success') => {
+  snackBar.message = message
+  snackBar.color = color
+  snackBar.show = true
+}
+
+
+const messageInput = ref(''); // Store the message input
+const messagePopupCard = ref(false); // Control the visibility of the message popup card
+const selectedApplicant = ref(null); // Store the selected applicant
+
+// Function to show the message popup when the "Hire" button is clicked
+const promptMessage = (applicantId) => {
+  selectedApplicant.value = applicantId;
+  messagePopupCard.value = true;
+};
+// Function to hire the applicant with the provided message
+const hireApplicantWithMessage = async () => {
   try {
-    const { data: currentUser, error } = await supabase.auth.getUser()
-    if (error || !currentUser || !currentUser.user) {
-      console.error('Error fetching user:', error)
-      return
+    const { data: currentUser, error } = await supabase.auth.getUser();
+    if (error || !currentUser?.user) {
+      console.error('Error fetching user:', error);
+      return;
     }
 
-    // Update applicant status to 'hired'
+    // Update applicant status to "hired" and add the message
     const { error: hireError } = await supabase
       .from('applications')
-      .update({ status: 'hired' })
-      .eq('applicant_id', applicantId)
+      .update({ status: 'hired', message: messageInput.value, updated_at: new Date().toISOString(), })
+      .eq('applicant_id', selectedApplicant.value);
 
     if (hireError) {
-      console.error('Error hiring applicant:', hireError)
+      showSnackBar(`Application failed to submit: ${hireError.message}`, 'error')
     } else {
-      console.log('Applicant hired successfully.')
-      await fetchJobApplicants(selectedJob.value.id) // Refresh applicants list
+      showSnackBar('Your message has been successfully sent!', 'success')
+      await fetchJobPosts()
+      await fetchJobApplicants()
+      messagePopupCard.value = false; // Close the message popup after hiring
     }
   } catch (err) {
-    console.error('Unexpected error while hiring applicant:', err)
+    console.error('Unexpected error:', err);
   }
-}
+};
 
 const openApplicantsDialog = (job) => {
   selectedJob.value = job; // Set the selected job
@@ -382,15 +414,15 @@ onMounted(async () => {
 
             <!-- Hire Button with styling -->
             <v-btn
-              @click="hireApplicant(applicant.applicant_id)"
-              color="success"
-              :disabled="applicant.status === 'hired'"
-              class="ml-4"
-              rounded
-              elevation="2"
-            >
-              {{ applicant.status === 'hired' ? 'Hired' : 'Hire' }}
-            </v-btn>
+                      @click="promptMessage(applicant.applicant_id)"
+                      color="success"
+                      :disabled="applicant.status === 'hired'"
+                      class="ml-4"
+                      rounded
+                      elevation="2"
+                    >
+                      {{ applicant.status === 'hired' ? 'Hired' : 'Hire' }}
+                    </v-btn>
           </v-list-item>
           <v-divider class="my-4"></v-divider>
         </v-list-item-group>
@@ -465,6 +497,39 @@ onMounted(async () => {
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+
+         <!-- Message Popup for Hiring -->
+         <v-dialog v-model="messagePopupCard" persistent max-width="500">
+          <v-card>
+            <v-card-title class="pa-8">Enter a Message for the Applicant</v-card-title>
+            <v-card-text>
+              <v-textarea
+                v-model="messageInput"
+                label="Message for Applicant"
+                variant="outlined"
+                rows="4"
+                density="compact"
+                required
+                rounded
+              ></v-textarea>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn text @click="messagePopupCard = false">Cancel</v-btn>
+              <v-btn @click="hireApplicantWithMessage">Send & Hire</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <!-- Snack Bar -->
+        <v-snackbar
+          v-model="snackBar.show"
+          :color="snackBar.color"
+          timeout="3000"
+        >
+          {{ snackBar.message }}
+        </v-snackbar>
       </v-app>
     </template>
   </EmployerNavigationLayout>

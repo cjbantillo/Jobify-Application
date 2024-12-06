@@ -269,7 +269,7 @@ onMounted(() => {
     <v-btn v-bind="props" icon>
       <v-icon>mdi-bell-outline</v-icon>
       <v-badge
-        v-if="notifications.length"
+       v-for="(notification, index) in notifications"
         :key="index"
         color="error"
         content="{{ notifications.length }}"
