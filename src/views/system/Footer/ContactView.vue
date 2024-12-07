@@ -1,10 +1,15 @@
 <script setup>
 import { ref } from 'vue';
-// import { defineProps } from 'vue';
 
-// Importing your local image
-import meImage from '@/assets/Me.png'; // Importing your image
+// Importing your local images
+import meImage from '@/assets/me.png';
 import profileCj from '@/assets/ProfileCj.png';
+import luisImage from '@/assets/luis.jpg';
+
+// Log the image URLs to the console for debugging
+console.log('meImage:', meImage);
+console.log('profileCj:', profileCj);
+console.log('luisImage:', luisImage);
 
 const props = defineProps({
   theme: {
@@ -17,22 +22,22 @@ const teamMembers = ref([
   {
     name: 'Nheron Cedro',
     role: 'Developer',
-    email: 'nheron.cedro@example.com',
-    phone: '+63917-123-4567',
+    email: 'cedronheron@gmail.com',
+    phone: '+63950-315-1603',
     image: meImage,
   },
   {
     name: 'Luis Gwapo',
     role: 'System Analyst',
-    email: 'luis.gwapo@example.com',
-    phone: '+63917-765-4321',
-    image: 'https://via.placeholder.com/120',
+    email: 'juneluis@gmail.com',
+    phone: '+63936-589-8662',
+    image: luisImage,
   },
   {
     name: 'Christian James Bantillo',
     role: 'Developer',
-    email: 'christian.bantillo@example.com',
-    phone: '+63917-234-5678',
+    email: 'bantillocj1@gmail.com',
+    phone: '+63968-575-2351',
     image: profileCj,
   },
 ]);
