@@ -12,33 +12,32 @@ import { useRouter } from 'vue-router'
 // Utilize pre-defined vue functions
 const router = useRouter()
 
-const isGoogleSignIn = ref(false);
+const isGoogleSignIn = ref(false)
 
 // Dialog visibility state
-const dialogVisible = ref(false);
+const dialogVisible = ref(false)
 
 // Form data for user type
-const isEmployer = ref(false);
+const isEmployer = ref(false)
 
 // Function to show the employer confirmation dialog
 const openDialog = (googleSignIn = false) => {
-  isGoogleSignIn.value = googleSignIn; // Set isGoogleSignIn based on the function argument
-  dialogVisible.value = true; // Open the dialog
-};
+  isGoogleSignIn.value = googleSignIn // Set isGoogleSignIn based on the function argument
+  dialogVisible.value = true // Open the dialog
+}
 
 // Function to set the user type and proceed to Google OAuth
-const setUserType = (isEmployerSelected) => {
-  isEmployer.value = isEmployerSelected;
-  dialogVisible.value = false; // Close the dialog
+const setUserType = isEmployerSelected => {
+  isEmployer.value = isEmployerSelected
+  dialogVisible.value = false // Close the dialog
 
-  if(isGoogleSignIn.value){
-    handleGoogleSignIn();
-  }else{
-    onFormSubmit();
+  if (isGoogleSignIn.value) {
+    handleGoogleSignIn()
+  } else {
+    onFormSubmit()
   }
   // Proceed to Google OAuth
-
-};
+}
 
 const visible = ref(false) //toggle variable
 const visibleConfirm = ref(false)
@@ -63,10 +62,8 @@ const formAction = ref({
   ...formActionDefault,
 })
 
-
-
 const onSubmit = async () => {
-  formAction.value = { ...formActionDefault, formProcess: true };
+  formAction.value = { ...formActionDefault, formProcess: true }
 
   try {
     const { data, error } = await supabase.auth.signUp({
@@ -79,27 +76,27 @@ const onSubmit = async () => {
           is_employer: isEmployer.value,
         },
       },
-    });
+    })
 
     if (error) {
-      console.error("Supabase Error: ", error); // Log detailed error
-      formAction.value.formErrorMessage = error.message;
-      formAction.value.formStatus = error.status;
+      console.error('Supabase Error: ', error) // Log detailed error
+      formAction.value.formErrorMessage = error.message
+      formAction.value.formStatus = error.status
     } else if (data) {
-      formAction.value.formSuccessMessage = "Account created successfully";
+      formAction.value.formSuccessMessage = 'Account created successfully'
       const dashboardRoute = isEmployer.value
-        ? "/employerdashboard"
-        : "/jobdashboard";
-      router.replace(dashboardRoute);
+        ? '/employerdashboard'
+        : '/jobdashboard'
+      router.replace(dashboardRoute)
     }
   } catch (err) {
-    console.error("Unexpected Error: ", err); // Catch unexpected errors
-    formAction.value.formErrorMessage = "Unexpected error occurred. Try again.";
+    console.error('Unexpected Error: ', err) // Catch unexpected errors
+    formAction.value.formErrorMessage = 'Unexpected error occurred. Try again.'
   } finally {
-    formAction.value.formProcess = false;
-    refVForm.value?.reset();
+    formAction.value.formProcess = false
+    refVForm.value?.reset()
   }
-};
+}
 
 // Handle Google Sign-In
 const handleGoogleSignIn = async () => {
@@ -112,23 +109,23 @@ const handleGoogleSignIn = async () => {
           is_employer: isEmployer.value, // Set user type based on dialog selection
         },
       },
-    });
+    })
 
     if (error) {
-      console.error('Google Sign-In Error:', error.message);
-      alert('Google Sign-In failed. Please try again.');
+      console.error('Google Sign-In Error:', error.message)
+      alert('Google Sign-In failed. Please try again.')
     } else if (data) {
       // Redirect based on user type
       const redirectRoute = isEmployer.value
         ? '/employerdashboard'
-        : '/jobdashboard';
-      router.replace(redirectRoute);
+        : '/jobdashboard'
+      router.replace(redirectRoute)
     }
   } catch (err) {
-    console.error('Unexpected Error during Google Sign-In:', err);
-    alert('Unexpected error occurred. Please try again.');
+    console.error('Unexpected Error during Google Sign-In:', err)
+    alert('Unexpected error occurred. Please try again.')
   }
-};
+}
 
 const toggleVisible = () => (visible.value = !visible.value) //eye icon
 const toggleVisibleConfirm = () =>
@@ -184,49 +181,61 @@ const onFormSubmit = () => {
       rounded
       density="compact"
     ></v-text-field>
-        <!-- enter password -->
-        <v-text-field
-          v-model="formData.password"
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-          :type="visible ? 'text' : 'password'"
-          label="Password"
-          prepend-inner-icon="mdi-lock-outline"
-          @click:append-inner="toggleVisible"
-          :rules="[requiredValidator, passwordValidator]"
-          variant="outlined"
-          rounded
-          density="compact"
-        ></v-text-field>
+    <!-- enter password -->
+    <v-text-field
+      v-model="formData.password"
+      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+      :type="visible ? 'text' : 'password'"
+      label="Password"
+      prepend-inner-icon="mdi-lock-outline"
+      @click:append-inner="toggleVisible"
+      :rules="[requiredValidator, passwordValidator]"
+      variant="outlined"
+      rounded
+      density="compact"
+    ></v-text-field>
 
-        <v-text-field
-          :append-inner-icon="visibleConfirm ? 'mdi-eye-off' : 'mdi-eye'"
-          :type="visibleConfirm ? 'text' : 'password'"
-          label="Confirm Password"
-          prepend-inner-icon="mdi-lock-outline"
-          v-model="formData.confirm_password"
-          @click:append-inner="toggleVisibleConfirm"
-          :rules="[
-            requiredValidator,
-            confirmedValidator(formData.password, formData.confirm_password),
-          ]"
-          variant="outlined"
-          rounded
-          density="compact"
-        ></v-text-field>
+    <v-text-field
+      :append-inner-icon="visibleConfirm ? 'mdi-eye-off' : 'mdi-eye'"
+      :type="visibleConfirm ? 'text' : 'password'"
+      label="Confirm Password"
+      prepend-inner-icon="mdi-lock-outline"
+      v-model="formData.confirm_password"
+      @click:append-inner="toggleVisibleConfirm"
+      :rules="[
+        requiredValidator,
+        confirmedValidator(formData.password, formData.confirm_password),
+      ]"
+      variant="outlined"
+      rounded
+      density="compact"
+    ></v-text-field>
 
-          <!-- Employer confirmation popup -->
-        <v-dialog v-model="dialogVisible" max-width="400px" >
-          <v-card>
-            <v-card-title class="headline">Are you an Employer?</v-card-title>
-            <v-card-text>
-              <p>Do you want to register as an employer or a part-timer?</p>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn class="register-button" @click="setUserType(false)">Part-Timer</v-btn>
-              <v-btn class="register-button" @click="setUserType(true)">Employer</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+    <!-- Employer confirmation popup -->
+    <v-dialog v-model="dialogVisible" max-width="400px">
+      <v-card>
+        <v-card-title class="headline">Are you an Employer?</v-card-title>
+        <v-card-text>
+          <p>Do you want to register as an employer or a part-timer?</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn class="register-button" @click="setUserType(false)"
+            >Part-Timer</v-btn
+          >
+          <v-btn class="register-button" @click="setUserType(true)"
+            >Employer</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- checkbox with toggle -->
+    <v-checkbox
+      v-model="termsAccepted"
+      :rules="[v => !!v || 'You must accept the terms and conditions']"
+      label="I agree to the terms and conditions"
+      color="primary"
+    ></v-checkbox>
 
     <v-row class="button-row">
       <v-col>
@@ -240,15 +249,6 @@ const onFormSubmit = () => {
         >
       </v-col>
     </v-row>
-    <!-- checkbox with toggle -->
-    <v-checkbox
-      v-model="termsAccepted"
-      :rules="[v => !!v || 'You must accept the terms and conditions']"
-      label="I agree to the terms and conditions"
-      color="primary"
-    ></v-checkbox>
-
-
 
     <v-col>
       <h5>
@@ -256,19 +256,18 @@ const onFormSubmit = () => {
         <router-link class="link" to="login"> click here </router-link>
       </h5>
     </v-col>
-
   </v-form>
 
   <v-divider class="my-4">Or</v-divider>
-            <div class="social-icons d-flex justify-center">
-              <v-btn
-                prepend-icon="mdi-google"
-                class="w-100 ma-10"
-                @click="openDialog(true)"
-              >
-              Sign In with Google
-              </v-btn>
-            </div>
+  <div class="social-icons d-flex justify-center">
+    <v-btn
+      prepend-icon="mdi-google"
+      class="w-100 ma-10"
+      @click="openDialog(true)"
+    >
+      Sign In with Google
+    </v-btn>
+  </div>
 </template>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
@@ -280,7 +279,7 @@ v-btn {
   font-style: normal;
   text-transform: none;
 }
-.v-btn{
+.v-btn {
   border-radius: 20px;
 }
 .button-row .register-button {
