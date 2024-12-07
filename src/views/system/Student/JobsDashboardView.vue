@@ -184,7 +184,7 @@ onMounted(() => {
         <!-- Main Content Area -->
         <v-main class="pt-8">
           <v-container>
-            <v-card class="pa-8">
+            <v-card class="dashboard-card">
               <v-card-title class="title">Dashboard</v-card-title>
               <v-row>
                 <v-col
@@ -195,19 +195,18 @@ onMounted(() => {
                   v-for="job in jobListings"
                   :key="job.id"
                 >
-                  <v-card class="pa-6 hover-card" min-height="500px" rounded >
-                    <v-card-title class="title">{{
-                      job.job_title
-                    }}</v-card-title>
+                  <v-card class="pa-6 hover-card" min-height="500px" rounded>
+                    <v-card-title class="title">{{ job.job_title }}</v-card-title>
                     <v-card-text>
                       <p class="budget">
                         <i class="mdi mdi-currency-php"></i>
                         {{ job.salary_range }}
                       </p>
                       <p class="location">
-                        <span class="icon material-icons">Location</span
-                        >{{ job.location }}
+                        <v-icon left class="icon">mdi-map-marker</v-icon>
+                        {{ job.location }}
                       </p>
+
                       <div class="category-label">
                         Category: {{ job.category }}
                       </div>
@@ -245,7 +244,7 @@ onMounted(() => {
                       <v-card-text>
                         <v-form @submit.prevent="sendApplication">
                           <v-text-field
-                          prepend-inner-icon="mdi-facebook"
+                            prepend-inner-icon="mdi-facebook"
                             density="compact"
                             rounded
                             variant="outlined"
@@ -254,14 +253,14 @@ onMounted(() => {
                             required
                           ></v-text-field>
                           <v-select
-                          density="compact"
-                          rounded
-                          variant="outlined"
-                          v-model="newApplication.available_time"
-                          :items="timeAvailable"
-                          label="Available Time"
-                          required
-                        ></v-select>
+                            density="compact"
+                            rounded
+                            variant="outlined"
+                            v-model="newApplication.available_time"
+                            :items="timeAvailable"
+                            label="Available Time"
+                            required
+                          ></v-select>
                           <v-textarea
                             prepend-inner-icon="mdi-email-open-outline"
                             density="compact"
@@ -270,22 +269,22 @@ onMounted(() => {
                             v-model="newApplication.application_letter"
                             label="Application Letter"
                             required
-                          >
-                          </v-textarea>
+                          ></v-textarea>
                           <div class="button-container mt-4">
                             <v-btn
                               rounded
                               type="submit"
-                              :event="sendApplication"
-                              class="apply-button"
-                              >Submit</v-btn
+                              class="apply-button submit-button"
                             >
+                              Submit
+                            </v-btn>
                             <v-btn
                               rounded
-                              class="ml-2"
+                              class="ml-2 cancel-button"
                               @click="activePopupJobId = null"
-                              >Cancel</v-btn
                             >
+                              Cancel
+                            </v-btn>
                           </div>
                         </v-form>
                       </v-card-text>
@@ -297,18 +296,18 @@ onMounted(() => {
           </v-container>
 
           <!-- Snack Bar -->
-        <v-snackbar
-          v-model="snackBar.show"
-          :color="snackBar.color"
-          timeout="3000"
-        >
-          {{ snackBar.message }}
-        </v-snackbar>
-
+          <v-snackbar
+            v-model="snackBar.show"
+            :color="snackBar.color"
+            timeout="3000"
+          >
+            {{ snackBar.message }}
+          </v-snackbar>
         </v-main>
       </v-app>
     </template>
   </JobNavigationLayout>
 </template>
+
 
 <style scoped src="@/views/system/style/JobDashboardStyle.css"></style>
