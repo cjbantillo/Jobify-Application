@@ -10,6 +10,80 @@ const companyAddress = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
 
+const categories = ref([
+  "Retail and Wholesale",
+  "Supermarkets and Grocery Stores",
+  "Convenience Stores",
+  "Pharmacies",
+  "Hardware and Construction Supplies",
+  "Clothing and Apparel",
+  "Electronics and Gadgets",
+  "Auto Parts and Accessories",
+  "Wholesale and Trading Businesses",
+  "Food and Beverage",
+  "Restaurants",
+  "Cafés and Coffee Shops",
+  "Fast Food Chains",
+  "Food Stalls and Kiosks",
+  "Catering Services",
+  "Bakeries and Pastry Shops",
+  "Bars and Pubs",
+  "Health and Wellness",
+  "Clinics and Medical Services",
+  "Fitness Centers and Gyms",
+  "Spas and Wellness Centers",
+  "Optical Shops",
+  "Dental Clinics",
+  "Professional Services",
+  "Accounting and Bookkeeping",
+  "Legal Services",
+  "Marketing and Advertising",
+  "IT and Web Development",
+  "Real Estate Agencies",
+  "Human Resource and Recruitment",
+  "Travel and Tour Agencies",
+  "Home and Construction",
+  "Interior Design Services",
+  "Construction Firms",
+  "Appliance Repair Services",
+  "Furniture Stores",
+  "Landscaping Services",
+  "Education and Training",
+  "Tutorial Centers",
+  "Daycares and Preschools",
+  "Vocational and Technical Schools",
+  "Language Learning Centers",
+  "Review Centers",
+  "Transportation and Logistics",
+  "Public Transportation Operators",
+  "Taxi and Ride-hailing Services",
+  "Delivery and Courier Services",
+  "Freight and Logistics Companies",
+  "Vehicle Rentals",
+  "Entertainment and Leisure",
+  "Event Planning Services",
+  "Party Supplies Rentals",
+  "Photography and Videography",
+  "Resorts and Hotels",
+  "Game Zones and Arcades",
+  "Agriculture and Farming",
+  "Poultry and Livestock",
+  "Agricultural Supply Stores",
+  "Rice Milling and Grains Trading",
+  "Fresh Produce Markets",
+  "Technology and Communications",
+  "Internet Service Providers",
+  "Gadget Repair Shops",
+  "Computer Shops",
+  "Printing and Photocopying Services",
+  "Financial Services",
+  "Banks and Lending Institutions",
+  "Pawnshops",
+  "Money Remittance Services",
+  "Insurance Agencies",
+  "Investment and Trading Services",
+]);
+
 const fetchUserData = async () => {
   try {
     loading.value = true
@@ -135,7 +209,8 @@ onMounted(async () => {
                       </v-row>
                       <v-row>
                         <v-col cols="5" class="ma-auto">
-                          <v-text-field
+                          <v-select
+                            :items="categories"
                             v-model="companyCategory"
                             label="Company Category"
                             prepend-inner-icon="mdi-shape-plus"
@@ -181,63 +256,4 @@ onMounted(async () => {
   </EmployerNavigationLayout>
 </template>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
-
-* {
-  font-family: 'Varela Round', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.user-card {
-  border: 1px solid black;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
-}
-.user-card:hover {
-  -webkit-box-shadow: 0px 0px 20px -1px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 0px 20px -1px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 0px 20px -1px rgba(0, 0, 0, 0.75);
-}
-
-/* Font hierarchy and color palette */
-.text-primary {
-  color: #4caf50;
-  font-weight: bold;
-}
-
-.text-secondary {
-  color: rgba(76, 175, 80, 0.7);
-}
-
-.text-h6 {
-  font-size: 1.25rem;
-}
-
-.text-body-2 {
-  font-size: 1rem;
-}
-
-/* Padding adjustments */
-.v-card {
-  border-radius: 20px;
-}
-.v-card .v-card-title {
-  font-size: larger;
-  font-weight: 700;
-  color: #4caf50;
-}
-.v-card-title {
-  margin-bottom: 0.5rem;
-}
-
-.v-card-subtitle {
-  margin-bottom: 1rem;
-}
-
-.v-btn {
-  background-color: #4caf50 !important;
-  color: #fff;
-  text-transform: none;
-}
-</style>
+<style scoped src="@/views/system/style/EmployerInformationViewStyle.css"></style>

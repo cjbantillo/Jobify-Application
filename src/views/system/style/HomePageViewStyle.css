@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
+
+*,
+v-btn {
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+/* Custom paragraph color */
+.custom-paragraph {
+  color: #616161; /* Dark gray text for better readability */
+  font-size: 16px; /* Standardized font size for readability */
+  line-height: 1.6;
+}
+
+/* Hero Section */
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /*   transition: background-color 0.5s ease; */
+  padding-bottom: 50px;
+}
+
+/*  Hero Section Hover Effect  */
+/* .hero-section:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+} */
+.hero-text {
+  background-color: rgba(76, 175, 80, 0);
+  -webkit-backdrop-filter: blur(12px) brightness(1.05);
+  backdrop-filter: blur(12px) brightness(1.05);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.hero-text h1 {
+  font-size: 2rem;
+  width: 80%;
+}
+
+.hero-text p {
+  text-indent: 1.25rem;
+  font-weight: 100;
+}
+
+/* How Jobify Works Section */
+.how-it-works-section {
+  padding: 60px 0;
+  margin-top: 30px;
+}
+
+/* Key Features Section */
+.features-section {
+  padding: 60px 0;
+  margin-top: 30px;
+}
+
+/* Why Choose Us Section */
+.why-jobify {
+  padding: 50px 20px;
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  border-radius: 10px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #4caf50;
+  margin-bottom: 10px;
+}
+
+.section-description {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.feature {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1 1 250px;
+  max-width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+  font-size: 40px;
+  color: #4caf50;
+  margin-bottom: 15px;
+}
+
+.feature-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.feature-description {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Standardized card size */
+.custom-card {
+  border-radius: 15px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.custom-card h3 {
+  color: #4caf50;
+}
+
+.custom-card p {
+  color: #616161;
+  text-indent: 10px;
+  text-align: left;
+}
+.btn,
+.custom-card .btn {
+  text-transform: none;
+  justify-self: center;
+  align-self: center;
+  background-color: #fff;
+  color: #4caf50;
+}
+.custom-card h3,
+p,
+.btn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Animated Title and Button */
+.animated-title {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.animated-text {
+  animation: slideUp 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

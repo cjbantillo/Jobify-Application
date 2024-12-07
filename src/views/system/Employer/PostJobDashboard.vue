@@ -2,10 +2,11 @@
 import EmployerNavigationLayout from '@/components/layout/navigation/EmployerNavigationLayout.vue'
 import { ref, onMounted } from 'vue'
 import { supabase } from '@/utils/supabase'
+import { requiredValidator } from '@/utils/validator'
 
 const categories = ref([
   'Customer Service Representative',
-  'Sales Associate',
+  'Sales Associate',  
   'Tutoring',
   'Freelance Writing/Content Creation',
   'Data Entry',
@@ -24,6 +25,7 @@ const categories = ref([
   'Pet Care',
   'Delivery or Courier Service',
   'Website Development/Design',
+  'Others',
 ])
 
 const newJobPost = ref({
@@ -72,20 +74,46 @@ const fetchJobPosts = async () => {
     companyName.value = employerProfile.company_name // Assign the company name
 
     // Fetch job listings using employer ID
-    const { data: jobListings, error: jobsError } = await supabase
+    const { data, error: jobsError } = await supabase
       .from('job_listings')
       .select('*')
       .eq('employer_id', userId.value)
+      .order('created_at', { ascending: false })
 
     if (jobsError) {
       console.error('Error fetching job posts:', jobsError)
       return
     }
 
-    jobPosts.value = jobListings || []
+    jobPosts.value = data.map(job => ({
+      ...job,
+      relativeTime: calculateRelativeTime(job.created_at), // Add relative time
+    }))
     showPostPopup.value = jobPosts.value.length === 0 // Show popup if no posts exist
   } catch (error) {
     console.error('Unexpected error fetching job posts:', error)
+  }
+}
+
+
+// Function to calculate relative time
+const calculateRelativeTime = dateString => {
+  const now = new Date()
+  const jobDate = new Date(dateString)
+  const diffInSeconds = Math.floor((now - jobDate) / 1000)
+
+  const minutes = Math.floor(diffInSeconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else {
+    return 'Just now'
   }
 }
 
@@ -94,6 +122,7 @@ const addJobPost = async () => {
   try {
     const { data, error } = await supabase.from('job_listings').insert([
       {
+        created_at: new Date().toISOString(),
         job_title: newJobPost.value.title, // Job title
         salary_range: newJobPost.value.salary, // Salary range
         category: newJobPost.value.category, // Job category
@@ -186,8 +215,11 @@ onMounted(fetchJobPosts)
                     <v-card-text class="job-description"
                       >Description: {{ job.job_description }}</v-card-text
                     >
+                    <v-card-text
+                      >Posted: {{ job.relativeTime }}</v-card-text
+                    >
                     <v-card-actions>
-                      <v-btn color="error" @click="deleteJobPost(job.id)">
+                      <v-btn @click="deleteJobPost(job.id)">
                         Delete
                       </v-btn>
                     </v-card-actions>
@@ -199,14 +231,14 @@ onMounted(fetchJobPosts)
                   <v-card class="pa-8 pop-up">
                     <v-card-title>Post a Job</v-card-title>
                     <v-card-text>
-                      <v-form @submit.prevent="addJobPost">
+                      <v-form @submit.prevent="addJobPost" >
                         <v-text-field
                           density="compact"
                           rounded
                           variant="outlined"
                           v-model="newJobPost.title"
                           label="Job Title"
-                          required
+                          :rules="[requiredValidator]"
                         ></v-text-field>
                         <v-text-field
                           prepend-inner-icon="mdi-currency-php"
@@ -216,7 +248,7 @@ onMounted(fetchJobPosts)
                           variant="outlined"
                           v-model="newJobPost.salary"
                           label="Salary"
-                          required
+                         :rules="[requiredValidator]"
                         ></v-text-field>
                         <v-select
                           density="compact"
@@ -225,7 +257,7 @@ onMounted(fetchJobPosts)
                           v-model="newJobPost.category"
                           :items="categories"
                           label="Job Category"
-                          required
+                        :rules="[requiredValidator]"
                         ></v-select>
                         <v-text-field
                           density="compact"
@@ -233,16 +265,16 @@ onMounted(fetchJobPosts)
                           variant="outlined"
                           v-model="newJobPost.location"
                           label="Location"
-                          required
+                        :rules="[requiredValidator]"
                         ></v-text-field>
-                        <v-text-field
+                        <v-textarea
                           density="compact"
                           rounded
                           variant="outlined"
                           v-model="newJobPost.job_description"
                           label="Job Description"
-                          required
-                        ></v-text-field>
+                          :rules="[requiredValidator]"
+                        ></v-textarea>
                         <div class="button-container mt-4">
                           <v-btn
                             rounded
@@ -271,155 +303,4 @@ onMounted(fetchJobPosts)
   </EmployerNavigationLayout>
 </template>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
-
-* {
-  font-family: 'Varela Round', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.v-btn {
-  text-transform: none;
-}
-.v-list-item:hover {
-  background-color: #4caf50;
-  color: white;
-}
-
-.hover-card {
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-  cursor: pointer;
-  position: relative;
-  background-color: #fafbfa;
-}
-
-.hover-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* More pronounced shadow on hover */
-}
-
-.title {
-  font-size: 1rem; /* Smaller font for the title */
-  font-weight: bold;
-}
-
-.budget,
-.location {
-  color: #666; /* Subtle color for text */
-}
-
-.button-container {
-  margin-top: 10px; /* Less margin */
-}
-
-.category-label {
-  color: #fff;
-  background-color: #4caf50;
-  padding: 2px 4px; /* Smaller padding */
-  border-radius: 4px;
-  display: inline-block;
-  margin-top: 5px; /* Less margin */
-}
-
-.job-type-duration {
-  margin-top: 5px; /* Less margin */
-  color: #777;
-}
-
-.apply-button {
-  background-color: #4caf50;
-  color: white;
-  padding: 6px 10px; /* Smaller padding for better appearance */
-  font-weight: bold;
-  margin-right: 4px; /* Less margin */
-}
-
-.apply-button:hover {
-  background-color: #45a049; /* Darker green for hover effect */
-}
-
-.badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 2px 4px; /* Smaller padding */
-  border-radius: 4px;
-  color: white;
-  font-weight: bold;
-}
-
-.icon {
-  vertical-align: middle;
-  margin-right: 2px; /* Less margin */
-}
-.pop-up {
-  border-radius: 50px;
-}
-
-.job-card {
-  background-color: #f5f5f5; /* Light background for a clean, modern look */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  padding: 20px;
-  transition:
-    transform 0.3s,
-    box-shadow 0.3s;
-}
-
-.job-card:hover {
-  transform: translateY(-10px); /* Lift effect on hover */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
-}
-
-.job-title {
-  font-size: 1.5rem; /* Larger font for job title */
-  font-weight: bold;
-  color: #333; /* Darker color for title */
-}
-
-.salary-category {
-  font-size: 1rem;
-  color: #555; /* Subtle color for salary and category */
-  margin-top: 8px;
-}
-
-.salary {
-  font-weight: bold; /* Make salary text stand out */
-  margin-right: 15px;
-}
-
-.category {
-  background-color: #4caf50; /* Green background for category */
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.location {
-  font-size: 0.95rem;
-  color: #777; /* Lighter color for location */
-  margin-top: 10px;
-}
-
-.job-description {
-  font-size: 0.9rem;
-  color: #666; /* Subtle color for description */
-  margin-top: 8px;
-}
-
-/* Button Style */
-.v-btn {
-  background-color: #4caf50; /* Green button */
-  color: white;
-  font-weight: bold;
-  padding: 10px 20px;
-  border-radius: 20px;
-}
-
-.v-btn:hover {
-  background-color: rgb(89, 145, 97); /* Darker green on hover */
-}
-</style>
+<style scoped src="@/views/system/style/PostJobDashboardStyle.css"></style>

@@ -101,6 +101,7 @@ const onFormSubmit = () => {
       :rules="[requiredValidator, emailValidator]"
       class="modern-input"
       variant="outlined"
+      density="compact"
       rounded
     ></v-text-field>
     <!-- password  -->
@@ -114,6 +115,7 @@ const onFormSubmit = () => {
       :rules="[requiredValidator]"
       class="modern-input"
       variant="outlined"
+      density="compact"
       rounded
     ></v-text-field>
     <!-- checkbox  -->
@@ -121,9 +123,9 @@ const onFormSubmit = () => {
       <v-col cols="6">
         <v-row>
           <v-col cols="auto">
-            <v-checkbox class="small-checkbox" hide-details>
+            <v-checkbox class="small-checkbox" hide-details >
               <template #label>
-                <span class="remember-me-text" :rules="[requiredValidator]">
+                <span class="remember-me-text" >
                   Remember Me
                 </span>
               </template>

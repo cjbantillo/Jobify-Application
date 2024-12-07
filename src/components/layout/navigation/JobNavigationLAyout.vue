@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase, formActionDefault } from '@/utils/supabase.js'
 import { useAuthUserStore } from '@/stores/authUser'
@@ -7,13 +7,124 @@ import { useWindowSize } from '@vueuse/core'
 import { getAvatarText } from '@/utils/helpers'
 import logo from '@/assets/logo-removebg-preview.png'
 
-// this item is for the notification bell for further update
-const items = [
-  { title: 'Click Me' },
-  { title: 'Click Me' },
-  { title: 'Click Me' },
-  { title: 'Click Me 2' },
-]
+// Notification items
+const notifications = ref([])
+
+// Computed property to track the number of notifications
+const fetchNotifications = async () => {
+  try {
+    const { data: currentUser, error: userError } =
+      await supabase.auth.getUser()
+
+    if (userError || !currentUser?.user?.id) {
+      console.error(
+        'Error fetching current user:',
+        userError || 'No user logged in',
+      )
+      return
+    }
+
+    const userId = currentUser.user.id
+
+    console.log(userId)
+
+    // Fetch notifications only for the current user based on applicant_id
+    const { data, error } = await supabase
+      .from('applications')
+      .select(
+        `
+        *,
+        job_listings(job_title)
+      `,
+      )
+      .eq('status', 'hired')
+      .eq('applicant_id', userId) // Filter notifications by current user's applicant_id
+      .order('updated_at', { ascending: false }) // Sort by latest updates
+      .limit(10)
+
+    if (error) {
+      console.error('Error fetching notifications:', error)
+      return
+    }
+
+    // Sort notifications by updated_at in descending order, just in case
+    notifications.value = data
+      ? data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+      : []
+  } catch (err) {
+    console.error('Unexpected error fetching notifications:', err)
+  }
+}
+
+const subscribeToNotifications = async () => {
+  try {
+    const { data: currentUser, error: userError } =
+      await supabase.auth.getUser()
+
+    if (userError || !currentUser?.user?.id) {
+      console.error(
+        'Error fetching current user:',
+        userError || 'No user logged in',
+      )
+      return
+    }
+
+    const userId = currentUser.user.id
+
+    supabase
+      .channel('public:applications')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'applications' },
+        async payload => {
+          if (
+            payload.new.status === 'hired' &&
+            payload.new.applicant_id === userId
+          ) {
+            // Fetch the job_title for the new notification
+            const { data: jobData, error: jobError } = await supabase
+              .from('job_listings')
+              .select('job_title')
+              .eq('id', payload.new.job_id)
+              .single()
+
+            if (!jobError) {
+              payload.new.job_listings = jobData
+              notifications.value.unshift(payload.new) // Add new notification for the user
+            }
+          }
+        },
+      )
+      .subscribe()
+  } catch (err) {
+    console.error('Unexpected error subscribing to notifications:', err)
+  }
+}
+const calculateRelativeTime = dateString => {
+  const now = new Date() // Current time
+  const jobDate = new Date(dateString) // Parse the date string
+
+  // If jobDate is invalid, return a fallback
+  if (isNaN(jobDate.getTime())) {
+    return 'Invalid date'
+  }
+
+  const diffInSeconds = Math.floor((now - jobDate) / 1000) // Difference in seconds
+
+  const minutes = Math.floor(diffInSeconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else {
+    return 'Just now'
+  }
+}
 
 // Reactive screen dimensions
 const { width } = useWindowSize()
@@ -23,15 +134,15 @@ const mobile = computed(() => width.value <= 768)
 const authStore = useAuthUserStore()
 
 // Reactive variables
-const drawer = ref(true);
-const rail = ref(true);
-const loaded = ref(false);
-const loading = ref(false);
-const showUploadDialog = ref(false);
-const settingsHover = ref(false);
-const selectedFile = ref(null);
-const fileName = ref('');
-const fileInput = ref(null);
+const drawer = ref(true)
+const rail = ref(true)
+const loaded = ref(false)
+const loading = ref(false)
+const showUploadDialog = ref(false)
+const settingsHover = ref(false)
+const selectedFile = ref(null)
+const fileName = ref('')
+const fileInput = ref(null)
 
 // Supabase bucket and file details
 const schedules = 'schedules' // Ensure this matches your Supabase bucket name exactly
@@ -130,9 +241,74 @@ const processFile = file => {
   filePath.value = `${authStore.userData.first_name || ''} ${authStore.userData.last_name || ''}/${file.name}` // Create a unique file path
 }
 
+// Snack bar state
+const snackBar = reactive({
+  show: false,
+  color: '',
+  message: '',
+})
+
+const showSnackBar = (message, color = 'success') => {
+  snackBar.message = message
+  snackBar.color = color
+  snackBar.show = true
+}
+
+const confirmHiring = async notificationId => {
+  try {
+    // Update the status to "confirmed"
+    const { error } = await supabase
+      .from('applications')
+      .update({ confirmation: 'confirmed' })
+      .eq('id', notificationId)
+
+    if (error) {
+      showSnackBar(`Application failed to submit: ${error.message}`, 'error')
+    } else {
+      // Update the local notifications array
+      notifications.value = notifications.value.map(notification =>
+        notification.id === notificationId
+          ? { ...notification, status: 'confirmed' }
+          : notification,
+      )
+      showSnackBar('Application has been confirmed!', 'success')
+      await fetchUserData()
+    }
+  } catch (err) {
+    console.error('Unexpected error while confirming the application:', err)
+  }
+}
+
+// Function to mark a notification as viewed
+const markAsViewed = async notificationId => {
+  try {
+    // Update notification in the database (if necessary)
+    const { error } = await supabase
+      .from('applications')
+      .update({ viewed: true }) // Add a 'viewed' column in your table
+      .eq('id', notificationId)
+
+    if (error) {
+      console.error('Error marking notification as viewed:', error)
+    } else {
+      // Update locally
+      const notificationIndex = notifications.value.findIndex(
+        notif => notif.id === notificationId,
+      )
+      if (notificationIndex > -1) {
+        notifications.value[notificationIndex].viewed = true
+      }
+    }
+  } catch (err) {
+    console.error('Unexpected error marking notification as viewed:', err)
+  }
+}
 // Lifecycle hook
 onMounted(() => {
   fetchUserData()
+  fetchNotifications()
+  subscribeToNotifications()
+  supabase.removeAllChannels()
 })
 </script>
 
@@ -152,7 +328,13 @@ onMounted(() => {
         max-width="100"
         class="mr-4"
       />
-      <h3 v-if="!mobile">&middot; {{ authStore.userData.first_name + ' ' + authStore.userData.last_name || 'Loading' }}</h3>
+      <h3 v-if="!mobile">
+        &middot;
+        {{
+          authStore.userData.first_name + ' ' + authStore.userData.last_name ||
+          'Loading'
+        }}
+      </h3>
       <v-spacer></v-spacer>
       <v-text-field
         clearable
@@ -171,17 +353,76 @@ onMounted(() => {
 
       <!-- notification bell  -->
 
+      <!-- Notification Bell -->
       <v-menu open-on-click>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" icon>
             <v-icon>mdi-bell-outline</v-icon>
+            <v-badge
+              v-if="
+                notifications.filter(notification => !notification.viewed)
+                  .length
+              "
+              :content="
+                notifications.filter(notification => !notification.viewed)
+                  .length
+              "
+              color="error"
+              overlap
+            >
+              
+            </v-badge>
           </v-btn>
         </template>
+        <v-list dense rounded>
+          <v-card
+            v-for="(notification, index) in notifications"
+            :key="index"
+            class="ma-5 pa-4"
+            rounded
+            @click="markAsViewed(notification.id)"
+          >
+            <v-card-title>
+              You are hired for
+              <span class="font-weight-bold">{{
+                notification.job_listings?.job_title || 'Unknown Job'
+              }}</span>
+            </v-card-title>
 
-        <v-list>
-          <v-list-item v-for="(item, index) in items" :key="index">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-card-subtitle class="text-caption">
+              {{ calculateRelativeTime(notification.updated_at) }}
+            </v-card-subtitle>
+
+            <v-textarea
+              rounded
+              density="compact"
+              readonly
+              v-model="notification.message"
+              variant="outlined"
+              auto-grow
+              rows="2"
+            ></v-textarea>
+
+            <v-btn
+              :disabled="notification.confirmation === 'confirmed'"
+              color="#4caf50"
+              @click="confirmHiring(notification.id)"
+            >
+              {{
+                notification.confirmation === 'confirmed'
+                  ? 'Confirmed'
+                  : 'Confirm'
+              }}
+            </v-btn>
+          </v-card>
+
+          <v-list-item v-if="!notifications.length">
+            <v-list-item-title class="text-center"
+              >No new notifications</v-list-item-title
+            >
+            
           </v-list-item>
+  
         </v-list>
       </v-menu>
     </v-app-bar>
@@ -285,7 +526,14 @@ onMounted(() => {
           Upload Schedule
         </v-card-title>
         <v-card-text>
-          <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+            "
+          >
             <v-btn
               color="success"
               @click="$refs.fileInput.click()"
@@ -315,6 +563,10 @@ onMounted(() => {
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <!-- Snack Bar -->
+    <v-snackbar v-model="snackBar.show" :color="snackBar.color" timeout="3000">
+      {{ snackBar.message }}
+    </v-snackbar>
 
     <v-main :class="{ 'pt-2': mobile, 'pt-8': !mobile }">
       <v-container :fluid="mobile">

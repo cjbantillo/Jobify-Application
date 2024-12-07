@@ -12,6 +12,8 @@ import { useRouter } from 'vue-router'
 // Utilize pre-defined vue functions
 const router = useRouter()
 
+const isGoogleSignIn = ref(false);
+
 // Dialog visibility state
 const dialogVisible = ref(false);
 
@@ -19,8 +21,9 @@ const dialogVisible = ref(false);
 const isEmployer = ref(false);
 
 // Function to show the employer confirmation dialog
-const openEmployerDialog = () => {
-  dialogVisible.value = true;
+const openDialog = (googleSignIn = false) => {
+  isGoogleSignIn.value = googleSignIn; // Set isGoogleSignIn based on the function argument
+  dialogVisible.value = true; // Open the dialog
 };
 
 // Function to set the user type and proceed to Google OAuth
@@ -28,8 +31,13 @@ const setUserType = (isEmployerSelected) => {
   isEmployer.value = isEmployerSelected;
   dialogVisible.value = false; // Close the dialog
 
+  if(isGoogleSignIn.value){
+    handleGoogleSignIn();
+  }else{
+    onFormSubmit();
+  }
   // Proceed to Google OAuth
-  handleGoogleSignIn();
+
 };
 
 const visible = ref(false) //toggle variable
@@ -68,7 +76,7 @@ const onSubmit = async () => {
         data: {
           first_name: formData.value.first_name,
           last_name: formData.value.last_name,
-          is_employer: formData.value.is_employer,
+          is_employer: isEmployer.value,
         },
       },
     });
@@ -79,10 +87,10 @@ const onSubmit = async () => {
       formAction.value.formStatus = error.status;
     } else if (data) {
       formAction.value.formSuccessMessage = "Account created successfully";
-      const dashboardRoute = formData.value.is_employer
+      const dashboardRoute = isEmployer.value
         ? "/employerdashboard"
         : "/jobdashboard";
-      router.push(dashboardRoute);
+      router.replace(dashboardRoute);
     }
   } catch (err) {
     console.error("Unexpected Error: ", err); // Catch unexpected errors
@@ -111,8 +119,10 @@ const handleGoogleSignIn = async () => {
       alert('Google Sign-In failed. Please try again.');
     } else if (data) {
       // Redirect based on user type
-      const redirectRoute = isEmployer.value ? '/employerdashboard' : '/jobdashboard';
-      router.push(redirectRoute);
+      const redirectRoute = isEmployer.value
+        ? '/employerdashboard'
+        : '/jobdashboard';
+      router.replace(redirectRoute);
     }
   } catch (err) {
     console.error('Unexpected Error during Google Sign-In:', err);
@@ -205,15 +215,15 @@ const onFormSubmit = () => {
         ></v-text-field>
 
           <!-- Employer confirmation popup -->
-        <v-dialog v-model="dialogVisible" max-width="400px">
+        <v-dialog v-model="dialogVisible" max-width="400px" >
           <v-card>
             <v-card-title class="headline">Are you an Employer?</v-card-title>
             <v-card-text>
               <p>Do you want to register as an employer or a part-timer?</p>
             </v-card-text>
             <v-card-actions>
-              <v-btn text @click="setUserType(false)">Part-Timer</v-btn>
-              <v-btn text @click="setUserType(true)">Employer</v-btn>
+              <v-btn class="register-button" @click="setUserType(false)">Part-Timer</v-btn>
+              <v-btn class="register-button" @click="setUserType(true)">Employer</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -223,7 +233,7 @@ const onFormSubmit = () => {
         <v-btn
           class="register-button w-100 rounded-pill"
           depressed
-          type="submit"
+          @click="openDialog(false)"
           :disabled="formAction.formProcess"
           :loading="formAction.formProcess"
           >Register</v-btn
@@ -247,17 +257,18 @@ const onFormSubmit = () => {
       </h5>
     </v-col>
 
-          <v-divider class="my-4">Or</v-divider>
+  </v-form>
+
+  <v-divider class="my-4">Or</v-divider>
             <div class="social-icons d-flex justify-center">
               <v-btn
                 prepend-icon="mdi-google"
                 class="w-100 ma-10"
-                @click="openEmployerDialog"
+                @click="openDialog(true)"
               >
               Sign In with Google
               </v-btn>
             </div>
-  </v-form>
 </template>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');

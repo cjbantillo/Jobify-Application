@@ -1,27 +1,36 @@
 <script setup>
-const props = defineProps(['formSuccessMessage', 'formErrorMessage'])
+import { ref, watch } from 'vue'
+const props = defineProps(['formSuccessMessage', 'formErrorMessage']);
+const dialogVisible = ref(false);
+
+// Watch for changes in props and show the dialog if a message exists
+watch(
+  () => [props.formSuccessMessage, props.formErrorMessage],
+  ([successMessage, errorMessage]) => {
+    if (successMessage || errorMessage) {
+      dialogVisible.value = true;
+    }
+  }
+);
+
+// Function to close the dialog
+const closeDialog = () => {
+  dialogVisible.value = false;
+};
 </script>
 
 <template>
-  <v-alert
-    v-if="props.formSuccessMessage"
-    :text="props.formSuccessMessage"
-    title="Success!"
-    type="success"
-    variant="tonal"
-    density="compact"
-    border="start"
-    closable
-  ></v-alert>
-
-  <v-alert
-    v-if="props.formErrorMessage"
-    :text="props.formErrorMessage"
-    title="Error!"
-    type="error"
-    variant="tonal"
-    density="compact"
-    border="start"
-    closable
-  ></v-alert>
+  <v-dialog v-model="dialogVisible" max-width="400px">
+    <v-card>
+      <v-card-title class="headline">
+        {{ props.formSuccessMessage ? 'Success!' : 'Error!' }}
+      </v-card-title>
+      <v-card-text>
+        {{ props.formSuccessMessage || props.formErrorMessage }}
+      </v-card-text>
+      <v-card-actions>
+        <v-btn text @click="closeDialog">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
