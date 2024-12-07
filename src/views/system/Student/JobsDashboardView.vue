@@ -185,7 +185,7 @@ onMounted(() => {
         <v-main class="pt-8">
           <v-container>
             <v-card class="dashboard-card">
-              <v-card-title class="title">Dashboard</v-card-title>
+              <v-card-title class="title" :style="{ color: '#4caf50' }">Dashboard</v-card-title>
               <v-row>
                 <v-col
                   cols="12"

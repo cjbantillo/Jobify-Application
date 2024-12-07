@@ -349,73 +349,70 @@ onMounted(async () => {
       <v-app class="d-flex fill-height">
         <v-main class="pt-8">
           <v-container>
-            <v-card outlined class="pa-8 cont" height="fill">
+            <!-- Dashboard Card -->
+            <v-card outlined class="dashboard-card pa-8 cont" height="fill">
+              <v-card-title class="title text-h5 mb-6" :style="{ color: '#4caf50' }">Dashboard</v-card-title>
 
-  <v-card-title class="title text-h5 mb-6">Dashboard</v-card-title>
+              <div v-if="!loading && jobPosts.length === 0" class="text-center">
+                No job posts found.
+              </div>
 
-  <div v-if="!loading && jobPosts.length === 0" class="text-center">
-    No job posts found.
-  </div>
+              <v-container v-else>
+                <v-row>
+                  <v-col v-for="job in jobPosts" :key="job.id" cols="12" md="6" lg="4">
+                    <!-- Job Cards -->
+                    <v-card class="hover-card pa-8 ma-3" rounded>
+                      <v-card-title class="title" style="font-size: 1.3rem;">{{ job.job_title }}</v-card-title>
 
-  <v-container v-else>
-    <v-row>
-      <v-col v-for="job in jobPosts" :key="job.id" cols="12" md="6" lg="4">
-        <v-card outlined class="pa-8 ma-3" rounded>
-          <v-card-title>{{ job.job_title }}</v-card-title>
-          <v-card-subtitle>
-            {{ job.job_description }}
-          </v-card-subtitle>
-          <v-card-text>
-            <strong>Posted:</strong> {{ job.relativeTime }}
-            <br />
-            <strong>Applicants:</strong> {{ job.applicant_count }}
-          </v-card-text>
-          <v-card-actions>
-            <v-btn text @click="openApplicantsDialog(job)">View Details</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
-</v-card>
+                      <v-card-subtitle>
+                        {{ job.job_description }}
+                      </v-card-subtitle>
+                      <v-card-text>
+                        <strong>Posted:</strong> {{ job.relativeTime }}
+                        <br />
+                        <strong>Applicants:</strong> {{ job.applicant_count }}
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-btn @click="openApplicantsDialog(job)" class="apply-button">View Details</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
 
           </v-container>
         </v-main>
-        <template>
-          <v-dialog v-model="applicantDialog" persistent max-width="600">
-  <v-card class="rounded-lg shadow-lg" :style="{ backgroundColor: '#ffffff' }">
-    <!-- Card Title with modern design -->
-    <v-card-title class="pa-8 d-flex justify-space-between align-center" :style="{ backgroundColor: '#4caf50', color: '#ffffff' }">
-      <span>{{ selectedJob?.job_title }}</span>
-      <v-btn icon @click="applicantDialog = false" class="white--text">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-card-title>
 
-    <v-card-text>
-      <!-- Applicants list with modern style -->
-      <v-list dense>
-        <v-list-item-group v-if="jobApplicants.length > 0">
-          <v-list-item v-for="applicant in jobApplicants" :key="applicant.id" class="pa-4 mb-4" :style="{ backgroundColor: '#f1f8e9', borderRadius: '20px' }">
-            <v-list-item-content rounded>
-              <!-- Applicant Info -->
-              <v-list-item-title class="text-h6 font-weight-bold">{{ applicant.full_name }}</v-list-item-title>
-              <v-list-item-subtitle class="text-body2">{{ applicant.email }}</v-list-item-subtitle>
-              <strong>Applied:</strong> {{ applicant.relativeTime }}
+        <!-- Applicant Dialog -->
+        <v-dialog v-model="applicantDialog" persistent max-width="600">
+          <v-card class="rounded-lg shadow-lg" :style="{ backgroundColor: '#ffffff' }">
+            <v-card-title class="pa-8 d-flex justify-space-between align-center" :style="{ backgroundColor: '#4caf50', color: '#ffffff' }">
+              <span>{{ selectedJob?.job_title }}</span>
+              <v-btn icon @click="applicantDialog = false" class="white--text">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
 
+            <v-card-text>
+              <v-list dense>
+                <v-list-item-group v-if="jobApplicants.length > 0">
+                  <v-list-item v-for="applicant in jobApplicants" :key="applicant.id" class="pa-4 mb-4" :style="{ backgroundColor: '#f1f8e9', borderRadius: '20px' }">
+                    <v-list-item-content rounded>
+                      <v-list-item-title class="text-h6 font-weight-bold">{{ applicant.full_name }}</v-list-item-title>
+                      <v-list-item-subtitle class="text-body2">{{ applicant.email }}</v-list-item-subtitle>
+                      <strong>Applied:</strong> {{ applicant.relativeTime }}
 
-              <!-- Application Letter -->
-              <v-textarea
-                v-model="applicant.application_letter"
-                variant="outlined"
-                readonly
-                class="ma-8"
-                rounded
-              ></v-textarea>
-            </v-list-item-content>
+                      <v-textarea
+                        v-model="applicant.application_letter"
+                        variant="outlined"
+                        readonly
+                        class="ma-8"
+                        rounded
+                      ></v-textarea>
+                    </v-list-item-content>
 
-            <!-- Hire Button with styling -->
-            <v-btn
+                    <v-btn
                       @click="promptMessage(applicant.applicant_id)"
                       color="success"
                       :disabled="applicant.status === 'hired'"
@@ -425,30 +422,25 @@ onMounted(async () => {
                     >
                       {{ applicant.status === 'hired' ? 'Hired' : 'Hire' }}
                     </v-btn>
-          </v-list-item>
-          <v-divider class="my-4"></v-divider>
-        </v-list-item-group>
+                  </v-list-item>
+                  <v-divider class="my-4"></v-divider>
+                </v-list-item-group>
 
-        <!-- Empty state message -->
-        <v-list-item v-else>
-          <v-list-item-content>
-            <v-chip color="grey lighten-3" text-color="black">No applicants for this job.</v-chip>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-card-text>
+                <v-list-item v-else>
+                  <v-list-item-content>
+                    <v-chip color="grey lighten-3" text-color="black">No applicants for this job.</v-chip>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-card-text>
 
-    <!-- Dialog Actions -->
-    <v-card-actions class="d-flex justify-end">
-      <v-btn text @click="applicantDialog = false" class="text-body-2">Close</v-btn>
-    </v-card-actions>
-  </v-card>
-</v-dialog>
+            <v-card-actions class="d-flex justify-end">
+              <v-btn text @click="applicantDialog = false" class="text-body-2">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-
-</template>
-
-        <!-- Employer Profile Creation Popup -->
+        <!-- Employer Profile Popup -->
         <v-dialog v-model="showPopup" persistent max-width="500">
           <v-card>
             <v-card-title class="pa-8">Create Employer Profile</v-card-title>
@@ -500,9 +492,8 @@ onMounted(async () => {
           </v-card>
         </v-dialog>
 
-
-         <!-- Message Popup for Hiring -->
-         <v-dialog v-model="messagePopupCard" persistent max-width="500">
+        <!-- Hiring Message Popup -->
+        <v-dialog v-model="messagePopupCard" persistent max-width="500">
           <v-card>
             <v-card-title class="pa-8">Enter a Message for the Applicant</v-card-title>
             <v-card-text>

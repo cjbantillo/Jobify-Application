@@ -6,14 +6,143 @@
   font-style: normal;
 }
 
-
+/* Title Styling */
 .title {
   margin-left: 0.5rem;
   font-weight: 700;
-  font-size: larger;
+  font-size: 1rem; /* Adjusted font size */
   color: #4caf50;
+  text-transform: capitalize;
 }
 
+/* Dashboard Card Styling */
+.dashboard-card {
+  background-color: #ffffff;
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 30px; /* Extra padding for spacious feel */
+  transition: transform 0.3s ease, box-shadow 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dashboard Card Hover Effect */
+.dashboard-card:hover {
+  transform: translateY(-5px); /* Slight lift effect */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+}
+
+/* Card Content Area */
+.dashboard-card .content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Job Cards (Small) */
+.hover-card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s, border-color 0.3s;
+  cursor: pointer;
+  position: relative;
+  background-color: #fafbfa;
+  border: 2px solid #4caf50; /* Green border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 16px;
+}
+
+.hover-card:hover {
+  transform: scale(1.03); /* Zoom-in effect */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+  border-color: #45a049; /* Slightly darker green border */
+  background-color: #f0f7f0; /* Light greenish background on hover */
+}
+
+/* Card Title Styling */
+.v-card-title {
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+/* Badge Styling */
+.badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+}
+
+.badge-urgent {
+  background-color: #f44336; /* Red */
+}
+
+.badge-new {
+  background-color: #4caf50; /* Green */
+}
+
+.badge-closed {
+  background-color: #9e9e9e; /* Grey */
+}
+
+/* Card Footer with Action Buttons */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.card-footer .v-btn {
+  font-weight: 600;
+  color: #4caf50;
+  background-color: transparent;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+}
+
+.card-footer .v-btn:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Action Button Styling */
+.action-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+.action-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.action-button:active {
+  transform: translateY(1px); /* Button pressed effect */
+}
+
+/* Apply Button Styling */
+.apply-button {
+  width: 100%;
+  background-color: #4caf50 !important;
+  color: #fff;
+  text-transform: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+
+/* Popup Card Styling */
 .popup-card {
   position: fixed;
   top: 50%;
@@ -36,10 +165,6 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-.apply-button {
-  width: 100%;
 }
 
 .user-card {
@@ -75,29 +200,6 @@
   font-size: 1rem;
 }
 
-.v-card-title {
-  margin-bottom: 0.5rem;
-}
-
-.v-card-subtitle {
-  margin-bottom: 1rem;
-}
-
-.v-btn {
-  background-color: #4caf50 !important;
-  color: #fff;
-  text-transform: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-}
-.cont {
-  border-radius: 12px;
-}
-
-.user-card {
-  border-radius: 8px;
-}
-
 .error {
   color: red;
 }
@@ -110,4 +212,9 @@
   .user-card {
     margin: 10px;
   }
+}
+
+/* Background Gradient for Page */
+.v-app {
+  background: linear-gradient(45deg, #f0f7f4, #e1f2e0);
 }
