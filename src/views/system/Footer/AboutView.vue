@@ -2,7 +2,7 @@
 <script setup>
 import { ref } from 'vue';
 
-import meImage from '@/assets/me.png'; // Importing your image
+import meImage from '@/assets/Me.png'; // Importing your image
 import profileCj from '@/assets/ProfileCj.png';
 
 const props = defineProps({
