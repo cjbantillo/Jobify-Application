@@ -35,80 +35,120 @@ const goBack = () => {
 </script>
 
 <template>
-    <v-btn class="back-btn" @click="goBack">
-        <v-icon left>mdi-arrow-left</v-icon>
-    </v-btn>
-    <v-container class="about-us-container">
-      <v-row>
-        <v-col cols="12">
-          <v-responsive class="border rounded">
-            <v-app :theme="props.theme" class="d-flex flex-column fill-height">
-              <v-main class="d-flex flex-column flex-grow-1 pt-8">
-                <v-container>
-                  <!-- Content -->
-                  <v-card class="pa-4 mb-6 enhanced-card">
-                    <v-card-title class="title">About Us</v-card-title>
-                    <v-card-text>
-                      <!-- StuGig Description -->
-                      <v-divider></v-divider>
-                      <div class="description-section">
-                        <h3>Welcome to StuGig: Your Gateway to Academic and Professional Success!</h3>
-                        <p>
-                          StuGig is more than just an app – it's a revolutionary platform designed with the needs of Caraga State University students in mind. Imagine a world where you can balance your academic commitments while gaining real-world experience through part-time jobs. With StuGig, that dream becomes a reality.
-                        </p>
-  
-                        <h3>For Students:</h3>
-                        <p>
-                          At StuGig, we understand that your education is a top priority. That’s why our platform is tailored to offer part-time job opportunities that fit seamlessly into your academic schedule. No more juggling conflicts between work and studies – our smart system matches you with jobs that complement your availability and skill set. Whether you're looking to earn some extra income, gain practical experience in your field of study, or network with professionals, StuGig empowers you to take charge of your future without compromising your education.
-                        </p>
-  
-                        <h3>For Employers:</h3>
-                        <p>
-                          Are you looking for driven, knowledgeable, and hardworking individuals to join your team? Look no further! With StuGig, you have exclusive access to a pool of talented students from Caraga State University who are eager to apply their learning in real-world scenarios. Hiring through StuGig means you are not just filling a position – you’re investing in the next generation of professionals. Our streamlined process ensures that you can find the right candidates efficiently, saving you time and resources.
-                        </p>
-  
-                        <h3>Why StuGig is the Perfect Choice:</h3>
-                        <ul>
-                          <li><strong>Flexibility</strong>: Students can find jobs that fit their schedules, ensuring they can focus on their studies while earning and gaining experience.</li>
-                          <li><strong>Quality Candidates</strong>: Employers get access to bright, motivated students from Caraga State University, ready to bring fresh ideas and energy to your business.</li>
-                          <li><strong>User-Friendly Interface</strong>: Our app is designed to be intuitive and easy to navigate, making job searching and hiring a breeze.</li>
-                          <li><strong>Support and Guidance</strong>: We provide resources and support for both students and employers to ensure a successful and rewarding experience.</li>
-                        </ul>
-  
-                        <p>Join the StuGig community today and experience the perfect harmony of education and employment. Let's build a brighter future together, one gig at a time. 📚💼✨</p>
-                      </div>
-                      <!-- End of Description -->
-  
-                      <!-- Team Members -->
-                      <v-divider></v-divider>
-                      <v-row class="mt-6">
-                        <v-col
-                          v-for="(member, index) in teamMembers"
-                          :key="index"
-                          cols="12"
-                          md="4"
-                          class="d-flex flex-column align-items-center text-center"
-                        >
-                          <v-avatar size="120" class="mb-4">
-                            <v-img :src="member.image" class="rounded-circle"></v-img>
-                          </v-avatar>
-                          <div>
-                            <p class="name">{{ member.name }}</p>
-                            <p class="role">{{ member.role }}</p>
-                          </div>
+  <v-btn class="back-btn" @click="goBack">
+    <v-icon left>mdi-arrow-left</v-icon>
+  </v-btn>
+  <v-container class="about-us-container">
+    <v-row>
+      <v-col cols="12">
+        <v-responsive class="border rounded">
+          <v-app :theme="props.theme" class="d-flex flex-column fill-height">
+            <v-main class="d-flex flex-column flex-grow-1 pt-8">
+              <v-container>
+                <!-- Content -->
+                <v-card class="pa-4 mb-6 enhanced-card">
+                  <v-card-title class="title">About Us</v-card-title>
+                  <v-card-text>
+                    <!-- StuGig Description -->
+                    <v-divider></v-divider>
+                    <div class="description-section">
+                      <h3>Welcome to StuGig: Your Gateway to Academic and Professional Success!</h3>
+                      <p>
+                        StuGig is more than just an app – it's a revolutionary platform designed with the needs of Caraga State University students in mind. Imagine a world where you can balance your academic commitments while gaining real-world experience through part-time jobs. With StuGig, that dream becomes a reality.
+                      </p>
+
+                      <h3>For Students:</h3>
+                      <p>
+                        At StuGig, we understand that your education is a top priority. That’s why our platform is tailored to offer part-time job opportunities that fit seamlessly into your academic schedule. No more juggling conflicts between work and studies – our smart system matches you with jobs that complement your availability and skill set. Whether you're looking to earn some extra income, gain practical experience in your field of study, or network with professionals, StuGig empowers you to take charge of your future without compromising your education.
+                      </p>
+
+                      <h3>For Employers:</h3>
+                      <p>
+                        Are you looking for driven, knowledgeable, and hardworking individuals to join your team? Look no further! With StuGig, you have exclusive access to a pool of talented students from Caraga State University who are eager to apply their learning in real-world scenarios. Hiring through StuGig means you are not just filling a position – you’re investing in the next generation of professionals. Our streamlined process ensures that you can find the right candidates efficiently, saving you time and resources.
+                      </p>
+
+                      <h3>Why StuGig is the Perfect Choice:</h3>
+                      <v-row>
+                        <v-col cols="12" md="6" lg="3">
+                          <v-card class="custom-card">
+                            <v-card-text>
+                              <v-icon class="card-icon">mdi-clock-outline</v-icon>
+                              <div class="card-title">Flexibility</div>
+                              Students can find jobs that fit their schedules, ensuring they can focus on their studies while earning and gaining experience.
+                            </v-card-text>
+                          </v-card>
+                        </v-col>
+
+                        <v-col cols="12" md="6" lg="3">
+                          <v-card class="custom-card">
+                            <v-card-text>
+                              <v-icon class="card-icon">mdi-star-outline</v-icon>
+                              <div class="card-title">Quality Candidates</div>
+                              Employers get access to bright, motivated students from Caraga State University, ready to bring fresh ideas and energy to your business.
+                            </v-card-text>
+                          </v-card>
+                        </v-col>
+
+                        <v-col cols="12" md="6" lg="3">
+                          <v-card class="custom-card">
+                            <v-card-text>
+                              <v-icon class="card-icon">mdi-cellphone</v-icon>
+                              <div class="card-title">User-Friendly Interface</div>
+                              Our app is designed to be intuitive and easy to navigate, making job searching and hiring a breeze.
+                            </v-card-text>
+                          </v-card>
+                        </v-col>
+
+                        <v-col cols="12" md="6" lg="3">
+                          <v-card class="custom-card">
+                            <v-card-text>
+                              <v-icon class="card-icon">mdi-account-heart-outline</v-icon>
+                              <div class="card-title">Support and Guidance</div>
+                              We provide resources and support for both students and employers to ensure a successful and rewarding experience.
+                            </v-card-text>
+                          </v-card>
                         </v-col>
                       </v-row>
-                      <!-- End of Team Members -->
-                    </v-card-text>
-                  </v-card>
-                </v-container>
-              </v-main>
-            </v-app>
-          </v-responsive>
-        </v-col>
-      </v-row>
-    </v-container>
+                    </div>
+                    <!-- End of Description -->
+
+                    <!-- Team Members -->
+                    <v-divider></v-divider>
+<v-row class="team-row mt-6" justify="center" align="start">
+  <v-col
+    v-for="(member, index) in teamMembers"
+    :key="index"
+    cols="12"
+    sm="6"
+    md="4"
+    lg="3"
+    class="team-member-col"
+  >
+    <v-avatar size="120" class="team-avatar">
+      <v-img :src="member.image" class="rounded-circle"></v-img>
+    </v-avatar>
+    <div>
+      <p class="name">{{ member.name }}</p>
+      <p class="role">{{ member.role }}</p>
+    </div>
+  </v-col>
+</v-row>
+
+
+
+                    <!-- End of Team Members -->
+                  </v-card-text>
+                </v-card>
+              </v-container>
+            </v-main>
+          </v-app>
+        </v-responsive>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Matemasie&family=Varela+Round&display=swap');
@@ -364,4 +404,80 @@ p,
 .v-avatar {
   margin: auto;
 }
+
+/* Card Base Style */
+.custom-card {
+  border-radius: 15px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  height: 100%;
+  background-color: #E0F7FA; /* Light Pastel Green */
+  border: 2px solid #4CAF50; /* Primary Green Border */
+}
+
+/* Card Hover Effect */
+.custom-card:hover {
+  transform: translateY(-5px);
+  background-color: #d6ffd6; /* Slightly Darker Green */
+}
+
+/* Icon Styling */
+.card-icon {
+  font-size: 2rem;
+  color: #5eaf63; /* Vibrant Green */
+  display: block;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Title Styling */
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #111311; /* Dark Green */
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Body Text Styling */
+.v-card-text {
+  font-size: 1rem;
+  color: #090909; /* Neutral Gray-Green */
+  text-align: left;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 10px;
+}
+
+
+/* Add spacing between images */
+.team-row {
+  row-gap: 32px; /* Space between rows */
+  column-gap: 120px; /* Space between columns */
+  margin-top: 24px; /* Adds some space above the team section */
+}
+
+/* Style individual columns */
+.team-member-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 16px; /* Lowers the images slightly */
+}
+
+/* Adjust avatar positioning and spacing */
+.team-avatar {
+  margin-bottom: 16px; /* Adds space below the avatar */
+}
+
+
 </style>
