@@ -329,7 +329,7 @@ onMounted(() => {
         class="mr-4"
       />
       <h3 v-if="!mobile">
-        &middot;
+      <v-icon left>mdi mdi-account-school-outline</v-icon>
         {{
           authStore.userData.first_name + ' ' + authStore.userData.last_name ||
           'Loading'

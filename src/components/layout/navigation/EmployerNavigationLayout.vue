@@ -367,7 +367,10 @@ onMounted(() => {
         max-width="100"
         class="mr-4"
       />
-      <h3 v-if="!mobile">&middot; {{ companyName || 'Loading' }}</h3>
+      <h3 v-if="!mobile">
+      <v-icon left>mdi-office-building-minus-outline</v-icon>
+      {{ companyName || 'Loading' }}
+    </h3>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>

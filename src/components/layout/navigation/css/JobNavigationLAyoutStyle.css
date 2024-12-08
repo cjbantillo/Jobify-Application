@@ -167,3 +167,8 @@
 .v-dialog .v-btn {
   margin: auto;
 }
+h3{
+  padding: 10px;
+  font-size: 1.5rem;
+  font-weight: 500;
+}

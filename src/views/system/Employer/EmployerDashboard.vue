@@ -352,6 +352,8 @@ onMounted(async () => {
             <!-- Dashboard Card -->
             <v-card outlined class="dashboard-card pa-8 cont" height="fill">
               <v-card-title class="title text-h5 mb-6" :style="{ color: '#4caf50' }">Dashboard</v-card-title>
+              <v-divider class="mt-n3 mb-4"></v-divider>
+
 
               <div v-if="!loading && jobPosts.length === 0" class="text-center">
                 No job posts found.
