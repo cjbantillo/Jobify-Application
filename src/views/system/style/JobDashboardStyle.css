@@ -1,75 +1,219 @@
-.v-list-item:hover {
-    background-color: #4caf50;
-    color: white;
-  }
-  
-  .hover-card {
-    transition:
-      transform 0.2s,
-      box-shadow 0.2s;
-    cursor: pointer;
-    position: relative;
-    background-color: #fafbfa;
-  }
-  
-  .hover-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* More pronounced shadow on hover */
-  }
-  
-  .title {
-    font-size: 1.25rem; /* Larger font for the title */
-    font-weight: bold;
-  }
-  
-  .budget,
-  .location {
-    color: #666; /* Subtle color for text */
-  }
-  
-  .button-container {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    margin-left: 18px;
-  }
-  
-  .category-label {
-    color: #fff;
-    background-color: #375838;
-    padding: 4px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    margin-top: 10px;
-  }
-  
-  .job-type-duration {
-    margin-top: 10px;
-    color: #777;
-  }
-  
-  .apply-button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 15px; /* Add padding for better button appearance */
-    font-weight: bold;
-    margin-right: 8px;
-  }
-  
-  .apply-button:hover {
-    background-color: #45a049; /* Darker green for hover effect */
-  }
-  
-  .badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px 10px;
-    border-radius: 4px;
-    color: white;
-    font-weight: bold;
-  }
-  .icon {
-    vertical-align: middle;
-    margin-right: 5px;
-  }
+/* Dashboard Card Styling */
+.dashboard-card {
+  background-color: #ffffff;
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 30px; /* Extra padding for spacious feel */
+  transition: transform 0.3s ease, box-shadow 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dashboard Card Hover Effect */
+.dashboard-card:hover {
+  transform: translateY(-5px); /* Slight lift effect */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+}
+
+/* Card Title Styling */
+.dashboard-card .title {
+  font-size: 1.8rem; /* Larger title */
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center; /* Center the title */
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+/* Icon Badge */
+.dashboard-card .badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #4caf50; /* Green */
+  color: white;
+  padding: 8px 16px;
+  font-weight: bold;
+  border-radius: 20px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+/* Card Content Area */
+.dashboard-card .content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Dashboard Info Box */
+.dashboard-card .info-box {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  margin-right: 15px;
+}
+
+.dashboard-card .info-box h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.dashboard-card .info-box p {
+  font-size: 1.1rem;
+  color: #777;
+  margin: 0;
+}
+
+/* Dashboard Action Button */
+.dashboard-card .action-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+.dashboard-card .action-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.dashboard-card .action-button:active {
+  transform: translateY(1px); /* Button pressed effect */
+}
+
+
+/* Job Cards (Small) */
+.hover-card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s, border-color 0.3s;
+  cursor: pointer;
+  position: relative;
+  background-color: #fafbfa;
+  border: 2px solid #4caf50; /* Green border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 16px;
+}
+
+.hover-card:hover {
+  transform: scale(1.03); /* Zoom-in effect */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+  border-color: #45a049; /* Slightly darker green border */
+  background-color: #f0f7f0; /* Light greenish background on hover */
+}
+
+/* Title Styling */
+.title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  text-transform: capitalize;
+  margin-bottom: 12px;
+}
+
+/* Budget and Location */
+.budget,
+.location {
+  color: #777;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.budget i, .location .icon {
+  color: #4caf50;
+  font-size: 1.1rem;
+}
+
+/* Category Label */
+.category-label {
+  background-color: #375838;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-top: 12px;
+  display: inline-block;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Styling */
+.apply-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+.apply-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.apply-button:active {
+  transform: translateY(1px); /* Button pressed effect */
+}
+
+/* Badge Styling */
+.badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+}
+
+.badge-urgent {
+  background-color: #f44336; /* Red */
+}
+
+.badge-new {
+  background-color: #4caf50; /* Green */
+}
+
+.badge-closed {
+  background-color: #9e9e9e; /* Grey */
+}
+
+/* Card Footer with Action Buttons */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.card-footer .v-btn {
+  font-weight: 600;
+  color: #4caf50;
+  background-color: transparent;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+}
+
+.card-footer .v-btn:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Icon Styling */
+.icon {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+/* Background Gradient for Page */
+.v-app {
+  background: linear-gradient(45deg, #f0f7f4, #e1f2e0);
+}
