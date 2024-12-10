@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 // Importing your local images
-import meImage from '@/assets/me.png';
+import meImage from '@/assets/Me.png';
 import profileCj from '@/assets/ProfileCj.png';
 import luisImage from '@/assets/luis.jpg';
 
