@@ -36,13 +36,9 @@ const mobile = computed(() => width.value <= 768)
               A platform where employers and students meet to unlock <br />
               potential and create meaningful work experiences.
             </p>
-            <v-btn
-                  class="btn w-25 rounded-pill center"
-                  depressed
-                  to="register"
-                >
-                  Get Started
-                </v-btn>
+            <v-btn class="btn w-25 rounded-pill center" depressed to="login">
+              Get Started
+            </v-btn>
           </v-col>
         </v-row>
 
@@ -60,7 +56,7 @@ const mobile = computed(() => width.value <= 768)
                 <v-btn
                   class="btn w-50 rounded-pill center"
                   depressed
-                  to="login"
+                  to="register"
                 >
                   Find Talent
                 </v-btn>
@@ -77,7 +73,7 @@ const mobile = computed(() => width.value <= 768)
                 <v-btn
                   class="btn w-50 rounded-pill center"
                   depressed
-                  to="login"
+                  to="register"
                 >
                   Find Job
                 </v-btn>
@@ -170,5 +166,4 @@ const mobile = computed(() => width.value <= 768)
   </AppLayout>
 </template>
 
-<style scoped src="./style/HomePageViewStyle.css">
-</style>
+<style scoped src="./style/HomePageViewStyle.css"></style>

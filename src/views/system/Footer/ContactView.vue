@@ -27,9 +27,9 @@ const teamMembers = ref([
     image: meImage,
   },
   {
-    name: 'Luis Gwapo',
+    name: 'June Luis Bermudez',
     role: 'System Analyst',
-    email: 'juneluis@gmail.com',
+    email: 'juneluisb@gmail.com',
     phone: '+63936-589-8662',
     image: luisImage,
   },
