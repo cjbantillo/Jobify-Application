@@ -55,7 +55,7 @@ const onSubmit = async () => {
 }
 
 // Google OAuth Login
-/*const loginWithGoogle = async () => {
+const loginWithGoogle = async () => {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -79,7 +79,8 @@ const onSubmit = async () => {
     console.error('Google OAuth login error:', error)
     formAction.value.formErrorMessage = 'Google login failed. Please try again.'
   }
-}*/
+}
+
 // Validate and submit the form
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
@@ -161,7 +162,7 @@ const onFormSubmit = () => {
       </h5>
     </v-col>
 
-    <!--<v-divider class="my-4">Or</v-divider>
+    <v-divider class="my-4">Or</v-divider>
       <div class="social-icons d-flex justify-center">
         <v-btn
           prepend-icon="mdi-google"
@@ -170,7 +171,7 @@ const onFormSubmit = () => {
           >
             Sign In with Google
           </v-btn>
-      </div>-->
+      </div>
   </v-form>
 </template>
 
