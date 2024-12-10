@@ -59,21 +59,15 @@ const loginWithGoogle = async () => {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/role`, // Default redirect
+      },
     })
 
     if (error) {
       formAction.value.formErrorMessage = error.message
     } else {
       console.log('Google login successful', data)
-      formAction.value.formSuccessMessage = 'Logged in with Google successfully'
-
-      // Redirect based on user type
-      const { user } = data
-      if (user?.user_metadata?.is_employer) {
-        router.push('/employerdashboard')
-      } else {
-        router.push('/jobdashboard')
-      }
     }
   } catch (error) {
     console.error('Google OAuth login error:', error)
@@ -124,11 +118,9 @@ const onFormSubmit = () => {
       <v-col cols="6">
         <v-row>
           <v-col cols="auto">
-            <v-checkbox class="small-checkbox" hide-details >
+            <v-checkbox class="small-checkbox" hide-details>
               <template #label>
-                <span class="remember-me-text" >
-                  Remember Me
-                </span>
+                <span class="remember-me-text"> Remember Me </span>
               </template>
             </v-checkbox>
           </v-col>
@@ -163,15 +155,15 @@ const onFormSubmit = () => {
     </v-col>
 
     <v-divider class="my-4">Or</v-divider>
-      <div class="social-icons d-flex justify-center">
-        <v-btn
-          prepend-icon="mdi-google"
-          class="w-100 ma-10"
-           @click="loginWithGoogle"
-          >
-            Sign In with Google
-          </v-btn>
-      </div>
+    <div class="social-icons d-flex justify-center">
+      <v-btn
+        prepend-icon="mdi-google"
+        class="w-100 ma-10"
+        @click="loginWithGoogle"
+      >
+        Sign In with Google
+      </v-btn>
+    </div>
   </v-form>
 </template>
 
@@ -185,7 +177,7 @@ v-btn {
   font-style: normal;
   text-transform: none;
 }
-.v-btn{
+.v-btn {
   border-radius: 20px;
 }
 .small-checkbox .v-label {

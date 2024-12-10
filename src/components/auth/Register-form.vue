@@ -105,9 +105,7 @@ const handleGoogleSignIn = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        data: {
-          is_employer: isEmployer.value, // Set user type based on dialog selection
-        },
+        redirectTo: `${window.location.origin}/role`,
       },
     })
 
@@ -263,7 +261,7 @@ const onFormSubmit = () => {
     <v-btn
       prepend-icon="mdi-google"
       class="w-100 ma-10"
-      @click="openDialog(true)"
+      @click="handleGoogleSignIn"
     >
       Sign In with Google
     </v-btn>

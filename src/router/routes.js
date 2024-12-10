@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthUserStore } from '@/stores/authUser' // Assuming you use Pinia for authentication state
 
-// footer 
+// footer
 import AboutView from '@/views/system/Footer/AboutView.vue'
 import ContactView from '@/views/system/Footer/ContactView.vue'
 import FAQsView from '@/views/system/Footer/FAQsView.vue'
@@ -15,6 +15,7 @@ import JobDashboardView from '@/views/system/Student/JobsDashboardView.vue' // s
 import EmployerDashboardView from '@/views/system/Employer/EmployerDashboard.vue' // employer dashboard
 import PostedJobView from '@/views/system/Employer/PostJobDashboard.vue' //employer posted jobs
 import ResumeDashboard from '@/views/system/Student/ResumeDashboard.vue' //student resume dashboard
+import RoleSelection from '@/views/auth/RoleView.vue'
 // import ApplicationListView from '@/views/system/Employer/ApplicationListView.vue'
 //settings pages
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
@@ -51,6 +52,12 @@ const routes = [
     meta: { requiresAuth: true, isDefault: true },
   },
   {
+    path: '/role',
+    name: 'role',
+    component: RoleSelection,
+    meta: { requiresAuth: true, isDefault: true },
+  },
+  {
     path: '/employerdashboard',
     name: 'employerdashboard',
     component: EmployerDashboardView,
@@ -69,7 +76,7 @@ const routes = [
     component: ResumeDashboard,
     meta: { requiresAuth: true, isDefault: true },
   },
-      // application list view
+  // application list view
   // {
   //   path: '/application-list',
   //   name: 'application=list',
@@ -112,27 +119,27 @@ const routes = [
   {
     path: '/about',
     name: 'about',
-    component: AboutView
+    component: AboutView,
   },
   {
     path: '/contact',
     name: 'contact',
-    component: ContactView
+    component: ContactView,
   },
   {
     path: '/privacy-policy',
     name: 'privacy-policy',
-    component: PrivacyPolicyView
+    component: PrivacyPolicyView,
   },
   {
     path: '/terms',
     name: 'terms-of-service',
-    component: TermsOfServiceView
+    component: TermsOfServiceView,
   },
   {
     path: '/faq',
     name: 'faqs',
-    component: FAQsView
+    component: FAQsView,
   },
 ]
 
