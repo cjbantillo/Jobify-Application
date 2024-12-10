@@ -367,7 +367,10 @@ onMounted(() => {
         max-width="100"
         class="mr-4"
       />
-      <h3 v-if="!mobile">&middot; {{ companyName || 'Loading' }}</h3>
+      <h3 v-if="!mobile">
+      <v-icon left>mdi-office-building-minus-outline</v-icon>
+      {{ companyName || 'Loading' }}
+    </h3>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
@@ -395,9 +398,10 @@ onMounted(() => {
               <v-icon>mdi-bell-outline</v-icon>
             </v-badge>
           </v-btn>
-        </template>
+        </template> 
 
-        <v-list dense rounded>
+        <v-list dense rounded class="pa-2">
+          <h3 class="font-weight-bold">Notification</h3>
           <v-card
             v-for="(notification, index) in notifications"
             :key="index"
@@ -420,7 +424,7 @@ onMounted(() => {
           </v-card>
 
           <v-list-item v-if="!notifications.length">
-            <v-list-item-title class="text-center"
+     v-card- <v-list-item-title class="text-center"
               >No new notifications</v-list-item-title
             >
           </v-list-item>

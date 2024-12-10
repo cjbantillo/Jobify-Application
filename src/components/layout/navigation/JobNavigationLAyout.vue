@@ -329,7 +329,7 @@ onMounted(() => {
         class="mr-4"
       />
       <h3 v-if="!mobile">
-        &middot;
+      <v-icon left>mdi mdi-account-school-outline</v-icon>
         {{
           authStore.userData.first_name + ' ' + authStore.userData.last_name ||
           'Loading'
@@ -374,7 +374,8 @@ onMounted(() => {
             </v-badge>
           </v-btn>
         </template>
-        <v-list dense rounded>
+        <v-list dense rounded class="pa-2">
+          <h3 class="font-weight-bold">Notification</h3>
           <v-card
             v-for="(notification, index) in notifications"
             :key="index"

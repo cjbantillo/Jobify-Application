@@ -33,18 +33,14 @@ function onClick() {
         scroll-threshold="100"
       >
         <!-- Logo (adjust size based on mobile variable) -->
-        <v-img
-          :src="Logo"
-          alt="Logo"
-          class="mr-4"
-          height="100px"
-        />
+        <v-img :src="Logo" alt="Logo" class="mr-4" height="100px" />
 
         <!-- Navigation Links -->
-        <template v-if="!mobile">
+        <template v-if="!mobile"> </template>
 
-        </template>
-
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
         <v-spacer></v-spacer>
 
         <!-- Search Bar -->
