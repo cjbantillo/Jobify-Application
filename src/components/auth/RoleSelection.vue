@@ -2,28 +2,23 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/utils/supabase'
+import { useAuthUserStore } from '@/stores/authUser'
+
+// Pinia store for auth user
+const authStore = useAuthUserStore()
 
 const isEmployer = ref(null)
 const router = useRouter()
 
 const checkUserRole = async () => {
-  const { data: user, error: userError } = await supabase.auth.getUser()
-  if (userError) {
-    console.error('Error fetching user:', userError)
+  if (authStore.userData.is_employer === true) {
+    // If the user is an employer, redirect to the employer dashboard
+    router.replace('/employerdashboard')
+  } else if (authStore.userData.is_employer === false) {
+    // If the user is a job seeker, redirect to the job dashboard
+    router.replace('/jobdashboard')
+  } else if (authStore.userData.is_employer === null) {
     return
-  }
-
-  if (user) {
-    if (user.is_employer === null) {
-      // If `is_employer` is null, allow the user to select a role
-      return
-    } else if (user.is_employer) {
-      // If the user is an employer, redirect to the employer dashboard
-      router.replace('/employerdashboard')
-    } else {
-      // If the user is a job seeker, redirect to the job dashboard
-      router.replace('/jobdashboard')
-    }
   }
 }
 
