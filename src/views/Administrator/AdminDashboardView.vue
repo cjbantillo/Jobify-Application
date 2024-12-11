@@ -1,15 +1,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { supabase } from '@/utils/supabase.js';
+import { supabase, supabaseAdmin } from '@/utils/supabase.js';
+
 
 import UserAdminLayout from '@/components/layout/navigation/UserAdminLayout.vue';
 import AdminLogin from '@/components/admin/AdminLogin.vue';
 
 const currentUser = ref(null);
-const users = ref([]);
-const loading = ref(false);
-const newUser = ref({ email: '', password: '' });
-const editedUser = ref(null);
+//const newUser = ref({ email: '', password: '' });
+//const editedUser = ref(null);
+
+const users = ref([])
 
 // Check for current user session
 const checkUserSession = async () => {
@@ -22,44 +23,46 @@ const checkUserSession = async () => {
 
 // Fetch all users
 const fetchUsers = async () => {
-  loading.value = true;
-  const { data, error } = await supabase.auth.admin.listUsers();
-  if (error) {
-    console.error('Error fetching users:', error.message);
-  } else {
-    users.value = data.users;
+  try {
+    const { data: { users: fetchedUsers }, error } = await supabaseAdmin.auth.admin.listUsers();
+    if (error) {
+      throw new Error(`Error fetching users: ${error.message}`);
+    }
+    users.value = fetchedUsers; // Update the `users` array
+    console.log(users.value);
+  } catch (err) {
+    console.error('Error fetching users:', err.message);
   }
-  loading.value = false;
 };
 
+
+/*
 // Add a new user
-// const addUser = async () => {
-//   try {
-//     const { error } = await supabase.auth.signUp({
-//       email: newUser.value.email,
-//       password: newUser.value.password,
-//     });
-//     if (error) throw error;
-//     newUser.value = { email: '', password: '' };
-//     fetchUsers();
-//     alert('User added successfully!');
-//   } catch (error) {
-//     console.error('Error adding user:', error.message);
-//   }
-// };
+ const addUser = async () => {
+   try {
+     const { error } = await supabase.auth.signUp({
+       email: newUser.value.email,
+       password: newUser.value.password,
+     });
+     if (error) throw error;
+     newUser.value = { email: '', password: '' };
+     fetchUsers();
+     alert('User added successfully!');
+   } catch (error) {
+     console.error('Error adding user:', error.message);
+   }
+ };
 
 // Edit a user
 const editUser = (user) => {
   editedUser.value = { ...user }; // Copy user details to the form
-};
+};*/
 
 // Update a user
-const updateUser = async () => {
+/*const updateUser = async () => {
   try {
-    const { error } = await supabase
-      .from('auth.users')
+    const { error } = await supabase.auth.admin.updateUserById()
       .update({ ...editedUser.value })
-      .eq('id', editedUser.value.id);
     if (error) throw error;
     editedUser.value = null;
     fetchUsers();
@@ -67,7 +70,7 @@ const updateUser = async () => {
   } catch (error) {
     console.error('Error updating user:', error.message);
   }
-};
+};*/
 
 
 
@@ -102,7 +105,7 @@ onMounted(() => {
         <v-container>
           <h2>User Management</h2>
 
-          <!-- Add User Form -->
+          <!-- Add User Form
           <v-form @submit.prevent="addUser" class="mb-4">
             <v-text-field
               v-model="newUser.email"
@@ -118,7 +121,7 @@ onMounted(() => {
               class="mb-2"
             ></v-text-field>
             <v-btn type="submit" color="success">Add User</v-btn>
-          </v-form>
+          </v-form>-->
 
           <!-- User List -->
           <v-table dense>
@@ -139,7 +142,7 @@ onMounted(() => {
             </tbody>
           </v-table>
 
-          <!-- Edit User Form -->
+          <!-- Edit User Form
           <div v-if="editedUser">
             <h3>Edit User</h3>
             <v-form @submit.prevent="updateUser">
@@ -152,7 +155,7 @@ onMounted(() => {
               <v-btn type="submit" color="primary">Update User</v-btn>
               <v-btn color="grey" @click="() => (editedUser = null)">Cancel</v-btn>
             </v-form>
-          </div>
+          </div>-->
         </v-container>
       </UserAdminLayout>
     </div>

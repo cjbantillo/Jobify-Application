@@ -28,7 +28,7 @@ const onSubmit = async () => {
 
   try {
     // Authenticate user with Supabase
-    const { error: loginError } = await supabase.auth.signInWithPassword({
+    const { error: loginError } = await supabase.signInWithPassword({
       email: formData.value.email,
       password: formData.value.password,
     });
