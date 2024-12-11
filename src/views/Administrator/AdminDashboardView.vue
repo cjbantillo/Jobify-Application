@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { supabase } from '@/utils/supabase.js';
 
-import UserAdminLayout from '@/components/layout/navigation/UserAdminLAyout.vue';
+import UserAdminLayout from '@/components/layout/navigation/UserAdminLayout.vue';
 import AdminLogin from '@/components/admin/AdminLogin.vue';
 
 const currentUser = ref(null);
@@ -33,20 +33,20 @@ const fetchUsers = async () => {
 };
 
 // Add a new user
-const addUser = async () => {
-  try {
-    const { error } = await supabase.auth.signUp({
-      email: newUser.value.email,
-      password: newUser.value.password,
-    });
-    if (error) throw error;
-    newUser.value = { email: '', password: '' };
-    fetchUsers();
-    alert('User added successfully!');
-  } catch (error) {
-    console.error('Error adding user:', error.message);
-  }
-};
+// const addUser = async () => {
+//   try {
+//     const { error } = await supabase.auth.signUp({
+//       email: newUser.value.email,
+//       password: newUser.value.password,
+//     });
+//     if (error) throw error;
+//     newUser.value = { email: '', password: '' };
+//     fetchUsers();
+//     alert('User added successfully!');
+//   } catch (error) {
+//     console.error('Error adding user:', error.message);
+//   }
+// };
 
 // Edit a user
 const editUser = (user) => {
@@ -68,6 +68,8 @@ const updateUser = async () => {
     console.error('Error updating user:', error.message);
   }
 };
+
+
 
 // Delete a user
 const deleteUser = async (id) => {
