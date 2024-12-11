@@ -145,7 +145,7 @@ onMounted(() => {
           prepend-icon="mdi-home-city"
           title="Dashboard"
           value="home"
-          to="/jobdashboard"
+          to="/admin"
         ></v-list-item>
 
         <v-list-item
