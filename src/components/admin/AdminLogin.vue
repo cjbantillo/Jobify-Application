@@ -57,7 +57,7 @@ const onSubmit = async () => {
     formAction.value.formSuccessMessage = 'Login successful! Redirecting...';
     setTimeout(() => {
       // Redirect to the admin dashboard
-      window.location.href = '/admin-dashboard';
+      window.location.href = '/admin';
     }, 1500);
   } catch (error) {
     formAction.value.formErrorMessage = error.message;

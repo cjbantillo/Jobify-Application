@@ -17,7 +17,6 @@ import PostedJobView from '@/views/system/Employer/PostJobDashboard.vue' //emplo
 import ResumeDashboard from '@/views/system/Student/ResumeDashboard.vue' //student resume dashboard
 import RoleSelection from '@/views/auth/RoleView.vue'
 //Admin
-import AdminLogin from '@/views/Administrator/AdminLoginView.vue'
 import AdminDashboard from '@/views/Administrator/AdminDashboardView.vue'
 // import ApplicationListView from '@/views/system/Employer/ApplicationListView.vue'
 //settings pages
@@ -28,24 +27,17 @@ import AccountSettingsSecurityPrivacy from '@/views/system/settings/SecurityPriv
 import EmployerInformationView from '@/views/system/Employer/EmployerInformationView.vue'
 
 const routes = [
-//admin pages
-{
-  path: '/admin-login',
-  name: 'admin-login',
-  component: AdminLogin,
-},
-{
-  path: '/admin-dashboard',
-  name: 'admin-dashboard',
-  component: AdminDashboard,
-},
   // Auth Pages
   {
     path: '/',
     name: 'home',
     component: HomePageView,
   },
-
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminDashboard,
+  },
   {
     path: '/login',
     name: 'login',
