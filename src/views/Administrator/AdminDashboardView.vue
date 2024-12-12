@@ -1,40 +1,42 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { supabase, supabaseAdmin } from '@/utils/supabase.js';
+import { ref, onMounted } from 'vue'
+import { supabase, supabaseAdmin } from '@/utils/supabase.js'
 
+import UserAdminLayout from '@/components/layout/navigation/UserAdminLayout.vue'
+import AdminLogin from '@/components/admin/AdminLogin.vue'
 
-import UserAdminLayout from '@/components/layout/navigation/UserAdminLayout.vue';
-import AdminLogin from '@/components/admin/AdminLogin.vue';
-
-const currentUser = ref(null);
+const currentUser = ref(null)
 //const newUser = ref({ email: '', password: '' });
 //const editedUser = ref(null);
-
+const showBanPopup = ref(false);
+const banUserId = ref(null); const banDays = ref(0);
 const users = ref([])
 
 // Check for current user session
 const checkUserSession = async () => {
-  const { data, error } = await supabase.auth.getSession();
+  const { data, error } = await supabase.auth.getSession()
   if (error) {
-    console.error('Error fetching session:', error.message);
+    console.error('Error fetching session:', error.message)
   }
-  currentUser.value = data.session?.user || null;
-};
+  currentUser.value = data.session?.user || null
+}
 
 // Fetch all users
 const fetchUsers = async () => {
   try {
-    const { data: { users: fetchedUsers }, error } = await supabaseAdmin.auth.admin.listUsers();
+    const {
+      data: { users: fetchedUsers },
+      error,
+    } = await supabaseAdmin.auth.admin.listUsers()
     if (error) {
-      throw new Error(`Error fetching users: ${error.message}`);
+      throw new Error(`Error fetching users: ${error.message}`)
     }
-    users.value = fetchedUsers; // Update the `users` array
-    console.log(users.value);
+    users.value = fetchedUsers // Update the `users` array
+    console.log(users.value)
   } catch (err) {
-    console.error('Error fetching users:', err.message);
+    console.error('Error fetching users:', err.message)
   }
-};
-
+}
 
 /*
 // Add a new user
@@ -72,26 +74,38 @@ const editUser = (user) => {
   }
 };*/
 
-
-
 // Delete a user
-const deleteUser = async (id) => {
-  if (!confirm('Are you sure you want to delete this user?')) return;
+const deleteUser = async id => {
+  if (!confirm('Are you sure you want to delete this user?')) return
   try {
-    const { error } = await supabase.auth.admin.deleteUser(id);
-    if (error) throw error;
-    fetchUsers();
-    alert('User deleted successfully!');
+    const { error } = await supabase.auth.admin.deleteUser(id)
+    if (error) throw error
+    fetchUsers()
+    alert('User deleted successfully!')
   } catch (error) {
-    console.error('Error deleting user:', error.message);
+    console.error('Error deleting user:', error.message)
   }
 };
-
+//ban user
+const banUser = async () => {
+  if (!confirm('Are you sure you want to ban this user?')) return
+  try {
+    const { error } = await supabase.auth.admin.updateUserById(
+      banUserId.value,
+      { banned: true, banDuration: banDays.value },
+    )
+    if (error) throw error
+    fetchUsers()
+    alert(`User banned for ${banDays.value} days successfully!`)
+  } catch (error) {
+    console.error('Error banning user:', error.message)
+  }
+}
 // Run on mount
 onMounted(() => {
-  checkUserSession();
-  fetchUsers();
-});
+  checkUserSession()
+  fetchUsers()
+})
 </script>
 <template>
   <div>
@@ -102,11 +116,11 @@ onMounted(() => {
     <div v-else>
       <UserAdminLayout>
         <template #content>
-        <h1 class="mb-4">Welcome Back, Admin!</h1>
-        <v-container>
-          <h2>User Management</h2>
+          <h1 class="mb-4">Welcome Back, Admin!</h1>
+          <v-container>
+            <h2>User Management</h2>
 
-          <!-- Add User Form
+            <!-- Add User Form
           <v-form @submit.prevent="addUser" class="mb-4">
             <v-text-field
               v-model="newUser.email"
@@ -124,26 +138,43 @@ onMounted(() => {
             <v-btn type="submit" color="success">Add User</v-btn>
           </v-form>-->
 
-          <!-- User List -->
-          <v-table dense>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="user in users" :key="user.id">
-                <td>{{ user.email }}</td>
-                <td>
-                  <v-btn color="blue" small @click="editUser(user)">Edit</v-btn>
-                  <v-btn color="red" small @click="deleteUser(user.id)">Delete</v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+            <!-- User List -->
+            <v-table dense>
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="user in users" :key="user.id">
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <v-btn color="blue" small @click="editUser(user)"
+                      >Edit</v-btn
+                    >
+                    <v-btn color="red" small @click="deleteUser(user.id)"
+                      >Delete</v-btn
+                    >
+                    <v-btn
+                      color="orange"
+                      small
+                      @click="
+                        () => {
+                          banUserId.value = user.id
+                          banDays.value = 0
+                          showBanPopup.value = true
+                        }
+                      "
+                    >
+                      Ban
+                    </v-btn>
+                  </td>
+                </tr>
+              </tbody>
+            </v-table>
 
-          <!-- Edit User Form
+            <!-- Edit User Form
           <div v-if="editedUser">
             <h3>Edit User</h3>
             <v-form @submit.prevent="updateUser">
@@ -157,8 +188,29 @@ onMounted(() => {
               <v-btn color="grey" @click="() => (editedUser = null)">Cancel</v-btn>
             </v-form>
           </div>-->
-        </v-container>
-      </template>
+
+            <!-- Ban User Popup -->
+            <v-dialog v-model="showBanPopup" max-width="500px">
+              <v-card>
+                <v-card-title>Ban User</v-card-title>
+                <v-card-text>
+                  <p>Are you sure you want to ban this user?</p>
+                  <v-text-field
+                    v-model="banDays.value"
+                    label="Ban Duration (days)"
+                    type="number"
+                    min="1"
+                    required
+                  ></v-text-field>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn color="primary" @click="banUser">Yes</v-btn>
+                  <v-btn color="grey" @click="showBanPopup = false">No</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-container>
+        </template>
       </UserAdminLayout>
     </div>
   </div>
