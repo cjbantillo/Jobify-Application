@@ -101,6 +101,7 @@ onMounted(() => {
     <!-- App content for logged-in users -->
     <div v-else>
       <UserAdminLayout>
+        <template #content>
         <h1 class="mb-4">Welcome Back, Admin!</h1>
         <v-container>
           <h2>User Management</h2>
@@ -157,6 +158,7 @@ onMounted(() => {
             </v-form>
           </div>-->
         </v-container>
+      </template>
       </UserAdminLayout>
     </div>
   </div>
