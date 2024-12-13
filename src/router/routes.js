@@ -18,6 +18,7 @@ import ResumeDashboard from '@/views/system/Student/ResumeDashboard.vue' //stude
 import RoleSelection from '@/views/auth/RoleView.vue'
 //Admin
 import AdminDashboard from '@/views/Administrator/AdminDashboardView.vue'
+import AdminLogin from '@/components/admin/AdminLogin.vue'
 // import ApplicationListView from '@/views/system/Employer/ApplicationListView.vue'
 //settings pages
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
@@ -34,9 +35,14 @@ const routes = [
     component: HomePageView,
   },
   {
-    path: '/admin',
-    name: 'admin',
+    path: '/admin-dashboard',
+    name: 'admin-dashboard',
     component: AdminDashboard,
+  },
+  {
+    path: '/admin-login',
+    name: 'admin-login',
+    component: AdminLogin,
   },
   {
     path: '/login',

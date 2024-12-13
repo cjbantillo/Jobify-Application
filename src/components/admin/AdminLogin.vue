@@ -1,9 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { supabase } from '@/utils/supabase.js'
+import AlertNotification from '@/components/common/AlertNotification.vue'
 import { emailValidator, requiredValidator } from '@/utils/validator'
 
-// Form data and state
 const formDataDefault = {
   email: '',
   password: '',
@@ -17,58 +18,45 @@ const formAction = ref({
 const refVForm = ref(null)
 const visible = ref(false)
 
+const router = useRouter()
+
 // Toggle password visibility
 const toggleVisible = () => {
   visible.value = !visible.value
 }
+
 const onSubmit = async () => {
-  formAction.value.formErrorMessage = '';
-  formAction.value.formSuccessMessage = '';
-  formAction.value.formProcess = true;
+  formAction.value.formErrorMessage = ''
+  formAction.value.formSuccessMessage = ''
+  formAction.value.formProcess = true
 
   try {
     // Authenticate user with Supabase
-    const { error: loginError } = await supabase.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: formData.value.email,
       password: formData.value.password,
-    });
+    })
 
-    if (loginError) {
-      throw new Error('Invalid credentials. Please try again.');
+    if (error) {
+      throw new Error('Invalid credentials. Please try again.')
     }
 
-    // Fetch the list of users
-    const { data: users, error: userError } = await supabase.auth.admin.listUsers();
-
-    if (userError) {
-      throw new Error('Unable to retrieve user list. Please contact support.');
-    }
-
-    // Find the user with the specified email and check if they are a super admin
-    const user = users.users.find(
-      (u) => u.email === formData.value.email && u.is_super_admin
-    );
-
-    if (!user) {
-      throw new Error('Access denied. You are not authorized as an admin.');
-    }
-
-    // Handle successful login
-    formAction.value.formSuccessMessage = 'Login successful! Redirecting...';
-    setTimeout(() => {
-      // Redirect to the admin dashboard
-      window.location.href = '/admin';
-    }, 1500);
+    // Redirect to admin dashboard
+    router.push({ name: 'admin-dashboard' })
   } catch (error) {
-    formAction.value.formErrorMessage = error.message;
+    console.error(error.message) // Log the error
+    formAction.value.formErrorMessage = error.message
   } finally {
-    formAction.value.formProcess = false;
+    formAction.value.formProcess = false
   }
-};
-
+}
 </script>
+
 <template>
-  <v-container class="d-flex justify-center align-center fill-height" style="background-color: #f5f5f5;">
+  <v-container
+    class="d-flex justify-center align-center fill-height"
+    style="background-color: #f5f5f5"
+  >
     <v-card class="pa-5" min-width="400" elevation="12" rounded>
       <v-card-title class="text-h5 text-center text-primary">
         Admin Login
@@ -78,7 +66,7 @@ const onSubmit = async () => {
           :form-success-message="formAction.formSuccessMessage"
           :form-error-message="formAction.formErrorMessage"
         ></AlertNotification>
-        <v-form ref="refVForm" fast-fail @submit.prevent="onSubmit">
+        <v-form ref="refVForm" @submit.prevent="onSubmit">
           <v-text-field
             v-model="formData.email"
             label="Email"
@@ -90,7 +78,6 @@ const onSubmit = async () => {
             density="compact"
             rounded
           ></v-text-field>
-          <!-- password -->
           <v-text-field
             v-model="formData.password"
             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -105,14 +92,6 @@ const onSubmit = async () => {
             density="compact"
             rounded
           ></v-text-field>
-          <!-- Forgot Password -->
-          <v-row class="mt-2 align-center">
-            <v-col cols="6" class="text-right">
-              <span>Forgot Password?</span>
-            </v-col>
-          </v-row>
-
-          <!-- Login Button -->
           <v-row class="button-row mt-4">
             <v-col>
               <v-btn
@@ -136,7 +115,7 @@ const onSubmit = async () => {
 
 <style scoped>
 .v-container {
-  background-color: #e8f5e9; /* Light green background */
+  background-color: #e8f5e9;
 }
 
 .text-primary {
@@ -149,11 +128,11 @@ const onSubmit = async () => {
 }
 
 .login-button:hover {
-  background-color: #43a047 !important; /* Darker green for hover */
+  background-color: #43a047 !important;
 }
 
 .modern-input {
-  background-color: #ffffff; /* White background for input fields */
+  background-color: #ffffff;
   border-radius: 8px;
 }
 </style>
