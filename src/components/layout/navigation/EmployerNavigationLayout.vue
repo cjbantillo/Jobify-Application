@@ -398,7 +398,7 @@ onMounted(() => {
               <v-icon>mdi-bell-outline</v-icon>
             </v-badge>
           </v-btn>
-        </template> 
+        </template>
 
         <v-list dense rounded class="pa-2">
           <h3 class="font-weight-bold">Notification</h3>
@@ -424,7 +424,7 @@ onMounted(() => {
           </v-card>
 
           <v-list-item v-if="!notifications.length">
-     v-card- <v-list-item-title class="text-center"
+           <v-list-item-title class="text-center"
               >No new notifications</v-list-item-title
             >
           </v-list-item>
