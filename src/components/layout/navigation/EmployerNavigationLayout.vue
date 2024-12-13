@@ -424,7 +424,7 @@ onMounted(() => {
           </v-card>
 
           <v-list-item v-if="!notifications.length">
-           <v-list-item-title class="text-center"
+      <v-list-item-title class="text-center"
               >No new notifications</v-list-item-title
             >
           </v-list-item>
