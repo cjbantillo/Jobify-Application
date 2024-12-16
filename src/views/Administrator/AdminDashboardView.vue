@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { supabaseAdmin } from '@/utils/supabase.js'
+import { supabaseAdmin, supabase } from '@/utils/supabase.js'
 import UserAdminLayout from '@/components/layout/navigation/UserAdminLayout.vue'
 
 const users = ref([]) // Store users
@@ -34,14 +34,39 @@ const confirmDeleteUser = user => {
   showDeletePopup.value = true
 }
 
-// Delete a user
+
+const logActivity = async (action, details, targetId) => {
+  try {
+    const { error } = await supabase
+    .from('logs')
+    .insert([
+      {
+        user_id: supabaseAdmin.auth.session()?.user?.id, // The admin performing the action
+        action: action,
+        details: details,
+        target_id: targetId, // The user being deleted
+      },
+    ])
+    if (error) throw new Error(`Error logging activity: ${error.message}`)
+  } catch (err) {
+    console.error('Logging error:', err.message)
+  }
+}
+
 const deleteUser = async () => {
   try {
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(
-      userToDelete.value.id,
-    )
+    const userId = userToDelete.value.id
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
     if (error) throw new Error(`Error deleting user: ${error.message}`)
-    fetchUsers() // Refresh the user list
+
+    // Log the delete action
+    await logActivity(
+      'DELETE',
+      `Deleted user with email: ${userToDelete.value.email}`,
+      userId
+    )
+
+    fetchUsers() // Refresh user list
     snackbar.value = {
       show: true,
       message: 'User deleted successfully!',
@@ -60,8 +85,26 @@ const deleteUser = async () => {
   }
 }
 
-// Run on mount
-onMounted(fetchUsers)
+const logs = ref([])
+
+const fetchLogs = async () => {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+    if (error) throw new Error(`Error fetching logs: ${error.message}`)
+    logs.value = data
+  } catch (err) {
+    console.error('Error fetching logs:', err.message)
+  }
+}
+
+// Fetch logs on mounted
+onMounted(() => {
+  fetchUsers()
+  fetchLogs()
+})
 </script>
 
 <template>
@@ -110,6 +153,31 @@ onMounted(fetchUsers)
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+        <v-container>
+  <h2 class="mt-8">Activity Logs</h2>
+  <v-table dense>
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Action</th>
+        <th>Details</th>
+        <th>Target ID</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="log in logs" :key="log.id">
+        <td>{{ log.user_id }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.details }}</td>
+        <td>{{ log.target_id }}</td>
+        <td>{{ new Date(log.created_at).toLocaleString() }}</td>
+      </tr>
+    </tbody>
+  </v-table>
+</v-container>
+
 
         <!-- Snackbar for Success/Failure -->
         <v-snackbar
