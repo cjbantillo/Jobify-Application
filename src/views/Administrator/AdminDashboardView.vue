@@ -56,7 +56,7 @@ onMounted(() => {
   <UserAdminLayout>
     <template #content>
       <v-card class="ma-8 pa-4">
-        <h1 class="mb-4">Welcome Admin!</h1>
+        <h1 class="mb-4">Welcome Back, Admin!</h1>
         <v-container>
           <h2>User Management</h2>
 
@@ -65,21 +65,65 @@ onMounted(() => {
             <thead>
               <tr>
                 <th>Email</th>
-                <th>User Name</th>
-                <th>Joined</th>
-                <th>Last Visited</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="user in users" :key="user.id">
                 <td>{{ user.email }}</td>
-                <td>{{ user.user_metadata.first_name || '' }} {{ user.user_metadata.last_name || '' }}</td>
-                <td>{{ calculateRelativeTime(user.created_at) }}</td>
-                <td>{{ calculateRelativeTime(user.last_sign_in_at) }}</td>
+                <td>
+                  <v-btn color="red" small @click="confirmDeleteUser(user)"
+                    >Delete</v-btn
+                  >
+                </td>
               </tr>
             </tbody>
           </v-table>
         </v-container>
+
+        <!-- Delete Confirmation Popup -->
+        <v-dialog v-model="showDeletePopup" max-width="400px">
+          <v-card>
+            <v-card-title>Confirm Deletion</v-card-title>
+            <v-card-text>
+              Are you sure you want to delete the user
+              <strong>{{ userToDelete?.email }}</strong
+              >?
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="red" @click="deleteUser">Delete</v-btn>
+              <v-btn color="grey" @click="() => (showDeletePopup = false)"
+                >Cancel</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-container>
+  <h2 class="mt-8">Activity Logs</h2>
+  <v-table dense>
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Action</th>
+        <th>Details</th>
+        <th>Target ID</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="log in logs" :key="log.id">
+        <td>{{ log.user_id }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.details }}</td>
+        <td>{{ log.target_id }}</td>
+        <td>{{ new Date(log.created_at).toLocaleString() }}</td>
+      </tr>
+    </tbody>
+  </v-table>
+</v-container>
+
+
         <!-- Snackbar for Success/Failure -->
         <v-snackbar
           v-model="snackbar.show"
