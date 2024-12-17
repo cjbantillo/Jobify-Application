@@ -1,11 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { supabaseAdmin, supabase } from '@/utils/supabase.js'
+import { supabaseAdmin} from '@/utils/supabase.js'
 import UserAdminLayout from '@/components/layout/navigation/UserAdminLayout.vue'
 
 const users = ref([]) // Store users
-const showDeletePopup = ref(false) // State for delete confirmation popup
-const userToDelete = ref(null) // User to delete
 const snackbar = ref({ show: false, message: '', color: '' }) // Snackbar state
 
 // Fetch all users
@@ -20,90 +18,37 @@ const fetchUsers = async () => {
     }
     users.value = fetchedUsers.filter(
       user =>
-        user.user_metadata?.is_super_admin === false ||
-        user.user_metadata?.is_super_admin == null,
+        user.user_metadata?.first_name !== 'admin'
     )
   } catch (err) {
     console.error('Error fetching users:', err.message)
   }
 }
 
-// Open delete confirmation popup
-const confirmDeleteUser = user => {
-  userToDelete.value = user
-  showDeletePopup.value = true
-}
 
+// Function to calculate relative time
+const calculateRelativeTime = dateString => {
+  const now = new Date()
+  const jobDate = new Date(dateString)
+  const diffInSeconds = Math.floor((now - jobDate) / 1000)
 
-const logActivity = async (action, details, targetId) => {
-  try {
-    const { error } = await supabase
-    .from('logs')
-    .insert([
-      {
-        user_id: supabaseAdmin.auth.session()?.user?.id, // The admin performing the action
-        action: action,
-        details: details,
-        target_id: targetId, // The user being deleted
-      },
-    ])
-    if (error) throw new Error(`Error logging activity: ${error.message}`)
-  } catch (err) {
-    console.error('Logging error:', err.message)
+  const minutes = Math.floor(diffInSeconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else {
+    return 'Just now'
   }
 }
 
-const deleteUser = async () => {
-  try {
-    const userId = userToDelete.value.id
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
-    if (error) throw new Error(`Error deleting user: ${error.message}`)
-
-    // Log the delete action
-    await logActivity(
-      'DELETE',
-      `Deleted user with email: ${userToDelete.value.email}`,
-      userId
-    )
-
-    fetchUsers() // Refresh user list
-    snackbar.value = {
-      show: true,
-      message: 'User deleted successfully!',
-      color: 'green',
-    }
-  } catch (error) {
-    console.error('Error deleting user:', error.message)
-    snackbar.value = {
-      show: true,
-      message: `Failed to delete user: ${error.message}`,
-      color: 'red',
-    }
-  } finally {
-    showDeletePopup.value = false
-    userToDelete.value = null
-  }
-}
-
-const logs = ref([])
-
-const fetchLogs = async () => {
-  try {
-    const { data, error } = await supabaseAdmin
-      .from('logs')
-      .select('*')
-      .order('created_at', { ascending: false })
-    if (error) throw new Error(`Error fetching logs: ${error.message}`)
-    logs.value = data
-  } catch (err) {
-    console.error('Error fetching logs:', err.message)
-  }
-}
-
-// Fetch logs on mounted
 onMounted(() => {
   fetchUsers()
-  fetchLogs()
 })
 </script>
 
@@ -111,7 +56,7 @@ onMounted(() => {
   <UserAdminLayout>
     <template #content>
       <v-card class="ma-8 pa-4">
-        <h1 class="mb-4">Welcome Back, Admin!</h1>
+        <h1 class="mb-4">Welcome Admin!</h1>
         <v-container>
           <h2>User Management</h2>
 
@@ -120,65 +65,21 @@ onMounted(() => {
             <thead>
               <tr>
                 <th>Email</th>
-                <th>Actions</th>
+                <th>User Name</th>
+                <th>Joined</th>
+                <th>Last Visited</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="user in users" :key="user.id">
                 <td>{{ user.email }}</td>
-                <td>
-                  <v-btn color="red" small @click="confirmDeleteUser(user)"
-                    >Delete</v-btn
-                  >
-                </td>
+                <td>{{ user.user_metadata.first_name || '' }} {{ user.user_metadata.last_name || '' }}</td>
+                <td>{{ calculateRelativeTime(user.created_at) }}</td>
+                <td>{{ calculateRelativeTime(user.last_sign_in_at) }}</td>
               </tr>
             </tbody>
           </v-table>
         </v-container>
-
-        <!-- Delete Confirmation Popup -->
-        <v-dialog v-model="showDeletePopup" max-width="400px">
-          <v-card>
-            <v-card-title>Confirm Deletion</v-card-title>
-            <v-card-text>
-              Are you sure you want to delete the user
-              <strong>{{ userToDelete?.email }}</strong
-              >?
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="red" @click="deleteUser">Delete</v-btn>
-              <v-btn color="grey" @click="() => (showDeletePopup = false)"
-                >Cancel</v-btn
-              >
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <v-container>
-  <h2 class="mt-8">Activity Logs</h2>
-  <v-table dense>
-    <thead>
-      <tr>
-        <th>User ID</th>
-        <th>Action</th>
-        <th>Details</th>
-        <th>Target ID</th>
-        <th>Timestamp</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="log in logs" :key="log.id">
-        <td>{{ log.user_id }}</td>
-        <td>{{ log.action }}</td>
-        <td>{{ log.details }}</td>
-        <td>{{ log.target_id }}</td>
-        <td>{{ new Date(log.created_at).toLocaleString() }}</td>
-      </tr>
-    </tbody>
-  </v-table>
-</v-container>
-
-
         <!-- Snackbar for Success/Failure -->
         <v-snackbar
           v-model="snackbar.show"
