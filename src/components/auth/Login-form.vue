@@ -39,22 +39,28 @@ const onSubmit = async () => {
   } else if (data) {
     console.log(data) // user data
 
-    // Check if user is an employer by checking the `is_employer` flag
     const { user } = data
-    if (user?.user_metadata?.is_employer) {
-      formAction.value.formSuccessMessage = 'Logged in as employer successfully'
-      router.replace('/employerdashboard') // Redirect to employer dashboard
+    // Check if user is blocked
+    if (user?.user_metadata?.is_blocked) {
+      formAction.value.formErrorMessage = 'Your account has been blocked. Please contact the administrator.'
+      formAction.value.formStatus = 'error'
     } else {
-      formAction.value.formSuccessMessage = 'Logged in successfully'
-      router.replace('/jobdashboard') // Redirect to job dashboard
+      // Check if user is an employer by checking the `is_employer` flag
+      if (user?.user_metadata?.is_employer) {
+        formAction.value.formSuccessMessage = 'Logged in as employer successfully'
+        router.replace('/employerdashboard') // Redirect to employer dashboard
+      } else {
+        formAction.value.formSuccessMessage = 'Logged in successfully'
+        router.replace('/jobdashboard') // Redirect to job dashboard
+      }
     }
   }
+
 
   refVForm.value?.reset()
   formAction.value.formProcess = false
 }
 
-// Google OAuth Login
 const loginWithGoogle = async () => {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -67,7 +73,14 @@ const loginWithGoogle = async () => {
     if (error) {
       formAction.value.formErrorMessage = error.message
     } else {
-      console.log('Google login successful', data)
+      const user = data.user
+      // Check if the user is blocked
+      if (user?.user_metadata?.is_blocked) {
+        formAction.value.formErrorMessage = 'Your account has been blocked. Please contact the administrator.'
+        formAction.value.formStatus = 'error'
+      } else {
+        console.log('Google login successful', data)
+      }
     }
   } catch (error) {
     console.error('Google OAuth login error:', error)
@@ -75,12 +88,15 @@ const loginWithGoogle = async () => {
   }
 }
 
+
 // Validate and submit the form
 const onFormSubmit = () => {
   refVForm.value?.validate().then(({ valid }) => {
     if (valid) onSubmit()
   })
 }
+
+
 </script>
 
 <template>

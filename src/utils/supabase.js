@@ -11,7 +11,7 @@ export const supabase = createClient(
  export const supabaseAdmin = createClient(
    import.meta.env.VITE_SUPABASE_URL,
    import.meta.env.VITE_SUPABASE_SERVICE_ROLE,
-   {
+  {
      auth: {
        autoRefreshToken: false,
        persistSession: false
