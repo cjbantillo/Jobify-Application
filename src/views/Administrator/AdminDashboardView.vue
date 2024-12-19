@@ -25,6 +25,34 @@ const fetchUsers = async () => {
   }
 }
 
+// Block or Unblock a user
+const toggleBlockUser = async (user) => {
+  try {
+    const isBlocked = user.user_metadata?.is_blocked || false
+    const updatedUserMetadata = {
+      ...user.user_metadata,
+      is_blocked: !isBlocked,
+    }
+    
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+      user_metadata: updatedUserMetadata,
+    })
+    
+    if (error) {
+      throw new Error(`Error updating user: ${error.message}`)
+    }
+
+    snackbar.value = {
+      show: true,
+      message: isBlocked ? 'User Unblocked' : 'User Blocked',
+      color: isBlocked ? 'green' : 'red',
+    }
+    
+    fetchUsers()  // Refresh the users list
+  } catch (err) {
+    console.error('Error blocking/unblocking user:', err.message)
+  }
+}
 
 // Function to calculate relative time
 const calculateRelativeTime = dateString => {
@@ -68,6 +96,7 @@ onMounted(() => {
                 <th>User Name</th>
                 <th>Joined</th>
                 <th>Last Visited</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -76,6 +105,14 @@ onMounted(() => {
                 <td>{{ user.user_metadata.first_name || '' }} {{ user.user_metadata.last_name || '' }}</td>
                 <td>{{ calculateRelativeTime(user.created_at) }}</td>
                 <td>{{ calculateRelativeTime(user.last_sign_in_at) }}</td>
+                <td>
+                  <v-btn
+                    :color="user.user_metadata?.is_blocked ? 'red' : 'green'"
+                    @click="toggleBlockUser(user)"
+                  >
+                    {{ user.user_metadata?.is_blocked ? 'Unblock' : 'Block' }}
+                  </v-btn>
+                </td>
               </tr>
             </tbody>
           </v-table>
