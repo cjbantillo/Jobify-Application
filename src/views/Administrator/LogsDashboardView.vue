@@ -10,7 +10,7 @@ const logs = ref([])
 const fetchLogs = async () => {
   try {
     const { data, error } = await supabaseAdmin
-      .from('logs')
+      .from('view_logs')
       .select('*')
       .order('created_at', { ascending: false })
     if (error) throw new Error(`Error fetching logs: ${error.message}`)
@@ -37,18 +37,21 @@ onMounted(fetchLogs);
               <tr>
                 <th>Date & Time</th>
                 <th>User ID</th>
+                <th>User Name</th>
                 <th>Action</th>
                 <th>Table Name</th>
                 <th>Column Name</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="log in logs" :key="log.id">
+              <tr v-for="log in logs" :key="log.id" >
                 <!-- Display created_at formatted as date and time -->
                 <td>{{ new Date(log.created_at).toLocaleString() }}</td>
 
                 <!-- Display User Name (assuming there's a 'user_id' field and you fetch user details) -->
                 <td>{{ log.user_id }}</td>
+
+                <td>{{ log.full_name || 'Protected By Google'}}</td>
 
                 <!-- Display Action (inserted, updated, deleted) -->
                 <td>{{ log.action }}</td>
