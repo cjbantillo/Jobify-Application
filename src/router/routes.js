@@ -19,6 +19,7 @@ import RoleSelection from '@/views/auth/RoleView.vue'
 //Admin
 import AdminDashboard from '@/views/Administrator/AdminDashboardView.vue'
 import AdminLogin from '@/components/admin/AdminLogin.vue'
+import AdminLogs from '@/views/Administrator/LogsDashboardView.vue'
 // import ApplicationListView from '@/views/system/Employer/ApplicationListView.vue'
 //settings pages
 import AccountSettingsInfo from '@/views/system/settings/AccountInformationView.vue'
@@ -38,11 +39,18 @@ const routes = [
     path: '/admin-dashboard',
     name: 'admin-dashboard',
     component: AdminDashboard,
+    meta: { requiresAuth: true, isDefault: true },
   },
   {
-    path: '/admin-login',
-    name: 'admin-login',
+    path: '/admin',
+    name: 'admin',
     component: AdminLogin,
+  },
+  {
+    path: '/logs',
+    name: 'logs',
+    component: AdminLogs,
+    meta: { requiresAuth: true, isDefault: true },
   },
   {
     path: '/login',

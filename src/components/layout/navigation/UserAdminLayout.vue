@@ -144,8 +144,15 @@ onMounted(() => {
         <v-list-item
           prepend-icon="mdi-home-city"
           title="Dashboard"
-          value="admin"
-          to="/admin"
+          value="admin-dashboard"
+          to="/admin-dashboard"
+        ></v-list-item>
+
+        <v-list-item
+          prepend-icon="mdi-math-log"
+          title="Logs"
+          value="logs"
+          to="/logs"
         ></v-list-item>
 
         <v-list-item

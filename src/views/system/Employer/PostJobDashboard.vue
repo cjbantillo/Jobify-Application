@@ -6,7 +6,7 @@ import { requiredValidator } from '@/utils/validator'
 
 const categories = ref([
   'Customer Service Representative',
-  'Sales Associate',  
+  'Sales Associate',
   'Tutoring',
   'Freelance Writing/Content Creation',
   'Data Entry',
@@ -204,7 +204,7 @@ onMounted(fetchJobPosts)
                     }}</v-card-title>
                     <v-card-subtitle class="salary-category">
                       <span class="salary"
-                        >Salary: <i class="mdi mdi-currency-php"></i>
+                        >Fee: <i class="mdi mdi-currency-php"></i>
                         {{ job.salary_range }}</span
                       >
                       <span class="category">Category: {{ job.category }}</span>
@@ -247,7 +247,7 @@ onMounted(fetchJobPosts)
                           type="number"
                           variant="outlined"
                           v-model="newJobPost.salary"
-                          label="Salary"
+                          label="Fee"
                          :rules="[requiredValidator]"
                         ></v-text-field>
                         <v-select

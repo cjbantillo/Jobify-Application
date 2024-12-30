@@ -1,11 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { supabaseAdmin } from '@/utils/supabase.js'
+import { supabaseAdmin} from '@/utils/supabase.js'
 import UserAdminLayout from '@/components/layout/navigation/UserAdminLayout.vue'
 
 const users = ref([]) // Store users
-const showDeletePopup = ref(false) // State for delete confirmation popup
-const userToDelete = ref(null) // User to delete
 const snackbar = ref({ show: false, message: '', color: '' }) // Snackbar state
 
 // Fetch all users
@@ -20,55 +18,73 @@ const fetchUsers = async () => {
     }
     users.value = fetchedUsers.filter(
       user =>
-        user.user_metadata?.is_super_admin === false ||
-        user.user_metadata?.is_super_admin == null,
+        user.user_metadata?.first_name !== 'admin'
     )
   } catch (err) {
     console.error('Error fetching users:', err.message)
   }
 }
 
-// Open delete confirmation popup
-const confirmDeleteUser = user => {
-  userToDelete.value = user
-  showDeletePopup.value = true
-}
-
-// Delete a user
-const deleteUser = async () => {
+// Block or Unblock a user
+const toggleBlockUser = async (user) => {
   try {
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(
-      userToDelete.value.id,
-    )
-    if (error) throw new Error(`Error deleting user: ${error.message}`)
-    fetchUsers() // Refresh the user list
+    const isBlocked = user.user_metadata?.is_blocked || false
+    const updatedUserMetadata = {
+      ...user.user_metadata,
+      is_blocked: !isBlocked,
+    }
+    
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+      user_metadata: updatedUserMetadata,
+    })
+    
+    if (error) {
+      throw new Error(`Error updating user: ${error.message}`)
+    }
+
     snackbar.value = {
       show: true,
-      message: 'User deleted successfully!',
-      color: 'green',
+      message: isBlocked ? 'User Unblocked' : 'User Blocked',
+      color: isBlocked ? 'green' : 'red',
     }
-  } catch (error) {
-    console.error('Error deleting user:', error.message)
-    snackbar.value = {
-      show: true,
-      message: `Failed to delete user: ${error.message}`,
-      color: 'red',
-    }
-  } finally {
-    showDeletePopup.value = false
-    userToDelete.value = null
+    
+    fetchUsers()  // Refresh the users list
+  } catch (err) {
+    console.error('Error blocking/unblocking user:', err.message)
   }
 }
 
-// Run on mount
-onMounted(fetchUsers)
+// Function to calculate relative time
+const calculateRelativeTime = dateString => {
+  const now = new Date()
+  const jobDate = new Date(dateString)
+  const diffInSeconds = Math.floor((now - jobDate) / 1000)
+
+  const minutes = Math.floor(diffInSeconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else {
+    return 'Just now'
+  }
+}
+
+onMounted(() => {
+  fetchUsers()
+})
 </script>
 
 <template>
   <UserAdminLayout>
     <template #content>
       <v-card class="ma-8 pa-4">
-        <h1 class="mb-4">Welcome Back, Admin!</h1>
+        <h1 class="mb-4">Welcome Admin!</h1>
         <v-container>
           <h2>User Management</h2>
 
@@ -77,40 +93,30 @@ onMounted(fetchUsers)
             <thead>
               <tr>
                 <th>Email</th>
-                <th>Actions</th>
+                <th>User Name</th>
+                <th>Joined</th>
+                <th>Last Visited</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="user in users" :key="user.id">
                 <td>{{ user.email }}</td>
+                <td>{{ user.user_metadata.first_name || '' }} {{ user.user_metadata.last_name || '' }}</td>
+                <td>{{ calculateRelativeTime(user.created_at) }}</td>
+                <td>{{ calculateRelativeTime(user.last_sign_in_at) }}</td>
                 <td>
-                  <v-btn color="red" small @click="confirmDeleteUser(user)"
-                    >Delete</v-btn
+                  <v-btn
+                    :color="user.user_metadata?.is_blocked ? 'red' : 'green'"
+                    @click="toggleBlockUser(user)"
                   >
+                    {{ user.user_metadata?.is_blocked ? 'Unblock' : 'Block' }}
+                  </v-btn>
                 </td>
               </tr>
             </tbody>
           </v-table>
         </v-container>
-
-        <!-- Delete Confirmation Popup -->
-        <v-dialog v-model="showDeletePopup" max-width="400px">
-          <v-card>
-            <v-card-title>Confirm Deletion</v-card-title>
-            <v-card-text>
-              Are you sure you want to delete the user
-              <strong>{{ userToDelete?.email }}</strong
-              >?
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="red" @click="deleteUser">Delete</v-btn>
-              <v-btn color="grey" @click="() => (showDeletePopup = false)"
-                >Cancel</v-btn
-              >
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
         <!-- Snackbar for Success/Failure -->
         <v-snackbar
           v-model="snackbar.show"
